@@ -35,6 +35,7 @@ function registerUser() {
     .then(data => {
         // İşlem başarılıysa burada işlemleri gerçekleştir
         console.log('Kayıt başarılı:', data);
+        loadPage('games.html');
     })
     .catch(error => {
         // Hata durumunda burada işlemleri gerçekleştir
