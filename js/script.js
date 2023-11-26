@@ -69,3 +69,24 @@ function loginUser() {
         console.error('Giriş sırasında bir hata oluştu:', error);
     });
 }
+
+
+async function fetchUsers() {
+    try {
+        const response = await fetch('https://example.com/api/users'); // API'nizin URL'sini buraya ekleyin
+        const userData = await response.json();
+
+        // Kullanıcı listesini oluşturan bir döngü
+        var userListElement = document.getElementById("user-list");
+        userData.forEach(user => {
+            var listItem = document.createElement("li");
+            listItem.textContent = user.name; // Kullanıcı adını buraya göre uyarlamanız gerekebilir
+            userListElement.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+}
+
+// Sayfa yüklendiğinde kullanıcıları çek ve liste oluştur
+window.onload = fetchUsers;
