@@ -190,7 +190,7 @@ body {
     justify-content: center;
     align-items: left;
     margin: auto;
-	width: 90%; /* Ekran genişliğinin 90% kadar genişlik */
+	width: 100%; /* Ekran genişliğinin 90% kadar genişlik */
     height: auto; /* Yüksekliği otomatik ayarla, orantıyı koru */
     max-width: 1003px; /* Maksimum genişlik belirtilen değer kadar olabilir */
     max-height: 508px; /* Maksimum yükseklik belirtilen değer kadar olabilir */
@@ -521,4 +521,68 @@ button:hover {
 .scrollbox-inner p {
 	margin: 0;
 	padding: 0;
+}
+
+main.table {
+	margin-top: 10px;
+	width: 82vw;
+	height: 90vh;
+	background-color: #fff5;
+	
+	max-width: 800px;
+	backdrop-filter: blur(7px);
+	box-shadow: 0 .4rem .8rem #0005;
+	border-radius: .8rem;
+
+	overflow: hidden;
+}
+
+.table__header {
+	width: 100%;
+	height: 3%;
+	background-color: #fff4;
+	padding: .8rem 1rem;
+	margin-left: 20px;
+}
+
+.table__body {
+	width: 95%;
+	max-height: calc(89% - .8rem);
+	background-color: #fffb;
+
+	margin: .11rem auto;
+	border-radius: .6rem;
+
+	overflow: auto;
+}
+
+.table__body::-webkit-scrollbar {
+	width: 0.5rem;
+	height: 0.5rem;
+}
+
+.table__body::-webkit-scrollbar-thumb {
+	border-radius: 0.5rem;
+	background-color: #0004;
+	visibility: hidden;
+}
+
+.table__body:hover::-webkit-scrollbar-thumb	{
+	visibility: visible;
+}
+
+table {
+	width: 100%;
+}
+
+table, th {
+	border-collapse: collapse;
+	padding: 1rem;
+}
+
+thead th {
+	position: sticky;
+	top: 0;
+	left: 0;
+	background-color: #d5d1defe;
 }
