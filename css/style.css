@@ -190,8 +190,12 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     margin: auto;
+	width: 100%; /* Ekran genişliğinin 90% kadar genişlik */
+    height: auto; /* Yüksekliği otomatik ayarla, orantıyı koru */
+    max-width: 1003px; /* Maksimum genişlik belirtilen değer kadar olabilir */
+    max-height: 508px; /* Maksimum yükseklik belirtilen değer kadar olabilir */
 }
 .board-template h2
 {
@@ -220,6 +224,8 @@ body {
     background-color: #5D1D88;
     border: 1px solid #5D1D88;
     border-radius: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 .board a {
@@ -239,18 +245,28 @@ body {
     max-height: 20%;
 }
 
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #5D1D88;
+	border-radius: 10px;
+}
+
 .users-board
 {
     display: flex;
     height: 70%;
     padding: 0 5% 6% 5%;
-    margin-right: 2.5%;
+    margin-right: 5.5%;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
     background-color: black;
     border-radius: 40px;
     color: white;
+	line-height: 2;
 }
 
 .users-board-settings
@@ -424,4 +440,150 @@ button:hover {
 {
     width: 30%;
     height: auto;
+}
+
+.write-caption {
+    text-align: center; /* Metni yatayda ortala */
+    margin: auto; /* Metni dikeyde ortala */
+    /* İhtiyaca göre diğer stil özelliklerini ekleyebilirsiniz */
+	color: white;
+}
+
+.left-right
+{
+    display: flex;
+    padding: 5%;
+    margin-top: 5%;
+    flex-direction: row;
+    border: 1px solid #5D1D88;
+    border-radius: 30px;
+    width: 100%;
+}
+
+.left-right input
+{
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #FDB827;
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-family: "Bai Jamjuree", sans-serif;
+}
+
+.left-right button
+{
+    width: 100%;
+    margin-top: 3%;
+    padding: 10px;
+    align-items: center;
+    box-shadow: 0px -1.4782986640930176px 2.956597328186035px rgba(0, 0, 0, 0.25) inset;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-family: "Bai Jamjuree", sans-serif;
+    background: #DD9D18;
+    color: white;
+    cursor: pointer;
+}
+
+.online-dot-online {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #3BE200;
+    margin-right: 3px; /* Noktadan önce bir boşluk bırak */
+}
+
+.online-dot-offline {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #756565;
+    margin-right: 3px; /* Noktadan önce bir boşluk bırak */
+}
+
+.scrollbox {
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+	padding-right: 10px;
+	visibility: hidden;
+}
+
+.scrollbox-inner,
+.scrollbox:hover {
+	visibility: visible;
+}
+
+.scrollbox-inner p {
+	margin: 0;
+	padding: 0;
+}
+
+main.table {
+	margin-top: 10px;
+	width: 82vw;
+	height: 90vh;
+	background-color: #fff5;
+	
+	max-width: 800px;
+	backdrop-filter: blur(7px);
+	box-shadow: 0 .4rem .8rem #0005;
+	border-radius: .8rem;
+
+	overflow: hidden;
+}
+
+.table__header {
+	width: 100%;
+	height: 3%;
+	background-color: #fff4;
+	padding: .8rem 1rem;
+}
+
+.table__body {
+	width: 100%;
+	max-height: calc(89% - .8rem);
+	background-color: #fffb;
+
+	margin: .11rem auto;
+	border-radius: .6rem;
+
+	overflow: auto;
+}
+
+.table__body::-webkit-scrollbar {
+	width: 0.5rem;
+	height: 0.5rem;
+}
+
+.table__body::-webkit-scrollbar-thumb {
+	border-radius: 0.5rem;
+	background-color: #0004;
+	visibility: hidden;
+}
+
+.table__body:hover::-webkit-scrollbar-thumb	{
+	visibility: visible;
+}
+
+table {
+	width: 100%;
+}
+
+table, th {
+	border-collapse: collapse;
+	padding: 1rem;
+}
+
+thead th {
+	position: sticky;
+	top: 0;
+	left: 0;
+	background-color: #d5d1defe;
 }
