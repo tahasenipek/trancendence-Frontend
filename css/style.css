@@ -192,10 +192,10 @@ body {
     justify-content: center;
     align-items: left;
     margin: auto;
-	width: 100%; /* Ekran genişliğinin 90% kadar genişlik */
+	width: 90%; /* Ekran genişliğinin 90% kadar genişlik */
     height: auto; /* Yüksekliği otomatik ayarla, orantıyı koru */
-    max-width: 1003px; /* Maksimum genişlik belirtilen değer kadar olabilir */
-    max-height: 508px; /* Maksimum yükseklik belirtilen değer kadar olabilir */
+    max-width: 700px; /* Maksimum genişlik belirtilen değer kadar olabilir */
+    max-height: auto; /* Maksimum yükseklik belirtilen değer kadar olabilir */
 }
 .board-template h2
 {
