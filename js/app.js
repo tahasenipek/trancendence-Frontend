@@ -30,7 +30,7 @@ function renderLoginPage() {
         </div>
         </div>
         `;
-
+        document.title = "Welcome to Transcendence";
 }
 
 function renderRegistrationPage() {
@@ -60,6 +60,7 @@ function renderRegistrationPage() {
     </div>
     </div>
     `;
+    document.title = "Register to Transcendence";
 }
 
 function renderGamesPage() {
@@ -127,6 +128,7 @@ function renderGamesPage() {
                     </div>
                     </div>
                     `;
+                    document.title = "Games | Transcendence";
                 }
                 
                 function renderProfilePage() {
@@ -187,6 +189,7 @@ function renderGamesPage() {
     </div>
     </div>
     `;
+    document.title = "Profile | Transcendence";
 }
 
 function renderSettingsPage() {
@@ -241,6 +244,7 @@ function renderSettingsPage() {
     </div>
     </div>
     `;
+    document.title = "Settings | Transcendence";
 }
 
 function renderpongtimePage() {
@@ -308,6 +312,7 @@ function renderpongtimePage() {
                     </div>
                     </div>
                     `;
+                    document.title = "Pong Time | Transcendence";
                 }
 
                 
@@ -375,6 +380,7 @@ function renderpongtimePage() {
             </div>
             </div>
             `;
+            document.title = "Being Matched | Transcendence";
         }
                 
         function renderTournamentPage() {
@@ -441,6 +447,7 @@ function renderpongtimePage() {
         </div>
     </div>
     `;
+    document.title = "Tournament | Transcendence";
 }
 
 function renderCreateTournamentPage() {
@@ -510,6 +517,7 @@ function renderCreateTournamentPage() {
         </div>
         </div>
     </div>`;
+    document.title = "Create Tournament | Transcendence";
 }
 
 function renderJoinRandomTournamentPage() {
@@ -579,6 +587,7 @@ function renderJoinRandomTournamentPage() {
     </div>
 </div>
     `;
+    document.title = "Join Random Tournament | Transcendence";
 }
 
  const routes = {
@@ -594,7 +603,7 @@ function renderJoinRandomTournamentPage() {
     'join-random-tournament': renderJoinRandomTournamentPage,
  };
 
- function renderPage(path) {
+function renderPage(path) {
     const routeFunction = routes[path];
 
     if (routeFunction === renderLoginPage)
@@ -604,42 +613,125 @@ function renderJoinRandomTournamentPage() {
     }
     else if (routeFunction === renderRegistrationPage)
     {
+        updateHistory(path);
         renderRegistrationPage();
     }
     else if (routeFunction === renderGamesPage)
+    {
+        updateHistory(path);
         renderGamesPage();
+    }
     else if (routeFunction === renderProfilePage)
+    {
+        updateHistory(path);
         renderProfilePage();
+    }
     else if (routeFunction === renderSettingsPage)
+    {
+        updateHistory(path);
         renderSettingsPage();
+    } 
     else if (routeFunction === renderpongtimePage)
+    {
+        updateHistory(path);
         renderpongtimePage();
+    }
     else if (routeFunction === renderbeingmatchPage)
+    {
+        updateHistory(path);
         renderbeingmatchPage();
+    }
     else if (routeFunction === renderTournamentPage)
+    {
+        updateHistory(path);
         renderTournamentPage();
+    }
     else if (routeFunction === renderCreateTournamentPage)
+    {
+        updateHistory(path);
         renderCreateTournamentPage();
+    }
     else if (routeFunction === renderJoinRandomTournamentPage)
+    {
+        updateHistory(path);
         renderJoinRandomTournamentPage();
+    }
     else
+    {
+        updateHistory('/');
         renderLoginPage();
+    }
 }
 
 
 function updateHistory(path) {
     const state = {
         path: path,
-        title: document.title,
+        title: null,
+        url: null,
     };
-
-    window.history.pushState(state, state.title, state.path);
+    if (path === '/')
+    {
+        state.title = "Login | Transcendence";
+        state.url = "/login";
+    }
+    else if (path === 'register')
+    {
+        state.title = "Register | Transcendence";
+        state.url = "/register";
+    }
+    else if (path === 'games')
+    {
+        state.title = "Games | Transcendence";
+        state.url = "/games";
+    }
+    else if (path === 'profile')
+    {
+        state.title = "Profile | Transcendence";
+        state.url = "/profile";
+    }
+    else if (path === 'settings')
+    {
+        state.title = "Settings | Transcendence";
+        state.url = "/settings";
+    }
+    else if (path === 'pong-time')
+    {
+        state.title = "Pong Time | Transcendence";
+        state.url = "/pong-time";
+    }
+    else if (path === 'being-match')
+    {
+        state.title = "Being Matched | Transcendence";
+        state.url = "/being-match";
+    }
+    else if (path === 'tournament')
+    {
+        state.title = "Tournament | Transcendence";
+        state.url = "/tournament";
+    }
+    else if (path === 'create-tournament')
+    {
+        state.title = "Create Tournament | Transcendence";
+        state.url = "/create-tournament";
+    }
+    else if (path === 'join-random-tournament')
+    {
+        state.title = "Join Random Tournament | Transcendence";
+        state.url = "/join-random-tournament";
+    }
+    else
+    {
+        state.title = "4|2 Transcendence Game"
+        state.url = "/default"
+    }
+    console.log(state);
+    window.history.pushState(state, state.title, state.url);
 }
 
 window.addEventListener('popstate', function (event) {
     const state = event.state;
     if (state) {
-        document.title = state.title;
         renderPage(state.path);
     }
     else
