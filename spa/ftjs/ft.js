@@ -1,3 +1,4 @@
+
 const app = document.querySelector('body');
 
 // const routes = {
@@ -12,15 +13,6 @@ const app = document.querySelector('body');
 // };
 
 
-function addRoute(path, page) {
-
-	routes[path] = {
-		view: function() {
-			console.log("path: " + page);
-			return page;
-		},
-	};
-}
 
 async function router() {
 	const route = window.location.pathname;
@@ -34,8 +26,7 @@ async function router() {
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
-			render(
-				render(div)
+			render(div
 				);
 		}
 	}
@@ -79,6 +70,7 @@ window.addEventListener('load', function(event) {
 	event.preventDefault();
 	router();
 });
+
 window.addEventListener('popstate', function(event) {
 	event.preventDefault();
 	router();
@@ -97,6 +89,7 @@ function init() {
 	const links = document.querySelectorAll('[data-link]');
 	for (let link of links) {
 		link.addEventListener('click', function(event) {
+			console.log('link clicked');
 			event.preventDefault();
 			navigateTo(link.href);
 		});
@@ -143,3 +136,8 @@ function img(src) {
 function input(type) {
     return tag("input").att$("type", type);
 }
+
+
+
+
+

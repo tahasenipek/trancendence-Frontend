@@ -1,0 +1,48 @@
+<navbar class="navbar">
+    <div class="navbar-container">
+        <a href="" onclick="event.preventDefault(); renderPage('games')">
+            <div style="display: flex; align-items: center; margin-left: 10px;">
+                <img src="img/site-logo.png" alt="Site Logo" class="logo" width="49.17" height="37">
+                <div style="margin-right: 10px;"></div>
+                <img src="img/trancendence-logo.png" alt="Site Name" class="logo-text" width="116" height="15">
+            </div>
+        </a>
+        <a href="" onclick="event.preventDefault(); renderPage('games')">
+                <img src="img/game-sign.png" alt="Game Logo" class="game-logo">
+        </a>
+        <a href="" onclick="event.preventDefault(); renderPage('profile')">
+            <div style="margin-right: 80px;">
+                <img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
+            </div>
+        </a>
+    </div>
+</navbar>
+<div class="games-page">
+    <div class="game-template">
+        <div class="user-settings-box">
+            <h1 style="color: #FDB827;">edit profile,</h1>
+            <form id="user-settings-form" class="user-settings-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username">
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email">
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password">
+            
+            <label for="language">Language:</label>
+            <select id="language" name="language">
+            <option value="english">English</option>
+            <option value="turkish">Turkish</option>
+            </select>
+            <button class ="settings-button" type="button" >Login</button>
+            </form>
+        </div>
+    </div>
+    <div class="users-board-settings">
+        <h3> Profile İmage </h3>
+        <img src="img/profile-img.jpg" alt="Pong Logo" class="profile-img">
+        <input type="file" id="file">
+    </div>
+</div>
