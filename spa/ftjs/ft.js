@@ -1,16 +1,45 @@
 
 const app = document.querySelector('body');
 
-// const routes = {
-// 	'/test': {
-// 		view: function() {
-// 			return div(
-// 				h1('Test'),
-// 				p('This is a test page')
-// 			);
-// 		},
-// 	},
-// };
+const routes = {
+	'/': {
+		template: '/pages/login.html',
+		view: null
+	},
+	'/being-match': {
+		template: '/pages/being-match.html',
+		view: null
+	},
+	'/create-tournament': {
+		template: '/pages/create-tournament.html',
+		view: null
+	},
+	'/register': {
+		template: '/pages/register.html',
+		view: null
+	},
+	'/join-tournament': {
+		template: '/pages/join-random-tournament.html',
+		view: null
+	},
+	'/games' : {
+		template: '/pages/games.html',
+		view: null
+	},
+	'/profile' : {
+		template: '/pages/profile.html',
+		view: null
+	},
+	'/settings' : {
+		template: '/pages/settings.html',
+		view: null
+	},
+	'/login': {
+		template: '/pages/login.html',
+		view: null
+	},
+}
+
 
 
 
