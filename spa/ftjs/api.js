@@ -4,8 +4,8 @@ function loginUser() {
 	
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-
-    fetch('http:/localhost:8080/api/login', {
+    console.log(username);
+    fetch('http://localhost:8080/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,11 +36,9 @@ function loginUser() {
     });
 }
 
-function getCookie(name) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
-}
+
+
+
 
 
 
@@ -57,7 +55,7 @@ function registerUser() {
         alert('Lütfen tüm alanları doldurun ve şifreleri doğrulayın.');
         return;
     }
-
+    
     // API'ye istek gönder
     fetch('http://127.0.0.1:8000/api/register', {
         method: 'POST',
@@ -81,17 +79,8 @@ function registerUser() {
             // Kullanıcı başarıyla kaydedildiyse, token'ı sakla
             const accessToken = data.access_token;
             localStorage.setItem('accessToken', accessToken);
-            const user = data.user;
-
-            // Kullanıcı bilgilerini kullanarak istediğiniz işlemleri gerçekleştirin
-            console.log('Kullanıcı bilgileri:', user);
-
-            // Oturumu başlatmak veya diğer işlemleri gerçekleştirmek için gerekli kodları ekleyin
-            alert('Kullanıcı başarıyla kaydedildi.');
-
-            // Örneğin, başka bir sayfaya yönlendirme:
-            window.location.href = `/games?userId=${user.id}&username=${user.username}&isOnline=${user.is_online}`;
-        } else {
+            window.location.href = '/games';
+        } else {    
             alert('Kayıt sırasında bir hata oluştu.');
         }
     })
@@ -106,15 +95,15 @@ function registerUser() {
 
 /* function registerUser() {
         fetch('http://127.0.0.1:8000/api/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),  // csrf token'ınızı alın
-        },
-        body: JSON.stringify({
-            username: username,
-            email: email,
-            password: password,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),  // csrf token'ınızı alın
+            },
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                password: password,
         }),
     })
     .then(response => response.json())

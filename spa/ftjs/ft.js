@@ -41,6 +41,42 @@ const routes = {
 }
 
 
+function fillUserList(user_data) {
+    const userList = document.getElementById('userList');
+    if (userList) {
+        var userListHTML = '';
+
+        user_data.forEach(function(user) {
+            userListHTML += '<ul>';
+            userListHTML += '<span class="online-dot-online"></span>';
+            userListHTML += user.username;
+            userListHTML += '</ul>';
+        });
+
+        userList.innerHTML = userListHTML;
+    }
+}
+
+async function fetchUserData() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/getUser', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Kullanıcı verisi alınırken bir hata oluştu.');
+        }
+        const userData = await response.json();
+        return userData;
+    } catch (error) {
+        console.error('Hata:', error);
+        alert('Kullanıcı verisi alınırken bir hata oluştu.');
+        return null;
+    }
+}
 
 
 async function router() {
@@ -50,13 +86,18 @@ async function router() {
 	if (page) {
 		if (page.view){
 			render(page.view);
+			const user_data = await fetchUserData();
+			if (user_data)
+            	fillUserList(user_data);
 		}
 		else{
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
-			render(div
-				);
+			render(div);
+			const user_data = await fetchUserData();
+			if (user_data)
+            	fillUserList(user_data);
 		}
 	}
 	else{
