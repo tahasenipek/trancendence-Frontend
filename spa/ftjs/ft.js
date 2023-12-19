@@ -86,18 +86,18 @@ async function router() {
 	if (page) {
 		if (page.view){
 			render(page.view);
-			const user_data = await fetchUserData();
+			/* const user_data = await fetchUserData();
 			if (user_data)
-            	fillUserList(user_data);
+            	fillUserList(user_data); */
 		}
 		else{
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
 			render(div);
-			const user_data = await fetchUserData();
+			/* const user_data = await fetchUserData();
 			if (user_data)
-            	fillUserList(user_data);
+            	fillUserList(user_data); */
 		}
 	}
 	else{

@@ -4,8 +4,11 @@ function loginUser() {
 	
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    console.log(username);
-    fetch('http://localhost:8080/api/login', {
+    if (!username || !password) {
+        alert('Lütfen tüm alanları doldurun.');
+        return;
+    }
+    fetch('http://localhost:2700/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -15,18 +18,19 @@ function loginUser() {
             password: password
         })
     })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Kayıt sırasında bir hata oluştu.');
+        }
+        return response.json(); // 404 hata sayfası yapalım ona gitsin
+    })
     .then(data => {
         if (data.success) {
-            // Kullanıcı başarıyla kaydedildiyse, token'ı sakla
-            const accessToken = data.access_token;
-            localStorage.setItem('accessToken', accessToken);
-
-            // Oturumu başlatmak veya diğer işlemleri gerçekleştirmek için gerekli kodları ekleyin
-            alert('Kullanıcı başarıyla kaydedildi.');
-
-            // Örneğin, başka bir sayfaya yönlendirme:
+            
+            const token = data.access_token;
+            localStorage.setItem('token', token);
             window.location.href = '/games';
-        } else {
+        } else {    
             alert('Kayıt sırasında bir hata oluştu.');
         }
     })
@@ -57,7 +61,7 @@ function registerUser() {
     }
     
     // API'ye istek gönder
-    fetch('http://127.0.0.1:8000/api/register', {
+    fetch('http://localhost:2700/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -72,14 +76,12 @@ function registerUser() {
         if (!response.ok) {
             throw new Error('Kayıt sırasında bir hata oluştu.');
         }
-        return response.json();
+        return response.json(); // 404 hata sayfası yapalım ona gitsin
     })
     .then(data => {
         if (data.success) {
-            // Kullanıcı başarıyla kaydedildiyse, token'ı sakla
-            const accessToken = data.access_token;
-            localStorage.setItem('accessToken', accessToken);
-            window.location.href = '/games';
+            alert('Kullanıcı başarıyla kaydedildi.');
+            window.location.href = '/login';
         } else {    
             alert('Kayıt sırasında bir hata oluştu.');
         }
