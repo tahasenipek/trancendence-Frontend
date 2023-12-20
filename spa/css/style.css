@@ -587,3 +587,18 @@ thead th {
 	left: 0;
 	background-color: #d5d1defe;
 }
+
+
+
+
+.board-member-head
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 5%;
+    background-color: #5D1D88;
+    border: 1px solid #5D1D88;
+    border-radius: 30px;
+}

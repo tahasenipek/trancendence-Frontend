@@ -18,22 +18,31 @@
     </div>
 </navbar>
 <div class="games-page">
-        <div class="game-template">
-            <div class="board-template">
-                <h2 style="color: #5D1D88; font-size: 40px;"> choose game !</h2>
-                <div class="board">
-                    <a href="/pong-time" ><img src="img/pong-img.jpg" alt="Pong Logo" ></a>
-                    <a href="" class="question-mark"><img src="img/question-mark-new.png" alt="question-mark"></a>
-                    <a href="head-and-tail" class="pong-logo-link"><img src="img/yazi-tura.jpg" alt="Head and Tail"></a>
+    <div class="game-template">
+        <div class="board-template">
+            <h2 style="color: #5D1D88; font-size: 40px;"> Head and Tail Game !</h2>
+            <div class="board" id="head-and-tail-board">
+                <div class="board-member-head">
+                    <a href="" ><img src="img/head.png" alt="Pong Logo" > </a>
+                    <button onclick="selectOption(1)"> Yazı</button>
                 </div>
-             </div>
-        </div>
+                <div class="board-member-head" id ="head-option-atıs">
+                    <a href="" class="question-mark"><img style="width: 100px;" src="img/launch.png" alt="question-mark"></a>
+
+                </div>
+                <div class="board-member-head">
+                    <a href="" class="pong-logo-link"><img src="img/tail.png" alt="Pong Logo"></a>
+                    <button onclick="selectOption(2)"> Tura</button>
+
+                </div>
+            </div>
+         </div>
+    </div>
     <div class="users-board">
-        <h3> Add Friend </h3>
-        <input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search" oninput="searchUsers();">
+        <h3> Coin List  </h3>
         <div class="scrollbox">
             <div class="scrollbox-inner" id="user-list-container">
-               
+                <a href="" class="pong-logo-link"><img style = "width: 50px;" src="img/tail.png" alt="Pong Logo"></a>
             </div>
         </div>
     </div>

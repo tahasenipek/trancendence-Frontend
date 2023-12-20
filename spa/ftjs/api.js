@@ -94,6 +94,44 @@ function registerUser() {
 
 
 
+function searchUsers() {
+    var searchQuery = document.querySelector('.search').value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://localhost:2700/api/search', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.send(JSON.stringify({
+        searchQuery: searchQuery
+    }));
+    xhr.onreadystatechange = function () {
+       
+        if (xhr.readyState == 4 && xhr.status == 200) 
+        {
+            const responseData = JSON.parse(xhr.responseText);
+            if (responseData.success) {
+                const userContainer = document.getElementById('user-list-container');
+                userContainer.innerHTML = '';
+                const match_users = responseData.users;
+                match_users.forEach(function(user) {
+                    userContainer.innerHTML += '<ul>';
+                    userContainer.innerHTML += '<span class="online-dot-online"></span>';
+                    userContainer.innerHTML += user.username;
+                    userContainer.innerHTML += '</ul>';
+                });
+                            
+            } else {
+                alert('Kullanıcı aranırken bir hata oluştu.');
+            }
+        }
+        else if (xhr.readyState == 4 && xhr.status == 201) {
+            const userContainer = document.getElementById('user-list-container');
+            userContainer.innerHTML = '';
+        }
+    };
+}
+
+
 
 /* function registerUser() {
         fetch('http://127.0.0.1:8000/api/register', {
