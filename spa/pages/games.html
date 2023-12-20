@@ -22,23 +22,33 @@
             <div class="board-template">
                 <h2 style="color: #5D1D88; font-size: 40px;"> choose game !</h2>
                 <div class="board">
-                    <a href="" onclick="event.preventDefault(); renderPage('pong-time')"><img src="img/pong-img.jpg" alt="Pong Logo" ></a>
-                    <a href="" class="question-mark"><img src="img/question-mark-new.png" alt="question-mark"></a>
-                    <a href="" class="pong-logo-link"><img src="img/yazi-tura.jpg" alt="Pong Logo"></a>
+					<div class="touch-box">
+						<a href="" onclick="event.preventDefault(); renderPage('pong-time')">
+							<img src="img/pong-game.png" alt="Pong Game" style="width: 163px; height: 181px;">
+						</a>
+					</div>
+                    <a href="" style="cursor: default;" class="question-mark"><img src="img/question-mark-new.png" alt="question-mark"></a>
+                    <div class="touch-box">
+						<a href="">
+							<img src="img/heads-or-tails.png" alt="Heads Or Tails" style="width: 130px; height: 176px;">
+						</a>
+					</div>
                 </div>
              </div>
         </div>
-    <div class="users-board">
-        <h3> Add Friend </h3>
-        <input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search">
-        <div class="scrollbox">
-            <div class="scrollbox-inner">
-                <ul id="user-list">
+		<div class="up-user-board">
+			<div class="users-board">
+				<h3> Add Friend </h3>
+				<input style="border-radius: 20px; padding: 3%;" type="text" placeholder="@  Search..." class="search">
+				<div class="scrollbox">
+					<div class="scrollbox-inner">
+						<ul id="user-list">
 
-                </ul>
-            </div>
-        </div>
-    </div>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <!-- Your custom JavaScript code -->

@@ -26,8 +26,8 @@ const routes = {
 		template: '/pages/games.html',
 		view: null
 	},
-	'/profile' : {
-		template: '/pages/profile.html',
+	'/my-profile' : {
+		template: '/pages/my-profile.html',
 		view: null
 	},
 	'/settings' : {
@@ -38,6 +38,34 @@ const routes = {
 		template: '/pages/login.html',
 		view: null
 	},
+	'/tournament-tables': {
+		template: '/pages/tournament-tables.html',
+		view: null
+	},
+	'/1v1match-lose-page': {
+		template: '/pages/1v1match-lose-page.html',
+		view: null
+	},
+	'/1v1match-winner-page': {
+		template: '/pages/1v1match-winner-page.html',
+		view: null
+	},
+	'/alone-tournament': {
+		template: '/pages/alone-tournament.html',
+		view: null
+	},
+	'/tournament': {
+		template: '/pages/tournament.html',
+		view: null
+	},
+	'/pong-time': {
+		template: '/pages/pong-time.html',
+		view: null
+	},
+	'/being-matchwith-nick': {
+		template: '/pages/being-matchwith-nick.html',
+		view: null
+	},
 }
 
 
@@ -46,7 +74,7 @@ const routes = {
 async function router() {
 	const route = window.location.pathname;
 	const page = routes[route];
-
+	console.log('route', route);
 	if (page) {
 		if (page.view){
 			render(page.view);
