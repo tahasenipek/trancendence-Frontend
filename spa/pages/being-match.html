@@ -10,7 +10,7 @@
         <a href="" onclick="event.preventDefault(); renderPage('games')">
                 <img src="img/game-sign.png" alt="Game Logo" class="game-logo">
         </a>
-        <a href="profile">
+        <a href="" onclick="event.preventDefault(); renderPage('profile')">
             <div style="margin-right: 80px;">
                 <img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
             </div>
@@ -22,15 +22,29 @@
         <div class="board-template">
             <h2 style="color: #5D1D88; font-size: 40px;"> 1v1 being matched... </h2>
             <div class="board">
-                <a href=""><img src="img/1v1-profile-img.jpg" alt="Pong Logo"></a>
-                <a href="" class="question-mark"><img src="img/sand-watch.jpg" alt="question-mark"></a>
-                <a href="" class="pong-logo-link"><img src="img/waiting-box.jpg" alt="Pong Logo"></a>
+				<div class="kutu">
+					<a href="" style="cursor: default;">
+						<img src="img/1v1-profile-img.png" alt="Pong Logo" style="width: 170px; height: 170px;">
+					</a>
+				</div>
+				<div class="d-flex justify-content-center">
+					<div class="spinner-border spinner-border-sm text-warning" style="width: 4rem; height: 4rem;" role="status">
+					  <span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+                <div class="kutu">
+					<div class="spinner-container">
+						<div class="spinner-grow text-dark" style="width: 1rem; height: 1rem;" role="status"></div>
+						<div class="spinner-grow text-dark" style="width: 1rem; height: 1rem;" role="status"></div>
+						<div class="spinner-grow text-dark" style="width: 1rem; height: 1rem;" role="status"></div>
+					</div>
+				</div>
             </div>
         </div>
     </div>
     <div class="users-board">
         <h3> Add Friend </h3>
-        <input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search">
+        <input style="border-radius: 20px; padding: 3%;" type="text" placeholder="@  Search..." class="search">
         <div class="scrollbox">
             <div class="scrollbox-inner">
                 <ul id="user-list"><span class="online-dot-online"></span>aoner</ul>

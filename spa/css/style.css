@@ -30,6 +30,71 @@ body {
     height: 100vh;
 }
 
+.left-side img {
+	width: 37%;
+	height: auto;
+}
+
+.dual-container {
+	display: flex;
+	align-items: center;
+    justify-content: center;
+	flex-direction: column;
+}
+
+.top-section {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.bottom-section {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.main-write {
+	padding-top: 15px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #FDB827;
+	font-size: 16px;
+	font-family: "Bai Jamjuree", sans-serif;
+	line-height: 0.3;
+}
+
+.first-line {
+    font-size: 40px; /* İlk satırın font boyutu */
+	line-height: 0.8; 
+}
+
+.person-line {
+    font-size: 18px; /* İlk satırın font boyutu */
+	line-height: 1.2; 
+}
+
+.person-line img,
+.person-line span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.inline-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.inline-text p {
+    margin-right: 26px; /* İstenilen boşluk miktarını ayarlayın */
+}
+
 .right-side {
     flex: 1;
     background-color: #fff;
@@ -207,7 +272,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 120%;
+    width: 100%;
     padding: 5%;
     background-color: #5D1D88;
     border: 1px solid #5D1D88;
@@ -234,9 +299,8 @@ body {
 }
 
 .board img {
-    width: 100%;
+    width: 70%;
     height: auto;
-    border-radius: 30px;
 }
 
 .question-mark
@@ -257,36 +321,24 @@ body {
 .users-board
 {
     display: flex;
-    height: 70%;
-    padding: 0 5% 6% 5%;
-    margin-right: 5.5%;
+    height: 90%;
+    margin-right: 60%;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    background-color: black;
+    background-color: #9A9797;
     border-radius: 40px;
-    color: white;
-	line-height: 2;
+    color: #5D1D88;
+	padding: 3% 15% 5% 15%;
+	margin-top: 30px; /* Üst kenara 20 piksel girinti ekleyin, ihtiyaca göre ayarlayabilirsiniz */
+    margin-left: 30px;
+    margin-bottom: 60px;
 }
 
-.users-board-settings
+.users-board img
 {
-    display: flex;
-    height: 70%;
-    padding: 0 5% 6% 5%;
-    margin-right: 2.5%;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    background-color: #5D1D88;
-    border-radius: 40px;
-    color: white;
-}
-
-.users-board-settings img
-{
-    width: 30%;
-    height: auto;
+	width : 55%;
+	border-radius: 50%;
 }
 
 .nick-create
@@ -588,6 +640,133 @@ thead th {
 	background-color: #d5d1defe;
 }
 
+.kutu {
+	width: 240px; /* Genişlik değeri px birimini içermelidir. */
+	height: 240px; /* Yükseklik değeri px birimini içermelidir. */
+	background-color: rgba(255, 255, 255, 0.25);
+	border-radius: 20px;
+	border: 10px solid black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white; /* Metin rengini ekledim, tamamen isteğe bağlıdır. */
+}
+
+.touch-box {
+	width: 240px; /* Genişlik değeri px birimini içermelidir. */
+	height: 240px; /* Yükseklik değeri px birimini içermelidir. */
+	background-color: rgba(255, 255, 255, 0.25);
+	border-radius: 20px;
+	border: 10px solid black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white; /* Metin rengini ekledim, tamamen isteğe bağlıdır. */
+	cursor: pointer;
+}
+
+/* Bootstrap hover ve active efektleri (Mouse sürükleyince renk değişimi) */
+.touch-box:hover,
+.touch-box:active {
+	border-color: #FDB827; 
+	box-shadow: 0 0 10px rgba(93, 29, 136, 0.8);
+}
+
+.up-user-board {
+	display: flex;
+	height: 70%;
+	padding-right: 6%;
+}
+
+.pong-logo-link {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.rounded-circle {
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.rounded-circle img {
+	width: 40px; /* İstenilen genişlik */
+	height: 40px; /* İstenilen yükseklik */
+	object-fit: cover;
+}
+
+.card {
+    position: absolute;
+    align-items: center;
+    padding: 1.5em 0.5em 0.5em;
+    text-align: center;
+    border-radius: 15px; /* Köşe yarıçapını istediğiniz değere ayarlayın */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    background-color: #808080; /* Gri rengi istediğiniz gri tonuyla değiştirin */
+	justify-content: center;
+	align-items: center;
+}
+
+.card-img-top {
+	width: 60%;
+	border-radius: 50%;
+	margin: 0 auto;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+
+.card-title {
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+.btn-primary {
+	border-radius: 2em;
+	padding: .5em 1em;
+}
+
+.profil-online {
+	font-family: "Bai Jamjuree", sans-serif;
+	align-items: center;
+}
+
+.list-group-item {
+	font-family: "Bai Jamjuree", sans-serif;
+	font-weight: bold;
+	font-size : 14px;
+}
+
+.inner-card {
+    width: 210px;
+    height: auto;
+    background-color: #D9D9D9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    border: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: black;
+    text-align: left; /* Metni sola hizala */
+	margin: 10px;
+	padding: 10px;
+}
+
+.btn-outline-warning {
+    height: 21px; /* İstenilen yüksekliği belirleyin */
+}
+
+.btn-outline-warning .btn-text {
+    font-size: 11px; /* İstenilen font büyüklüğünü belirleyin */
+    overflow: hidden; /* Metnin taşmasını önlemek için */
+    display: block; /* İçeriği blok seviyesine getirin */
+    max-width: 100%; /* İçeriği buton genişliği kadar sınırlayın */
+    min-height: 110%;
+	line-height: 0.9; /* line-height ekleyin */
+}
+
+.base-profil-line {
+	display: flex;
+}
 
 
 

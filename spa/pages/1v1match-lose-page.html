@@ -1,39 +1,40 @@
-<navbar class="navbar">
-    <div class="navbar-container">
-        <a href="" onclick="event.preventDefault(); renderPage('games')">
-            <div style="display: flex; align-items: center; margin-left: 10px;">
-                <img src="img/site-logo.png" alt="Site Logo" class="logo" width="49.17" height="37">
-                <div style="margin-right: 10px;"></div>
-                <img src="img/trancendence-logo.png" alt="Site Name" class="logo-text" width="116" height="15">
-            </div>
-        </a>
-        <a href="" onclick="event.preventDefault(); renderPage('games')">
+    <navbar class="navbar">
+        <div class="navbar-container">
+            <a href="" onclick="loadPage('games.html'); return false;">
+				<div style="display: flex; align-items: center; margin-left: 10px;">
+                	<img src="img/site-logo.png" alt="Site Logo" class="logo" width="49.17" height="37">
+					<div style="margin-right: 10px;"></div>
+					<img src="img/trancendence-logo.png" alt="Site Name" class="logo-text" width="116" height="15">
+				</div>
+            </a>
+            <a href=""onclick="loadPage('games.html'); return false;">
                 <img src="img/game-sign.png" alt="Game Logo" class="game-logo">
-        </a>
-        <a href="" onclick="event.preventDefault(); renderPage('profile')">
-            <div style="margin-right: 20px;">
-                <img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
-            </div>
-        </a>
-    </div>
-</navbar>
-<div class="games-page">
-    <div class="game-template">
-        <div class="board-template">
-            <h2 style="color: #5D1D88; font-size: 35px;"> woww, that’ll be crazy TOURNAMENT!</h2>
-            <div class="board">
-                <a href="" class="pong-logo-link"><img src="img/tournament-graph.png" alt="tournament-graph"></a>
-            </div>
-            <div class="nick-create">
-                <input type="text" id="nickname" placeholder="Nickname">
-                <button>Create</button>
-            </div>
+            </a>
+            <a href="" onclick="loadPage('profile.html'); return false;">
+				<div style="margin-right: 80px;">
+                	<img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
+				</div>
+            </a>
         </div>
-    </div>
-	<div class="up-user-board">
-		<div class="users-board">
-			<h3> Add Friend </h3>
-			<input style="border-radius: 20px; padding: 3%;" type="text" placeholder="@  Search..." class="search">
+    </navbar>
+    <div class="games-page">
+        <div class="game-template">
+            <div class="board-template">
+                <h2 style="color: #5D1D88; font-size: 35px;"> you are defeated x_x </h2>
+                <div class="board-column">
+                    <a href=""> <img src="img/sad-sign.png" width="175" height="175"></a>
+					<p class="write-caption">Winners are those who don't give up...</p>
+                </div>
+				<div class="left-right">
+					<button>a new pong again</button>
+					<div style="margin-right: 40px;"></div>
+					<button>exit</button>
+				</div>
+			</div>
+        </div>
+        <div class="users-board">
+            <h3> Add Friend </h3>
+            <input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search">
 			<div class="scrollbox">
 				<div class="scrollbox-inner">
 					<ul id="user-list"><span class="online-dot-online"></span>aoner</ul>
@@ -59,7 +60,6 @@
 					<ul id="user-list"><span class="online-dot-offline"></span>paul</ul>
 				</div>
 			</div>
-		</div>
-	</div>
-    
-</div>
+			
+        </div>
+    </div>

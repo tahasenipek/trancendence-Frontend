@@ -30,8 +30,8 @@ const routes = {
 		template: '/pages/games.html',
 		view: null
 	},
-	'/profile' : {
-		template: '/pages/profile.html',
+	'/my-profile' : {
+		template: '/pages/my-profile.html',
 		view: null
 	},
 	'/settings' : {
@@ -42,28 +42,15 @@ const routes = {
 		template: '/pages/login.html',
 		view: null
 	},
-	'/head-and-tail': {
-		template: '/pages/head_tail.html',
-		view: null
-	},
 }
 
-
-
-function checktoken() {
-	const accessToken = localStorage.getItem('token');
-	if (!accessToken) {
-		navigateTo('/login');
-		router();
-	}
-}
 
 
 
 async function router() {
 	const route = window.location.pathname;
 	const page = routes[route];
-
+	console.log('route', route);
 	if (page) {
 		if (page.view){
 			render(page.view);
