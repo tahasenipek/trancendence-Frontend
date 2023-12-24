@@ -28,23 +28,20 @@ function registerUser() {
 
 
 function loginUser() {
-
+	
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-
-    fetch('https://jsonplaceholder.typicode.com/posts', {
     if (!username || !password) {
         alert('Lütfen tüm alanları doldurun.');
         return;
     }
     fetch('http://localhost:2700/api/login', {
-        main,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            username: username,
+			username: username,
             password: password
         })
     })
@@ -69,11 +66,6 @@ function loginUser() {
         alert('Kayıt sırasında bir hata oluştu.');
     });
 }
-
-
-
-
-
 
 
 
@@ -184,6 +176,5 @@ function searchUsers() {
     .catch(error => {
         console.error('Giriş sırasında bir hata oluştu:', error);
     });
-}
-
+}*/
 

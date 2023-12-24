@@ -56,8 +56,8 @@ async function router() {
 			render(page.view);
 		}
 		else{
-			if (page.template != '/pages/login.html' && page.template != '/pages/register.html')
-				checktoken();
+			/* if (page.template != '/pages/login.html' && page.template != '/pages/register.html')
+				checktoken(); */
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
