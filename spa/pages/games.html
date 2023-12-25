@@ -22,21 +22,58 @@
             <div class="board-template">
                 <h2 style="color: #5D1D88; font-size: 40px;"> choose game !</h2>
                 <div class="board">
-                    <a href="" onclick="event.preventDefault(); renderPage('pong-time')"><img src="img/pong-img.jpg" alt="Pong Logo" ></a>
-                    <a href="" class="question-mark"><img src="img/question-mark-new.png" alt="question-mark"></a>
-                    <a href="" class="pong-logo-link"><img src="img/yazi-tura.jpg" alt="Pong Logo"></a>
+					<div class="touch-box">
+						<a href="" onclick="event.preventDefault(); renderPage('pong-time')">
+							<img src="img/pong-game.png" alt="Pong Game" style="width: 163px; height: 181px;">
+						</a>
+					</div>
+                    <a href="" style="cursor: default;" class="question-mark"><img src="img/question-mark-new.png" alt="question-mark"></a>
+                    <div class="touch-box">
+						<a href="">
+							<img src="img/heads-or-tails.png" alt="Heads Or Tails" style="width: 130px; height: 176px;">
+						</a>
+					</div>
                 </div>
              </div>
         </div>
-    <div class="users-board">
-        <h3> Add Friend </h3>
-        <input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search">
-        <div class="scrollbox">
-            <div class="scrollbox-inner">
-                <ul id="user-list">
+		<div class="up-user-board">
+			<div class="users-board">
+				<h3> Add Friend </h3>
+				<input style="border-radius: 20px; padding: 3%;" type="text" placeholder="@  Search..." class="search">
+				<div class="scrollbox">
+					<div class="scrollbox-inner">
+						<ul id="user-list">
 
-                </ul>
-            </div>
-        </div>
-    </div>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- Your custom JavaScript code -->
+<script>
+    // Assume usersData is the array of users received from your API
+    const usersData = [
+        { id: 1, username: "user1", is_online: true },
+        { id: 2, username: "user2", is_online: false },
+        // ... more user data
+    ];
+
+    // Function to dynamically render users in the HTML
+    function renderUsers(users) {
+        const userList = $("#user-list");
+        userList.empty(); // Clear previous user list
+
+        users.forEach(user => {
+            const onlineDotClass = user.is_online ? "online" : "offline";
+            const listItem = `<li><span class="online-dot-${onlineDotClass}"></span>${user.username}</li>`;
+            userList.append(listItem);
+        });
+    }
+
+    // Call the function to render users when the page loads
+    $(document).ready(function () {
+        renderUsers(usersData);
+    });
+</script>
