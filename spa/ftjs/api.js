@@ -1,10 +1,14 @@
-function registerUser() {
+/* function registerUser() {
 	const username = document.getElementById('username').value;
-	const email = document.getElementById('email').value;
 	const password = document.getElementById('password').value;
 	const confirmPassword = document.getElementById('confirmPassword').value;
 
-	fetch('https://jsonplaceholder.typicode.com/posts', {
+    if (!username || !password || password !== confirmPassword) {
+        alert('Lütfen tüm alanları doldurun ve şifreleri doğrulayın.');
+        return;
+    }
+    console.log('Kullanıcı kayıt oluyor:', username, password);
+	fetch('http://ftpong-duckdns.org/api/register', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -22,7 +26,7 @@ function registerUser() {
 	.catch(error => {
 		console.error('Kayıt sırasında bir hata oluştu:', error);
 	});
-}
+} */
 
 
 function loginUser() {
@@ -70,25 +74,23 @@ function loginUser() {
 function registerUser() {
     // Formdan verileri al
     const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
 
     // Verileri kontrol et
-    if (!username || !email || !password || password !== confirmPassword) {
+    if (!username|| !password || password !== confirmPassword) {
         alert('Lütfen tüm alanları doldurun ve şifreleri doğrulayın.');
         return;
     }
     
     // API'ye istek gönder
-    fetch('http://localhost:2700/api/register', {
+    fetch('http://ftpong.duckdns.org/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             username: username,
-            email: email,
             password: password,
         }),
     })
@@ -99,7 +101,8 @@ function registerUser() {
         return response.json(); // 404 hata sayfası yapalım ona gitsin
     })
     .then(data => {
-        if (data.success) {
+        console.log(data);
+        if (data.token) {
             alert('Kullanıcı başarıyla kaydedildi.');
             window.location.href = '/login';
         } else {    
