@@ -11,9 +11,7 @@ function registerUser() {
 		},
 		body: JSON.stringify({
 			username: username,
-			email: email,
 			password: password,
-			confirmPassword: confirmPassword
 		})
 	})
 	.then(response => response.json())
