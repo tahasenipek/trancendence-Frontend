@@ -239,7 +239,7 @@ body {
     align-items: center;
     width: 100%;
     height: 100vh; 
-   /*  overflow-y: auto; */
+    overflow-y: auto;
 }
 .game-template
 {
@@ -321,15 +321,15 @@ body {
 .users-board
 {
     display: flex;
-    height: 60%;
-    margin-right: 6%;
+    height: 90%;
+    margin-right: 5%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #9A9797;
     border-radius: 40px;
     color: #5D1D88;
-	padding: 3% 5% 5% 5%;
+	padding: 3% 5% 3% 5%;
 	margin-top: 30px; /* Üst kenara 20 piksel girinti ekleyin, ihtiyaca göre ayarlayabilirsiniz */
     margin-left: 30px;
     margin-bottom: 60px;
@@ -363,6 +363,14 @@ body {
     margin-bottom: 15px;
     font-size: 15px;
     font-family: "Bai Jamjuree", sans-serif;
+}
+
+#sadecebu
+{
+	display: grid;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
 
 .nick-create button
@@ -539,6 +547,14 @@ button:hover {
     background: #DD9D18;
     color: white;
     cursor: pointer;
+    transition: box-shadow 0.3s, background 0.1s; /* Geçiş süresini belirlemek için */
+
+    /* :hover seçici ile mouse üzerine gelindiğinde değişiklik yap */
+    &:hover {
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1) inset;
+        border: 2px solid #7E4B9B; /* Kenar kalınlığını artırmak için */
+        background: #7E4B9B; /* Hover efekti için arkaplan rengini değiştir */
+    }
 }
 
 .online-dot-online {
@@ -766,4 +782,15 @@ thead th {
 
 .base-profil-line {
 	display: flex;
+}
+
+.profile-design {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.statistics-row {
+	flex-direction: column;
 }
