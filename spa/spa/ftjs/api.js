@@ -95,14 +95,14 @@ function registerUser() {
         }),
     })
     .then(response => {
+        console.log(response);
         if (!response.ok) {
             throw new Error('Kayıt sırasında bir hata oluştu.');
         }
         return response.json(); // 404 hata sayfası yapalım ona gitsin
     })
     .then(data => {
-        console.log(data);
-        if (data.token) {
+        if (data.success) {
             alert('Kullanıcı başarıyla kaydedildi.');
             window.location.href = '/login';
         } else {    
@@ -110,7 +110,6 @@ function registerUser() {
         }
     })
     .catch(error => {
-        console.error('Hata:', error);
         alert('Kayıt sırasında bir hata oluştu.');
     });
 }

@@ -18,7 +18,7 @@ const routes = {
 		template: '/pages/register.html',
 		view: null
 	},
-	'/join-tournament': {
+	'/join-random-tournament': {
 		template: '/pages/join-random-tournament.html',
 		view: null
 	},
@@ -40,6 +40,26 @@ const routes = {
 	},
 	'/login': {
 		template: '/pages/login.html',
+		view: null
+	},
+	'/1v1match-lose-page': {
+		template: '/pages/1v1match-lose-page.html',
+		view: null
+	},
+	'/1v1match-winner-page': {
+		template: '/pages/1v1match-winner-page.html',
+		view: null
+	},
+	'/alone-tournament': {
+		template: '/pages/alone-tournament.html',
+		view: null
+	},
+	'/tournament-tables': {
+		template: '/pages/tournament-tables.html',
+		view: null
+	},
+	'/tournament': {
+		template: '/pages/tournament.html',
 		view: null
 	},
 }
