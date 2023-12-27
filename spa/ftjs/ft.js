@@ -62,6 +62,18 @@ const routes = {
 		template: '/pages/tournament.html',
 		view: null
 	},
+	'/tournament-winner-page': {
+		template: '/pages/tournament-winner-page.html',
+		view: null
+	},
+	'/tournament-waiting-page': {
+		template: '/pages/tournament-waiting-page.html',
+		view: null
+	},
+	'/tournament-lost-page': {
+		template: '/pages/tournament-lost-page.html',
+		view: null
+	},
 }
 
 
