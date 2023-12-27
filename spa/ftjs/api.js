@@ -72,19 +72,15 @@ function loginUser() {
 
 
 function registerUser() {
-    // Formdan verileri al
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-
-    // Verileri kontrol et
     if (!username|| !password || password !== confirmPassword) {
         alert('Lütfen tüm alanları doldurun ve şifreleri doğrulayın.');
         return;
     }
     
-    // API'ye istek gönder
-    fetch('http://ftpong.duckdns.org/api/register', {
+    fetch('http://127.0.0.1:2700/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -97,9 +93,9 @@ function registerUser() {
     .then(response => {
         console.log(response);
         if (!response.ok) {
-            throw new Error('Kayıt sırasında bir hata oluştu.');
+            throw new Error('Kayıt sırasında bir hata oluştu.'); // 404 hata sayfası yapalım ona gitsin
         }
-        return response.json(); // 404 hata sayfası yapalım ona gitsin
+        return response.json(); 
     })
     .then(data => {
         if (data.success) {
