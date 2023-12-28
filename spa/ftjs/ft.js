@@ -1,9 +1,10 @@
 
 const app = document.querySelector('body');
+var lang = localStorage.getItem('lang') || 'fr';
 
 const routes = {
 	'/': {
-		template: '/pages/login.html',
+		template: getTemplateByLang(lang, 'login.html'),
 		view: null
 	},
 	'/being-match': {
@@ -99,6 +100,15 @@ const routes = {
 		view: null
 	},
 }
+
+
+function getTemplateByLang(language, page) {
+	console.log('language', language);
+	console.log('page', page);
+    const folderName = (language === 'fr') ? 'pages-fr' : 'pages-tr';
+    return `/${folderName}/${page}`;
+}
+
 
 function checktoken() {
 	const accessToken = localStorage.getItem('token');
