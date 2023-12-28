@@ -1,34 +1,3 @@
-/* function registerUser() {
-	const username = document.getElementById('username').value;
-	const password = document.getElementById('password').value;
-	const confirmPassword = document.getElementById('confirmPassword').value;
-
-    if (!username || !password || password !== confirmPassword) {
-        alert('Lütfen tüm alanları doldurun ve şifreleri doğrulayın.');
-        return;
-    }
-    console.log('Kullanıcı kayıt oluyor:', username, password);
-	fetch('http://ftpong-duckdns.org/api/register', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			username: username,
-			password: password,
-		})
-	})
-	.then(response => response.json())
-	.then(data => {
-		console.log('Kayıt başarılı:', data);
-		navigateTo('/games');
-	})
-	.catch(error => {
-		console.error('Kayıt sırasında bir hata oluştu:', error);
-	});
-} */
-
-
 function loginUser() {
 	
     const username = document.getElementById('username').value;
@@ -44,14 +13,14 @@ function loginUser() {
         },
         body: JSON.stringify({
 			username: username,
-            password: password
+            password: password,
         })
     })
     .then(response => {
         if (!response.ok) {
             throw new Error('Kayıt sırasında bir hata oluştu.');
         }
-        return response.json(); // 404 hata sayfası yapalım ona gitsin
+        return response.json(); 
     })
     .then(data => {
         if (data.success) {
@@ -69,8 +38,6 @@ function loginUser() {
     });
 }
 
-
-
 function registerUser() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -80,7 +47,7 @@ function registerUser() {
         return;
     }
     
-    fetch('http://127.0.0.1:2700/api/register', {
+    fetch('http://ftpong.duckdns.org:8100/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -114,7 +81,7 @@ function registerUser() {
 
 function searchUsers() {
     var searchQuery = document.querySelector('.search').value;
-
+    
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://localhost:2700/api/search', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -149,28 +116,41 @@ function searchUsers() {
     };
 }
 
+function putTheNick() {
+    var token = localStorage.getItem('token');
+    var nickname = document.querySelector('.nickname').value;
+    
+    if (!nickname) {
+        alert('Lütfen tüm alanları doldurun.');
+        return;
+    }
+    
+    console.log(token);
+    console.log(nickname);
 
-
-/* function registerUser() {
-        fetch('http://127.0.0.1:8000/api/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),  // csrf token'ınızı alın
-            },
-            body: JSON.stringify({
-                username: username,
-                email: email,
-                password: password,
+    fetch('http://localhost:2700/api/putTheNick', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: token,
+            nickname: nickname,
         }),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
-        console.log('Giriş başarılı:', data);
-        navigateTo('/games');
+        console.log(data);
+        window.location.href = '/join-random-tournament';
+        // İsteğin başarıyla tamamlandığına dair işlemleri buraya ekleyebilirsiniz.
     })
     .catch(error => {
-        console.error('Giriş sırasında bir hata oluştu:', error);
+        console.error('There has been a problem with your fetch operation:', error);
+        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
     });
-}*/
-
+}

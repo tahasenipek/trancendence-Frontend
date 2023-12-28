@@ -1,6 +1,6 @@
 <navbar class="navbar">
     <div class="navbar-container">
-        <a href="" onclick="event.preventDefault(); renderPage('games')">
+        <a href="games">
             <div style="display: flex; align-items: center; margin-left: 10px;">
                 <img src="img/site-logo.png" alt="Site Logo" class="logo" width="49.17" height="37">
                 <div style="margin-right: 10px;"></div>
@@ -21,16 +21,16 @@
     <div class="game-template">
 		
             <div class="board-template">
-                <h2 style="color: #5D1D88; font-size: 40px;"> create or join</h2>
+                <h2 style="color: #5D1D88; font-size: 40px;"> the game time</h2>
                 <div class="board">
 					<div class="touch-box">
-						<a href="" onclick="event.preventDefault(); renderPage('being-match')">
+						<a href="being-match">
 							<img src="img/1v1random.png" alt="1v1random" style="width: 124px; height: 146px;">
 						</a>
 					</div>
                     <a href="" style="cursor: default;" class="question-mark"><img src="img/question-mark-new.png" alt="question-mark"></a>
                     <div class="touch-box">
-						<a href="" onclick="event.preventDefault(); renderPage('tournament')" class="pong-logo-link">
+						<a href="tournament"class="pong-logo-link">
 							<img src="img/tournament-cup.png" alt="tournament-cup" style="width: 117px; height: 148px;">
 						</a>
 					</div>
@@ -40,30 +40,10 @@
     <div class="up-user-board">
 		<div class="users-board">
 			<h3> Add Friend </h3>
-			<input style="border-radius: 20px; padding: 3%;" type="text" placeholder="@  Search..." class="search">
+			<input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search" oninput="searchUsers();">
 			<div class="scrollbox">
-				<div class="scrollbox-inner">
-					<ul id="user-list"><span class="online-dot-online"></span>aoner</ul>
-					<ul id="user-list"><span class="online-dot-online"></span>buozdemi</ul>
-					<ul id="user-list"><span class="online-dot-online"></span>msenipek</ul>
-					<ul id="user-list"><span class="online-dot-online"></span>nkahrima</ul>
-					<ul id="user-list"><span class="online-dot-online"></span>ialgac</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>jennifer</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>michael</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>george</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>brad</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>leonardo</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>fred</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>denwill</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>mason</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>liam</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>sophie</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>emma</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>clooney</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>xavier</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>abraham</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>ilasic</ul>
-					<ul id="user-list"><span class="online-dot-offline"></span>paul</ul>
+				<div class="scrollbox-inner" id="user-list-container">
+					
 				</div>
 			</div>
 		</div>

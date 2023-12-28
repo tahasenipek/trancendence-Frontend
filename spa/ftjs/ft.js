@@ -74,8 +74,61 @@ const routes = {
 		template: '/pages/tournament-lost-page.html',
 		view: null
 	},
+	'/head-and-tail': {
+		template: '/pages/head_tail.html',
+		view: null
+	},
+	'/pong-time': {
+		template: '/pages/pong-time.html',
+		view: null
+	},
+	'/tournament': {
+		template: '/pages/tournament.html',
+		view: null
+	},
+	'/create-tournament': {
+		template: '/pages/create-tournament.html',
+		view: null
+	},
+	'/join-random-tournament': {
+		template: '/pages/join-random-tournament.html',
+		view: null
+	},
 }
 
+function checktoken() {
+	const accessToken = localStorage.getItem('token');
+	if (!accessToken) {
+		navigateTo('/login');
+		router();
+	}
+}
+
+function pageControl(page) {
+
+	console.log('new', page.template);
+	
+}
+
+
+function frienduser() {
+
+	console.log('window.location.pathname', window.location.pathname);
+
+	if (window.location.pathname != '/' && window.location.pathname != '/register' && window.location.pathname != '/login');
+	{	
+		var searchInput = document.querySelector('.search').value.toLowerCase();
+
+		if (searchInput && searchInput === "") {
+			const userContainer = document.getElementById('user-list-container');
+			userContainer.innerHTML = '<ul><span class="online-dot-online"></span>Online</ul>';
+			userContainer.innerHTML += '<ul><span class="online-dot-offline"></span>Offline</ul>';
+			return;
+		}
+		else
+			return;
+	}
+}
 
 
 
@@ -88,8 +141,9 @@ async function router() {
 			render(page.view);
 		}
 		else{
-			/* if (page.template != '/pages/login.html' && page.template != '/pages/register.html')
-				checktoken(); */
+			console.log('fetching', page.template);
+			if (page.template != '/pages/login.html' && page.template != '/pages/register.html')
+				checktoken();
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
@@ -133,6 +187,7 @@ document.addEventListener('click', function(event) {
 
 window.addEventListener('load', function(event) {
 	init();
+	//frienduser();
 	event.preventDefault();
 	router();
 });
@@ -161,48 +216,6 @@ function init() {
 		});
 	}
 }
-
-
-
-/* 
-
-function tag(name, ...children) {
-    const result = document.createElement(name);
-    for (const child of children) {
-        if (typeof(child) === 'string') {
-            result.appendChild(document.createTextNode(child));
-        } else {
-            result.appendChild(child);
-        }
-    }
-
-    result.att$ = function(name, value) {
-        this.setAttribute(name, value);
-        return this;
-    };
-
-    result.onclick$ = function(callback) {
-        this.onclick = callback;
-        return this;
-    };
-
-    return result;
-}
-
-
-const MUNDANE_TAGS = ["canvas", "h1", "h2", "h3", "p", "a", "div", "span", "select"];
-for (let tagName of MUNDANE_TAGS) {
-    window[tagName] = (...children) => tag(tagName, ...children);
-}
-
-function img(src) {
-    return tag("img").att$("src", src);
-}
-
-function input(type) {
-    return tag("input").att$("type", type);
-}
- */
 
 
 
@@ -252,8 +265,6 @@ async function selectOption(optionNumber) {
 
     }
 }
-
-
 
 
 function flashAnimation(element, duration) {

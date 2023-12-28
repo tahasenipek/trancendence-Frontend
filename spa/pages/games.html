@@ -1,6 +1,6 @@
 <navbar class="navbar">
     <div class="navbar-container">
-        <a href="" onclick="event.preventDefault(); renderPage('games')">
+        <a href="games">
             <div style="display: flex; align-items: center; margin-left: 10px;">
                 <img src="img/site-logo.png" alt="Site Logo" class="logo" width="49.17" height="37">
                 <div style="margin-right: 10px;"></div>
@@ -23,13 +23,13 @@
                 <h2 style="color: #5D1D88; font-size: 40px;"> choose game !</h2>
                 <div class="board">
 					<div class="touch-box">
-						<a href="" onclick="event.preventDefault(); renderPage('pong-time')">
+						<a href="pong-time">
 							<img src="img/pong-game.png" alt="Pong Game" style="width: 163px; height: 181px;">
 						</a>
 					</div>
                     <a href="" style="cursor: default;" class="question-mark"><img src="img/question-mark-new.png" alt="question-mark"></a>
                     <div class="touch-box">
-						<a href="">
+						<a href="head-and-tail">
 							<img src="img/heads-or-tails.png" alt="Heads Or Tails" style="width: 130px; height: 176px;">
 						</a>
 					</div>
@@ -39,59 +39,12 @@
 		<div class="up-user-board">
 			<div class="users-board">
 				<h3> Add Friend </h3>
-				<input style="border-radius: 20px; padding: 3%;" type="text" placeholder="@  Search..." class="search">
+				<input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search" oninput="searchUsers();">
 				<div class="scrollbox">
-					<div class="scrollbox-inner">
-						<ul id="user-list"><span class="online-dot-online"></span>aoner</ul>
-						<ul id="user-list"><span class="online-dot-online"></span>buozdemi</ul>
-						<ul id="user-list"><span class="online-dot-online"></span>msenipek</ul>
-						<ul id="user-list"><span class="online-dot-online"></span>nkahrima</ul>
-						<ul id="user-list"><span class="online-dot-online"></span>ialgac</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>jennifer</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>michael</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>george</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>brad</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>leonardo</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>fred</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>denwill</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>mason</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>liam</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>sophie</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>emma</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>clooney</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>xavier</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>abraham</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>ilasic</ul>
-						<ul id="user-list"><span class="online-dot-offline"></span>paul</ul>
+					<div class="scrollbox-inner" id="user-list-container">
+
 					</div>
 				</div>
 			</div>
 		</div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<!-- Your custom JavaScript code -->
-<script>
-    // Assume usersData is the array of users received from your API
-    const usersData = [
-        { id: 1, username: "user1", is_online: true },
-        { id: 2, username: "user2", is_online: false },
-        // ... more user data
-    ];
-
-    // Function to dynamically render users in the HTML
-    function renderUsers(users) {
-        const userList = $("#user-list");
-        userList.empty(); // Clear previous user list
-
-        users.forEach(user => {
-            const onlineDotClass = user.is_online ? "online" : "offline";
-            const listItem = `<li><span class="online-dot-${onlineDotClass}"></span>${user.username}</li>`;
-            userList.append(listItem);
-        });
-    }
-
-    // Call the function to render users when the page loads
-    $(document).ready(function () {
-        renderUsers(usersData);
-    });
-</script>
