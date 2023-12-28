@@ -6,11 +6,13 @@
 			</div>
 			<div class="bottom-section">
 				<div class="main-write">
-					<p class="first-line">Bon retour,</p>
-                    <p>Il y a 2 jeux sur le site. L’un est un jeu de pong rétro de 1972</p>
-                    <p>et l’autre est un jeu de tirage au sort. Le projet a été développé par les</p>
-					<p>premiers étudiants de l'Ecole 42 Istanbul. S'il vous plaît, laissez-leur un</p>
-                    <p>petit pourboire, car vous êtes un Français respectable. </p>
+					<p class="first-line">Hoş geldin yabancı,</p>
+					<p>Çok bir şey yok, 2 tane oyun var. Biri taş devrinden</p>
+					<p>kalma retro bi pong oyunu, öteki de yazı-tura oyunu sanki
+					<p>1 liran bile yokmuş gibi. Site Ecole 42 Istanbul'un</p>
+					<p>ilk öğrencileri tarafından Final projesi olarak üretilmiştir.</p>
+					<p>Peki aşağıdakilerden developerlardan</p>
+					<p>hangisi daha delikanlıdır?</p>
 					<div class="inline-text">
 						<p class="person-line">
 							<span class="rounded-circle">
@@ -57,20 +59,15 @@
     <div class="right-side">
         <div class="content">
             <div class="input-container">
-                <h1 style="color: #FDB827;">salut mon pote,</h1>
-                <p style="color: #000">connectez-vous à votre compte</p>
-                <form id="loginUser" class="input-form-container"></form>
+                <h1 style="color: #FDB827;">merhaba,</h1>
+                <p style="color: #000">yeni hesap oluştur</p>
+                <form id="registrationForm" class="input-form-container">
                     <input type="text" id="username" placeholder="Username" required>
-                    <input type="password" id="password" placeholder="Password" required> 
-                    <button type="button"  onclick="loginUser()">Se connecter</button>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                    <button type="button" onclick="registerUser()">kayıt ol</button>
                 </form>
-                <p style="color: #FDB827;"> ou </p>
-                <a href="img/42account.png" target="_blank" >
-                <img src="img/42account.png" alt="42-logo" width="174" height="76">
-                </a>
-                <p style="margin-bottom: 10%; color: rgba(0, 0, 0, 0.50);"> Créer un nouvel utilisateur?
-                    <a style="color: #FDB827;" href="/register"> REGISTRE</a>
-                </p>
+                <p style="margin-bottom: 10%; color: rgba(0, 0, 0, 0.50);">Zaten üye misin? <a style="color: #FDB827;"  href="/login">GİRİŞ YAP</a></p>
             </div>
         </div>
     </div>

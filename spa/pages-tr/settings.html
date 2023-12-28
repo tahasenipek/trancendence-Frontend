@@ -1,0 +1,49 @@
+<navbar class="navbar">
+    <div class="navbar-container">
+        <a href="games">
+            <div style="display: flex; align-items: center; margin-left: 10px;">
+                <img src="img/site-logo.png" alt="Site Logo" class="logo" width="49.17" height="37">
+                <div style="margin-right: 10px;"></div>
+                <img src="img/trancendence-logo.png" alt="Site Name" class="logo-text" width="116" height="15">
+            </div>
+        </a>
+        <a href="games">
+                <img src="img/game-sign.png" alt="Game Logo" class="game-logo">
+        </a>
+        <a href="my-profile">
+            <div style="margin-right: 20px;">
+                <img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
+            </div>
+        </a>
+    </div>
+</navbar>
+<div class="games-page">
+    <div class="game-template">
+        <div class="user-settings-box">
+            <h1 style="color: #FDB827;">profili düzenle,</h1>
+            <form id="user-settings-form" class="user-settings-form">
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" placeholder="Enter username">
+            
+            <label for="email">E-Posta:</label>
+            <input type="email" id="email" name="email" placeholder="Enter email">
+            
+            <label for="password">Parola:</label>
+            <input type="password" id="password" name="password" placeholder="Enter password">
+            
+            <label for="language">Dil:</label>
+            <select id="language" name="language">
+            <option value="english">İngilizce</option>
+            <option value="turkish">Türkçe</option>
+            <option value="french">Fransızca</option>
+            </select>
+            <button class ="settings-button" type="button" >Kaydet</button>
+            </form>
+        </div>
+    </div>
+    <div class="users-board-settings">
+        <h3> Profil Fotoğrafı </h3>
+        <img src="img/profile-img.jpg" alt="Pong Logo" class="profile-img">
+        <input type="file" id="file">
+    </div>
+</div>
