@@ -1,0 +1,56 @@
+<navbar class="navbar">
+    <div class="navbar-container">
+        <a href="games">
+            <div style="display: flex; align-items: center; margin-left: 10px;">
+                <img src="img/site-logo.png" alt="Site Logo" class="logo" width="49.17" height="37">
+                <div style="margin-right: 10px;"></div>
+                <img src="img/trancendence-logo.png" alt="Site Name" class="logo-text" width="116" height="15">
+            </div>
+        </a>
+        <a href="games">
+                <img src="img/game-sign.png" alt="Game Logo" class="game-logo">
+        </a>
+        <a href="my-profile">
+            <div style="margin-right: 20px;">
+                <img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
+            </div>
+        </a>
+    </div>
+</navbar>
+<div class="games-page">
+    <div class="game-template">
+        <div class="board-template">
+            <h2 style="color: #5D1D88; font-size: 40px;"> 1v1 maç eşleştiriliyor... </h2>
+            <div class="board">
+				<div class="kutu">
+					<a href="" style="cursor: default;">
+						<img src="img/1v1-profile-img.png" alt="Pong Logo" style="width: 170px; height: 170px;">
+					</a>
+				</div>
+				<div class="d-flex justify-content-center">
+					<div class="spinner-border spinner-border-sm text-warning" style="width: 4rem; height: 4rem;" role="status">
+					  <span class="visually-hidden">Yükleniyor, sabret biraz...</span>
+					</div>
+				</div>
+                <div class="kutu">
+					<div class="spinner-container">
+						<div class="spinner-grow text-dark" style="width: 1rem; height: 1rem;" role="status"></div>
+						<div class="spinner-grow text-dark" style="width: 1rem; height: 1rem;" role="status"></div>
+						<div class="spinner-grow text-dark" style="width: 1rem; height: 1rem;" role="status"></div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+	<div class="up-user-board">
+		<div class="users-board">
+			<h3> Tost Ekle </h3>
+			<input style="border-radius: 20px; padding: 5%;" type="text" placeholder="@  Search..." class="search" oninput="searchUsers();">
+			<div class="scrollbox">
+				<div class="scrollbox-inner" id="user-list-container">
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
