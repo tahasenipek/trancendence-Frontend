@@ -81,39 +81,66 @@ function registerUser() {
 
 function searchUsers() {
     var searchQuery = document.querySelector('.search').value;
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:2700/api/search', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
 
-    xhr.send(JSON.stringify({
-        searchQuery: searchQuery
-    }));
-    xhr.onreadystatechange = function () {
-       
-        if (xhr.readyState == 4 && xhr.status == 200) 
-        {
-            const responseData = JSON.parse(xhr.responseText);
-            if (responseData.success) {
-                const userContainer = document.getElementById('user-list-container');
-                userContainer.innerHTML = '';
-                const match_users = responseData.users;
-                match_users.forEach(function(user) {
-                    userContainer.innerHTML += '<ul>';
-                    userContainer.innerHTML += '<span class="online-dot-online"></span>';
-                    userContainer.innerHTML += user.username;
-                    userContainer.innerHTML += '</ul>';
-                });
-                            
-            } else {
-                alert('Kullanıcı aranırken bir hata oluştu.');
-            }
+    fetch('http://localhost:2700/api/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            searchQuery: searchQuery
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const userContainer = document.getElementById('user-list-container');
+        userContainer.innerHTML = '';
+
+        if (data.success) {
+            const match_users = data.users;
+            console.log(match_users);
+            match_users.forEach(function(user) {
+                userContainer.innerHTML += '<ul>';
+                userContainer.innerHTML += '<span class="online-dot-' + (user.online_status ? 'online' : 'offline') + '"></span>';
+                userContainer.innerHTML += user.username;
+                userContainer.innerHTML += '</ul>';
+            });
+        } else {
+            alert('Kullanıcı aranırken bir hata oluştu.');
         }
-        else if (xhr.readyState == 4 && xhr.status == 201) {
+    })
+    .catch(error => {
+        console.error('Error searching users:', error);
+    });
+}
+
+function fetchFriendsList(){
+
+    fetch('http://localhost:2700/api/friendlist', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+	.then(response => response.json())
+	.then(data => {
+        if (data.success) {
             const userContainer = document.getElementById('user-list-container');
             userContainer.innerHTML = '';
+            const friends = data.friends;
+            if(friends.length != 0){
+                friends.forEach(function(friend) {
+                    userContainer.innerHTML += '<ul>';
+                    userContainer.innerHTML += '<span class="online-dot-' + (friend.online_status ? 'online' : 'offline') + '"></span>';
+                    userContainer.innerHTML += friend.username;
+                    userContainer.innerHTML += '</ul>';
+                });
+            }
         }
-    };
+	})
+	.catch(error => {
+		console.error('Error fetching friends list:', error);
+	});
 }
 
 function putTheNick() {
@@ -152,5 +179,91 @@ function putTheNick() {
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
         // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
+    });
+}
+
+
+
+
+function refreshUserList() {
+
+    const userContainer = document.getElementById('user-list-container');
+
+    if (userContainer) {
+        console.log('refreshing user list');
+        if (userContainer.innerHTML != '') {
+            return;
+        }
+        else
+            fetchFriendsList()
+    }
+}
+
+function beingMatch() {
+
+    if (window.location.pathname == '/being-match')
+    {
+        var token = localStorage.getItem('token');
+        fetch('http://localhost:2700/api/beingMatch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                token: token,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(data);
+                if(data.matched){
+                    window.location.href = '/game';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching friends list:', error);
+        });
+    }
+}
+
+setInterval(beingMatch, 5000);
+setInterval(refreshUserList, 3000);
+
+
+
+function submitForm()
+{
+    const form = document.getElementById('user-settings-form');
+    const formusername = document.getElementById('username').value;
+    const formpassword = document.getElementById('password').value;
+    const formconfirmPassword = document.getElementById('confirmpassword').value;
+    const language = document.getElementById('language').value;
+
+    if (formpassword !== formconfirmPassword) {
+        alert('Lütfen şifreleri doğrulayın.');
+        return;
+    }
+
+    fetch('http://localhost:2700/api/update-profile', {
+        method: 'PUT',
+        body: {
+
+            username: formusername,
+            password: formpassword,
+            language: language,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Profile updated successfully');
+        } else {
+            alert('Error updating profile: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating profile:', error);
     });
 }
