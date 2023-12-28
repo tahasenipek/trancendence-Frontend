@@ -1,6 +1,6 @@
 
 const app = document.querySelector('body');
-var lang = localStorage.getItem('lang') || 'fr';
+var lang = localStorage.getItem('lang') || 'en';
 
 const routes = {
 	'/': {
@@ -105,7 +105,7 @@ const routes = {
 function getTemplateByLang(language, page) {
 	console.log('language', language);
 	console.log('page', page);
-    const folderName = (language === 'fr') ? 'pages-fr' : 'pages-tr';
+    const folderName = (language === 'fr') ? 'pages-fr' : (language === 'en') ? 'pages' : 'pages-tr';
     return `/${folderName}/${page}`;
 }
 
