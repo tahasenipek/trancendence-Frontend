@@ -75,7 +75,7 @@ const routes = {
 		template: '/pages/tournament-lost-page.html',
 		view: null
 	},
-	'/head-and-tail': {
+	'/head-tail': {
 		template: '/pages/head_tail.html',
 		view: null
 	},
@@ -251,18 +251,18 @@ async function selectOption(optionNumber) {
 		if (i % 2 == 0)
 		{
 		 	await sleep(1000);
-			option.innerHTML = '<a href="" ><img style="width: 100px; justify-content: center;" src="img/head.png" alt="Pong Logo" > </a>'
+			option.innerHTML = '<a href="" ><img style="width: 100px; justify-content: center;" src="img/ataturk.png" alt="Mustafa Kemal Atatürk" > </a>'
 			await sleep(1000);
 			option.innerHTML = '';
 		}
 		else
 		{
 			await sleep(1000);
-			option.innerHTML = '<a href="" class="pong-logo-link"><img style="width: 100px;" src="img/tail.png" alt="Pong Logo"></a>'
+			option.innerHTML = '<a href="" class="pong-logo-link"><img style="width: 100px;" src="img/cash-1.png" alt="cash-1"></a>'
 			await sleep(1000);
 			option.innerHTML = '';
 			await sleep(1000);
-			option.innerHTML = '<a href="" class="pong-logo-link"><img style="width: 100px;" src="img/tail.png" alt="Pong Logo"></a>'
+			option.innerHTML = '<a href="" class="pong-logo-link"><img style="width: 100px;" src="img/cash-1.png" alt="cash-1"></a>'
 		}
 	}
 
@@ -271,10 +271,10 @@ async function selectOption(optionNumber) {
 
     // Eğer kullanıcının seçtiğiyle aynıysa, seçtiği yazı veya tura resmini göster
     if (randomOption === optionNumber) {
-		option.innerHTML = '<a href="" class="pong-logo-link"><img src="img/1v1-win-sign" alt="Pong Logo"></a>'
+		option.innerHTML = '<a href="" class="pong-logo-link"><img src="img/1v1-win-sign.png" alt="Pong Logo"></a>'
         // Örneğin, bu kısımda başka bir animasyon veya gösterme işlemi yapabilirsiniz
     } else {
-		option.innerHTML = '<div class="board-member-head" id ="head-option-atıs">' +' <a href="" class="pong-logo-link"><img src="img/launch" alt="Pong Logo"></a>'
+		option.innerHTML = '<div class="board-member-head" id ="head-option-atıs">' +' <a href="" class="pong-logo-link"><img src="img/sad-sign.png" alt="sad-sign"></a>'
 		+ '</div>' + '<div> Kaybettin  </div>'
 
     }
