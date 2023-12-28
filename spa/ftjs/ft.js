@@ -94,6 +94,10 @@ const routes = {
 		template: '/pages/join-random-tournament.html',
 		view: null
 	},
+	'/alone-tournament': {
+		template: '/pages/alone-tournament.html',
+		view: null
+	},
 }
 
 function checktoken() {
