@@ -715,28 +715,36 @@ thead th {
 	object-fit: cover;
 }
 
-.card {
-    position: absolute;
+.cardy {
+    display: flex;
     align-items: center;
     padding: 1.5em 0.5em 0.5em;
     text-align: center;
-    border-radius: 15px; /* Köşe yarıçapını istediğiniz değere ayarlayın */
+	flex-direction: column;
+    border-radius: 25px; /* Köşe yarıçapını istediğiniz değere ayarlayın */
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    background-color: #808080; /* Gri rengi istediğiniz gri tonuyla değiştirin */
+    background-color: #9A9797; /* Gri rengi istediğiniz gri tonuyla değiştirin */
 	justify-content: center;
 	align-items: center;
+	padding: 3% 5% 3% 5%;
+	margin-top: 30px; /* Üst kenara 20 piksel girinti ekleyin, ihtiyaca göre ayarlayabilirsiniz */
+    margin-left: 30px;
+    margin-bottom: 60px;
 }
 
-.card-img-top {
-	width: 60%;
-	border-radius: 50%;
-	margin: 0 auto;
-	box-shadow: 0 0 10px rgba(0, 0, 0, .2);
-}
+
 
 .card-title {
 	font-weight: bold;
-	font-size: 1.5em;
+	font-size: 1.1em;
+}
+
+.cardy-middle {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	line-height: 30px;
 }
 
 .btn-primary {
@@ -769,6 +777,7 @@ thead th {
     text-align: left; /* Metni sola hizala */
 	margin: 10px;
 	padding: 10px;
+	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 
 .btn-outline-warning {
@@ -788,13 +797,6 @@ thead th {
 	display: flex;
 }
 
-.profile-design {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-}
-
 .statistics-row {
 	flex-direction: column;
 }
@@ -805,4 +807,72 @@ thead th {
     margin: auto; /* Metni dikeyde ortala */
     /* İhtiyaca göre diğer stil özelliklerini ekleyebilirsiniz */
 	font-size: small;
+}
+
+.genel {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+}
+
+.rounded-profile {
+	display: block; /* inline yerine block kullanılmalı */
+	border-radius: 50%;
+	border-width: 2px;
+	border-style: solid;
+	border-color: white;
+	border-image: initial;
+	overflow: hidden; /* Çerçeve dışındaki kısmı kesmek için overflow kullanılmalı */
+}
+
+.scrollable-table-container {
+	max-height: 220px;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden; /* Horizontal kaydırmayı devre dışı bırak */
+	border: 1px solid #ddd; /* Kenarlık ekleyin */
+	border-radius: 20px; /* Köşeleri oval yap */
+	margin: 3%;
+  }
+
+  .scrollable-table {
+	border-collapse: collapse;
+	width: 100%;
+	border-radius: 20px; /* Köşeleri oval yap */
+	overflow: hidden; /* İçerik köşeleri aşarsa gizle */
+  }
+
+  .scrollable-table th {
+	padding: 12px 15px;
+	border-bottom: 1px solid #ddd;
+	background-color: #f3f3f3;
+  }
+
+  .scrollable-table td {
+	padding: 12px 15px;
+	border-bottom: 1px solid #ddd;
+  }
+
+.tables {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
+.table-top-photo img {
+	display: block;
+	margin: 0 auto;
+	
+}
+
+.users-board-settings {
+	display: block;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
 }
