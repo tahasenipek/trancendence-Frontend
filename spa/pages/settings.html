@@ -30,19 +30,22 @@
                 <input type="cpassword" id="confirmpassword" name="cpassword" placeholder="Enter confirm password">
                 <label for="language">Language:</label>
                 <select id="language" name="language">
-                <option value="english">English</option>
-                <option value="turkish">Turkish</option>
+                <option value="en">English</option>
+                <option value="tr">Turkish</option>
+                <option value="fr">French</option>
                 </select>
                 <button class ="settings-button" type="button" onclick="submitForm()">Save</button>
             </form>
         </div>
     </div>
-    <div class="users-board-settings">
-        <h3> Profile İmage </h3>
-        <div class="rounded-profile">
-            <img src="img/small-user-photo.png" alt="Pong Logo" class="profile-img" width="203" height="240">
-		</div>
-        <input type="file" id="file">
-        <button class="" type="button" onclick="updatePhoto()">Upload</button> 
-    </div>
+    <form id="updateForm" enctype="multipart/form-data">
+        <div class="users-board-settings">
+            <h3>Profile Image</h3>
+            <div class="rounded-profile">
+                <img id="profile-photo" src="img/small-user-photo.png" alt="Pong Logo" class="profile-img" width="203" height="240">
+            </div>
+            <input type="file" id="file" name="file" required>
+            <button type="button" onclick="updatePhoto()">Upload</button>
+        </div>
+    </form>
 </div>

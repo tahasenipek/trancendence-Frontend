@@ -1,3 +1,5 @@
+
+
 function loginUser() {
 	
     const username = document.getElementById('username').value;
@@ -27,9 +29,11 @@ function loginUser() {
             
             const token = data.access_token;
             localStorage.setItem('token', token);
+            if (data.language)
+                localStorage.setItem('language', 'en');
             window.location.href = '/games';
         } else {    
-            alert('Kayıt sırasında bir hata oluştu.');
+            alert('Giriş sırasında bir hata oluştu.');
         }
     })
     .catch(error => {
@@ -58,7 +62,6 @@ function registerUser() {
         }),
     })
     .then(response => {
-        console.log(response);
         if (!response.ok) {
             throw new Error('Kayıt sırasında bir hata oluştu.'); // 404 hata sayfası yapalım ona gitsin
         }
@@ -98,7 +101,6 @@ function searchUsers() {
 
         if (data.success) {
             const match_users = data.users;
-            console.log(match_users);
             match_users.forEach(function(user) {
                 userContainer.innerHTML += '<ul>';
                 userContainer.innerHTML += '<span class="online-dot-' + (user.online_status ? 'online' : 'offline') + '"></span>';
@@ -152,9 +154,6 @@ function putTheNick() {
         return;
     }
     
-    console.log(token);
-    console.log(nickname);
-
     fetch('http://localhost:2700/api/putTheNick', {
         method: 'POST',
         headers: {
@@ -172,9 +171,8 @@ function putTheNick() {
         return response.json();
     })
     .then(data => {
-        console.log(data);
-        window.location.href = '/join-random-tournament';
-        // İsteğin başarıyla tamamlandığına dair işlemleri buraya ekleyebilirsiniz.
+        console.log('putthenickapi', data);
+        
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
@@ -190,7 +188,6 @@ function refreshUserList() {
     const userContainer = document.getElementById('user-list-container');
 
     if (userContainer) {
-        console.log('refreshing user list');
         if (userContainer.innerHTML != '') {
             return;
         }
@@ -235,7 +232,6 @@ setInterval(refreshUserList, 3000);
 
 function submitForm()
 {
-    const form = document.getElementById('user-settings-form');
     const formusername = document.getElementById('username').value;
     const formpassword = document.getElementById('password').value;
     const formconfirmPassword = document.getElementById('confirmpassword').value;
@@ -247,23 +243,127 @@ function submitForm()
     }
 
     fetch('http://localhost:2700/api/update-profile', {
-        method: 'PUT',
-        body: {
-
-            username: formusername,
-            password: formpassword,
-            language: language,
-        }
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+        token: localStorage.getItem('token'),
+        username: formusername,
+        password: formpassword,
+        language: language,
+    }),
     })
     .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+}
+
+function updatePhoto()
+{
+    var fileInput = document.getElementById('file');
+    var file = fileInput.files[0]; 
+    var formData = new FormData();
+
+    formData.append('token', localStorage.getItem('token'));
+    formData.append('photo', file);
+
+    fetch('http://localhost:2700/api/update-photo', {
+        method: 'PUT',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            alert('Profile updated successfully');
-        } else {
-            alert('Error updating profile: ' + data.message);
+            console.log('Success:', data);
+            getmyprofile()
+            window.location.pathname = '/settings';
         }
     })
     .catch(error => {
-        console.error('Error updating profile:', error);
+        console.error('Error:', error);
     });
+}
+
+
+function gamerequest() 
+{
+    var token = localStorage.getItem('token');
+
+
+    fetch('http://localhost:2700/api/requestgame', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: token,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => { 
+
+
+
+        // İsteğin başarıyla tamamlandığına dair işlemleri buraya ekleyebilirsiniz.
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
+    });
+
+}
+
+function getmyprofile() {
+
+	fetch('http://localhost:2700/api/my-photo', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+        }),
+	})
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }
+    )
+    .then(data => {
+        if (!data.success) {
+            return;
+        }
+        const photo = document.getElementById('profile-photo');
+        photo.src = data.photos;
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
+    });
+	/* .then(response => {
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		return response.blob();
+	})
+	.then(blob => {
+        const data = URL.createObjectURL(blob);
+		const photo = document.getElementById('profile-photo');
+		photo.src = data;
+
+		window.location.pathname == '/settings';
+	}) */
 }
