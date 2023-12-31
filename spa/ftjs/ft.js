@@ -100,6 +100,10 @@ const routes = {
 		template: getTemplateByLang(language, 'alone-tournament.html'),
 		view: null
 	},
+	'/your-profile': {
+		template: getTemplateByLang(language, 'your-profile.html'),
+		view: null
+	},
 }
 
 
@@ -118,6 +122,16 @@ function checktoken() {
 	}
 }
 
+function checkGetMyProfile(path) {
+
+	var windowPath = window.location.pathname;
+	console.log('windowPath: ' + windowPath);
+
+	if (path == '/settings')
+		getmyprofile();
+	else if (path == '/my-profile')
+		getProfile();
+}
 
 
 async function router() {
@@ -128,15 +142,10 @@ async function router() {
 			render(page.view);
 		}
 		else{
-			if (window.location.pathname != '/login' && window.location.pathname != '/register')
-				checktoken();
-			if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile')
-				getmyprofile();
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
 			render(div);
-			friendscontrol();
 		}
 	}
 	else{
@@ -145,7 +154,12 @@ async function router() {
 }
 
 function render(view) {
-  app.innerHTML = view.innerHTML;
+	app.innerHTML = view.innerHTML;
+	friendscontrol();
+	if (window.location.pathname != '/login' && window.location.pathname != '/register')
+		checktoken();
+	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile')
+		checkGetMyProfile(window.location.pathname);
 }
 
 
@@ -196,6 +210,7 @@ window.addEventListener('hashchange', function(event) {
 function friendscontrol() {
 
     const userContainer = document.getElementById('user-list-container');
+
 
     if (userContainer) {
         // userContainer bulundu, gerekli işlemleri yapabilirsiniz

@@ -116,8 +116,52 @@ function searchUsers() {
     });
 }
 
-function fetchFriendsList(){
 
+function getProfile(username) {
+
+    fetch('http://localhost:2700/api/get-profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+            username: username,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+
+            const profileImageContainer = document.getElementById('profileImageContainer');
+            const onlineStatusContainer = document.getElementById('onlineStatusContainer');
+            const usernameContainer = document.getElementById('usernameContainer');
+            const addFriendsLink = document.getElementById('addFriendsLink');
+            const settingsLink = document.getElementById('settingsLink');
+            const matchesCount = document.getElementById('matchesCount');
+            const tournamentCount = document.getElementById('tournamentCount');
+            const friendsCount = document.getElementById('friendsCount');
+
+            console.log('profile', profileImageContainer);
+
+            // Verileri yerleştirme
+            profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
+            onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+            usernameContainer.innerHTML = data.username;
+            addFriendsLink.href = ''; // Eğer bir link belirlemeniz gerekiyorsa data.username gibi bir değeri buraya ekleyebilirsiniz.
+            settingsLink.href = 'settings';
+            matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
+            tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
+            friendsCount.innerHTML = 'friends: ' + data.friends_count;
+
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching profile:', error);
+    });
+}
+
+function fetchFriendsList(){
     fetch('http://localhost:2700/api/friendlist', {
         method: 'GET',
         headers: {
@@ -131,11 +175,12 @@ function fetchFriendsList(){
             userContainer.innerHTML = '';
             const friends = data.friends;
             if(friends.length != 0){
-                friends.forEach(function(friend) {
-                    userContainer.innerHTML += '<ul>';
-                    userContainer.innerHTML += '<span class="online-dot-' + (friend.online_status ? 'online' : 'offline') + '"></span>';
-                    userContainer.innerHTML += friend.username;
-                    userContainer.innerHTML += '</ul>';
+                friends.forEach(function (friend) {
+                    const userHtml = '<ul>' +
+                                        '<span class="online-dot-' + (friend.online_status ? 'online' : 'offline') + '"></span>' +
+                                        '<a href="/your-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
+                                        '</ul>';
+                    userContainer.innerHTML += userHtml;
                 });
             }
         }
@@ -145,6 +190,8 @@ function fetchFriendsList(){
 	});
 }
 
+
+//"
 function putTheNick() {
     var token = localStorage.getItem('token');
     var nickname = document.querySelector('.nickname').value;
@@ -191,8 +238,10 @@ function refreshUserList() {
         if (userContainer.innerHTML != '') {
             return;
         }
-        else
+        else{
+            console.log('refreshing user list');
             fetchFriendsList()
+        }
     }
 }
 
@@ -254,9 +303,24 @@ function submitForm()
         language: language,
     }),
     })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            console.log('Success:', data);
+            
+            window.location.pathname = '/settings';
+        }
+    })
+    .catch(error => {
+        error => {
+            console.error('Error:', error);
+        } 
+    });
 }
 
 function updatePhoto()
@@ -343,11 +407,12 @@ function getmyprofile() {
     }
     )
     .then(data => {
-        if (!data.success) {
-            return;
-        }
+        if (data.success) {
+        const document = window.document;
         const photo = document.getElementById('profile-photo');
-        photo.src = data.photos;
+        console.log(data.photo);
+        photo.src = data.photo;
+    }
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
