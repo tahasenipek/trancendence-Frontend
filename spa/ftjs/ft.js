@@ -105,7 +105,7 @@ const routes = {
 		view: null
 	},
 	'/their-profile': {
-		template: '/pages/their-profile.html',
+		template: getTemplateByLang(language, 'their-profile.html'),
 		view: null
 	},
 }
@@ -153,6 +153,8 @@ function addfriend() {
 		// Eklenen sınıfı kaldırın
 		cardyElement.removeChild(bottomTextElement);
 	}, 3000);
+
+	addFriendRequest();
 }
 
 function removefriend() {
@@ -229,7 +231,7 @@ function checkGetMyProfile(path) {
 		getmyprofile();
 	else if (path == '/my-profile')
 		getProfile();
-	else if (path == '/your-profile')
+	else if (path == '/their-profile')
 		getProfile();
 }
 
@@ -264,7 +266,7 @@ function render(view) {
 	friendscontrol();
 	if (window.location.pathname != '/login' && window.location.pathname != '/register')
 		checktoken();
-	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/your-profile'	)
+	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/their-profile'	)
 		checkGetMyProfile(window.location.pathname);
 }
 
@@ -296,7 +298,6 @@ document.addEventListener('click', function(event) {
 
 window.addEventListener('load', function(event) {
 	init();
-	//frienduser();
 	event.preventDefault();
 	router();
 });
