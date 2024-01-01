@@ -25,10 +25,10 @@
                 <a href="" class="pong-logo-link"><img src="img/tournament-graph.png" alt="tournament-graph"></a>
             </div>
 			<div class="left-right" id="sadecebu">
-				<form method="POST"> 
-					<input type="text" class="nickname" placeholder="Nickname" required>
-					<button onclick="putTheNick()">Create</button>
-				</form>				
+				<form method="POST" onsubmit="putTheNick(event)">
+                    <input type="text" class="nickname" id="nicknameInput" placeholder="Nickname" required>
+                    <button type="submit">Create</button>
+                </form>		
 			</div>
         </div>
     </div>

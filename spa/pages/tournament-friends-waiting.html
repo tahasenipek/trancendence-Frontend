@@ -26,8 +26,10 @@
                 <a href="" class="question-mark"><img src="img/eightsome.jpg" alt="question-mark"></a>
             </div>
             <div class="nick-create">
-                <input type="text" id="nickname" placeholder=" Friend Nickname">
-                <button>invite</button>
+                <form method="POST" onsubmit="putTheNick(event)">
+                    <input type="text" id="nicknameInput" placeholder=" Friend Nickname" required>
+                    <button type="submit">invite</button>
+                </form>
             </div>
         </div>
     </div>
