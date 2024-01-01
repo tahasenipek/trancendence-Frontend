@@ -102,10 +102,12 @@ function searchUsers() {
         if (data.success) {
             const match_users = data.users;
             match_users.forEach(function(user) {
-                userContainer.innerHTML += '<ul>';
-                userContainer.innerHTML += '<span class="online-dot-' + (user.online_status ? 'online' : 'offline') + '"></span>';
-                userContainer.innerHTML += user.username;
-                userContainer.innerHTML += '</ul>';
+                const userHtml = '<ul>' +
+                '<span class="online-dot-' + (user.online_status ? 'online' : 'offline') + '"></span>' + 
+                '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + user.username + '\');">' +
+                user.username + '</a>';
+                + '</ul>';
+                userContainer.innerHTML += userHtml;
             });
         } else {
             alert('Kullanıcı aranırken bir hata oluştu.');
@@ -119,6 +121,7 @@ function searchUsers() {
 
 function getProfile(username) {
 
+    console.log(username);
     fetch('http://localhost:2700/api/get-profile', {
         method: 'POST',
         headers: {
@@ -136,26 +139,43 @@ function getProfile(username) {
             const profileImageContainer = document.getElementById('profileImageContainer');
             const onlineStatusContainer = document.getElementById('onlineStatusContainer');
             const usernameContainer = document.getElementById('usernameContainer');
-            const addFriendsLink = document.getElementById('addFriendsLink');
-            const settingsLink = document.getElementById('settingsLink');
             const matchesCount = document.getElementById('matchesCount');
             const tournamentCount = document.getElementById('tournamentCount');
             const friendsCount = document.getElementById('friendsCount');
+            const profileButtonsContainer = document.querySelector('.profile-buttons'); 
 
-
-            if (profileImageContainer)
+            console.log(data.friends);
+            if (profileImageContainer && data.friends)
+            {
+                // Verileri yerleştirme
+                console.log(data.friends);
+                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+                usernameContainer.innerHTML = data.username;
+                profileButtonsContainer.innerHTML = `
+                    <button onclick="removefriend()" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
+                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
+                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
+                tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
+                friendsCount.innerHTML = 'friends: ' + data.friends_count;
+            }
+            else if (profileImageContainer && !data.friends)
             {
                 // Verileri yerleştirme
                 profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
                 onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
-                addFriendsLink.href = ''; // Eğer bir link belirlemeniz gerekiyorsa data.username gibi bir değeri buraya ekleyebilirsiniz.
-                settingsLink.href = 'settings';
+                profileButtonsContainer.innerHTML = `
+                    <button onclick="addfriend()" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
+                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
                 matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
                 tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
                 friendsCount.innerHTML = 'friends: ' + data.friends_count;
             }
-
+            else
+            {
+                window.location.pathname = '/their-profile';
+            }
         }
     })
     .catch(error => {
@@ -180,10 +200,25 @@ function fetchFriendsList(){
                 friends.forEach(function (friend) {
                     const userHtml = '<ul>' +
                                         '<span class="online-dot-' + (friend.online_status ? 'online' : 'offline') + '"></span>' +
-                                        '<a href="/your-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
+                                        '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
                                         '</ul>';
                     userContainer.innerHTML += userHtml;
                 });
+            }
+        }
+        else if (data.success == false) {
+            const userContainer = document.getElementById('user-list-container');
+
+            var language = localStorage.getItem('language');
+           
+
+            if (language === 'en') {
+                userContainer.innerHTML = '<ul>' + 'You have no friends.' + '</ul>';
+            } else if (language === 'fr') {
+                userContainer.innerHTML = '<ul>' + 'Vous n\'avez pas d\'amis.' + '</ul>';
+            } else {
+                // Varsayılan durum veya hata durumu
+                userContainer.innerHTML = '<ul>' + 'Arkadaşın yok.' + '</ul>';
             }
         }
 	})

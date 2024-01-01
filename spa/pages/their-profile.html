@@ -19,22 +19,19 @@
 </navbar>
 <div class ="genel">
 	<div class="cardy">
-		<div class="rounded-profile">
-			<img class="" src="https://upload.wikimedia.org/wikipedia/commons/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg" alt="Card image cap" width="203" height="240">
-		</div>
+		<div class="rounded-profile" id="profileImageContainer">
+            <img class="" src="" alt="Card image cap" width="203" height="240">
+        </div>
 			<div class="cardy-middle">
-				<p class="onl-profile"><span class="online-dot-online"></span>online</p>
-				<div class="card-title">@zuckerberg</div>
+				<p class="profil-online" id="onlineStatusContainer"></p>
+				<div class="card-title" id="usernameContainer"></div>
 				<div class="profile-buttons">
-					<button onclick="addfriend()" type="button" class="btn btn-success">+add friend</button>
-					<button onclick="removefriend()" type="button" class="btn btn-danger">remove friend</button>
-					<button onclick="matchRequestFromProfile()" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
 				</div>
 			</div>
 			<div class="inner-card">
-				<p>matches :</p>
-				<p>tournaments :</p>
-				<p>friends :</p>
+				<p id="matchesCount"></p>
+				<p id="tournamentCount"></p>
+				<p id="friendsCount"></p>
 			</div>	
 	</div>
 	<div clas="tables">
@@ -113,10 +110,8 @@
 					<td>lenny</td>
 					<td>W</td>
 				</tr>
-				<!-- Diğer satırlar buraya eklenecek -->
 			</tbody>
 			</table>
 		</div>
 	</div>
-
 </div>
