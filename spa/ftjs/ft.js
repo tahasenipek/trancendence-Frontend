@@ -99,6 +99,10 @@ const routes = {
 		template: '/pages/alone-tournament.html',
 		view: null
 	},
+	'/their-profile': {
+		template: '/pages/their-profile.html',
+		view: null
+	},
 }
 
 
@@ -123,7 +127,6 @@ function pageControl(page) {
 	console.log('new', page.template);
 	
 }
-
 
 function frienduser() {
 
@@ -309,3 +312,4 @@ function fadeAnimation(element, duration) {
         element.style.opacity = 1; // Animasyon bittiğinde opaklığı geri al
     }, duration * 1000);
 }
+
