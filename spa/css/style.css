@@ -933,3 +933,49 @@ thead th {
 .cardy.match-request-from-profile {
 	border: 3px solid #5D1D88;
 } 
+
+.users-settings-photo {
+	display: block;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	text-align: center;
+}
+.users-settings-photo h3 {
+    text-align: center;
+}
+
+.users-settings-photo img {
+    width: 250px; /* Örnek bir genişlik değeri */
+    height: 250px; /* Örnek bir yükseklik değeri */
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid white; /* Çevresi beyaz kenarlık */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Dışında gri gölge */
+	display: block;
+	margin: 0 auto;
+}
+
+.users-settings-photo-upload {
+    display: block;
+    margin: 10px auto; /* İstenilen boşluk değeri ekleyebilirsiniz */
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.board-member-head {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.board-member-head a {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}

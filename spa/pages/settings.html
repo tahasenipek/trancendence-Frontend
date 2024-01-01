@@ -39,13 +39,14 @@
         </div>
     </div>
     <form id="updateForm" enctype="multipart/form-data">
-        <div class="users-board-settings">
+        <div class="users-settings-photo">
             <h3>Profile Image</h3>
-            <div class="rounded-profile">
-                <img id="profile-photo" src="img/small-user-photo.png" alt="Pong Logo" class="profile-img" width="203" height="240">
-            </div>
-            <input type="file" id="file" name="file" required>
-            <button type="button" onclick="updatePhoto()">Upload</button>
+                <img id="profile-photo" src="img/small-user-photo.png" class="profile-img">
+			</div>
+			<div class="users-settings-photo-upload">
+				<input type="file" id="file" name="file" required>
+				<button type="button" onclick="updatePhoto()">Upload</button>
+			</div>
         </div>
     </form>
 </div>

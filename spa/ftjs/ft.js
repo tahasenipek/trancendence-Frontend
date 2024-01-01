@@ -92,8 +92,8 @@ const routes = {
 		template: getTemplateByLang(language, 'create-tournament.html'),
 		view: null
 	},
-	'/join-random-tournament': {
-		template: getTemplateByLang(language, 'join-random-tournament.html'),
+	'/tournament-friends-waiting': {
+		template: getTemplateByLang(language, 'tournament-friends-waiting.html'),
 		view: null
 	},
 	'/alone-tournament': {
@@ -353,24 +353,14 @@ async function selectOption(optionNumber) {
     const option = document.getElementById('head-and-tail-board');
 
 	option.innerHTML = '';
-	for (let i = 0; i < 5; i++)
+	var brk = 0;
+	while (brk < 30)
 	{
-		if (i % 2 == 0)
-		{
-		 	await sleep(1000);
-			option.innerHTML = '<a href="" ><img style="width: 100px; justify-content: center;" src="img/ataturk.png" alt="Mustafa Kemal Atatürk" > </a>'
-			await sleep(1000);
-			option.innerHTML = '';
-		}
-		else
-		{
-			await sleep(1000);
-			option.innerHTML = '<a href="" class="pong-logo-link"><img style="width: 100px;" src="img/cash-1.png" alt="cash-1"></a>'
-			await sleep(1000);
-			option.innerHTML = '';
-			await sleep(1000);
-			option.innerHTML = '<a href="" class="pong-logo-link"><img style="width: 100px;" src="img/cash-1.png" alt="cash-1"></a>'
-		}
+		await sleep(100);
+		option.innerHTML = '<a href="" ><img style="width: 314px; height="278"; justify-content: center;" src="img/ataturk.png" alt="Mustafa Kemal Atatürk" > </a>'
+		await sleep(100);
+		option.innerHTML = '<a href="" class="pong-logo-link"><img style="width: 318px; height="290"; src="img/cash-1.png" alt="cash-1"></a>'
+		brk++;
 	}
 
     // Random olarak 1 ve 2 arasından birini seç
