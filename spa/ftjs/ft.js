@@ -132,6 +132,75 @@ function pageControl(page) {
 	
 }
 
+function addfriend() {
+	var cardyElement = document.querySelector('.cardy');
+
+	var bottomTextElement = document.createElement('div');
+    bottomTextElement.textContent = '++ Friend request sent ++';
+	bottomTextElement.style.fontSize = '14px'; // Yazıyı küçültmek için
+    bottomTextElement.style.fontFamily = 'Arial, sans-serif'; // Fontu değiştirmek için
+    bottomTextElement.style.color = "#31ff8a"; // Rengi yeşil yapmak için
+
+    cardyElement.appendChild(bottomTextElement);
+	cardyElement.classList.toggle('settings-clicked');
+	console.log('settings clicked');
+	console.log(cardyElement);
+	setTimeout(function() {
+		// Eklenen sınıfı kaldırın
+		cardyElement.classList.remove('settings-clicked');
+	}, 200);
+	setTimeout(function() {
+		// Eklenen sınıfı kaldırın
+		cardyElement.removeChild(bottomTextElement);
+	}, 3000);
+}
+
+function removefriend() {
+	var cardyElement = document.querySelector('.cardy');
+
+	var bottomTextElement = document.createElement('div');
+    bottomTextElement.textContent = '-- Removed from your friends list --';
+	bottomTextElement.style.fontSize = '14px'; // Yazıyı küçültmek için
+    bottomTextElement.style.fontFamily = 'Arial, sans-serif'; // Fontu değiştirmek için
+    bottomTextElement.style.color = "#e20000"; // Rengi yeşil yapmak için
+
+    cardyElement.appendChild(bottomTextElement);
+	cardyElement.classList.toggle('remove-friend-clicked');
+	console.log('remove friend clicked');
+	console.log(cardyElement);
+	setTimeout(function() {
+		// Eklenen sınıfı kaldırın
+		cardyElement.classList.remove('remove-friend-clicked');
+	}, 200);
+	setTimeout(function() {
+		// Eklenen sınıfı kaldırın
+		cardyElement.removeChild(bottomTextElement);
+	}, 3000);
+}
+
+function matchRequestFromProfile() {
+	var cardyElement = document.querySelector('.cardy');
+
+	var bottomTextElement = document.createElement('div');
+    bottomTextElement.textContent = '🔮 1v1 match request sent 🔮';
+	bottomTextElement.style.fontSize = '14px'; // Yazıyı küçültmek için
+    bottomTextElement.style.fontFamily = 'Arial, sans-serif'; // Fontu değiştirmek için
+    bottomTextElement.style.color = "#5D1D88"; // Rengi yeşil yapmak için
+
+    cardyElement.appendChild(bottomTextElement);
+	cardyElement.classList.toggle('match-request-from-profile');
+	console.log('match request from profile clicked');
+	console.log(cardyElement);
+	setTimeout(function() {
+		// Eklenen sınıfı kaldırın
+		cardyElement.classList.remove('match-request-from-profile');
+	}, 200);
+	setTimeout(function() {
+		// Eklenen sınıfı kaldırın
+		cardyElement.removeChild(bottomTextElement);
+	}, 3000);
+}
+
 function frienduser() {
 
 	console.log('window.location.pathname', window.location.pathname);
@@ -171,6 +240,12 @@ async function router() {
 	if (page) {
 		if (page.view){
 			render(page.view);
+		}
+		if (page.template == 'pages/their-profile.html')
+		{
+			addfriend();
+			removefriend();
+			matchRequestFromProfile();
 		}
 		else{
 			const htmls = await fetch(page.template).then(response => response.text());
