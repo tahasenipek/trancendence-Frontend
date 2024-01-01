@@ -107,8 +107,6 @@ const routes = {
 
 
 function getTemplateByLang(language, page) {
-	console.log('language', language);
-	console.log('page', page);
     const folderName = (language === 'fr') ? 'pages-fr' : (language === 'en') ? 'pages' : 'pages-tr';
     return `/${folderName}/${page}`;
 }
@@ -119,6 +117,7 @@ function checktoken() {
 	if (!accessToken) {
 		navigateTo('/login');
 		router();
+
 	}
 }
 
@@ -165,6 +164,7 @@ async function router() {
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
 			render(div);
+			friendscontrol();
 		}
 	}
 	else{
@@ -220,6 +220,22 @@ window.addEventListener('hashchange', function(event) {
 	router();
 });
 
+
+function friendscontrol() {
+
+    const userContainer = document.getElementById('user-list-container');
+
+    if (userContainer) {
+        // userContainer bulundu, gerekli işlemleri yapabilirsiniz
+        if (userContainer.children.length === 0) {
+            fetchFriendsList();
+        } else {
+            console.log('userContainer boş değil.');
+        }
+    } else {
+        console.error('user-list-container bulunamadı!');
+    }
+}
 
 
 function init() {
