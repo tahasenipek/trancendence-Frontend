@@ -1,102 +1,107 @@
 
 const app = document.querySelector('body');
-var lang = localStorage.getItem('lang') || 'en';
+var language = localStorage.getItem('language') || 'en';
+
 
 const routes = {
 	'/': {
-		template: getTemplateByLang(lang, 'login.html'),
+		template: getTemplateByLang(language, 'login.html'),
 		view: null
 	},
 	'/being-match': {
-		template: '/pages/being-match.html',
+		template: getTemplateByLang(language, 'being-match.html'),
 		view: null
 	},
 	'/create-tournament': {
-		template: '/pages/create-tournament.html',
+		template: getTemplateByLang(language, 'create-tournament.html'),
 		view: null
 	},
 	'/register': {
-		template: '/pages/register.html',
+		template: getTemplateByLang(language, 'register.html'),
 		view: null
 	},
 	'/join-random-tournament': {
-		template: '/pages/join-random-tournament.html',
+		template: getTemplateByLang(language, 'join-random-tournament.html'),
 		view: null
 	},
 	'/pong-time': {
-		template: '/pages/pong-time.html',
+		template: getTemplateByLang(language, 'pong-time.html'),
 		view: null
 	},
 	'/games' : {
-		template: '/pages/games.html',
+		template: getTemplateByLang(language, 'games.html'),
 		view: null
 	},
 	'/my-profile' : {
-		template: '/pages/my-profile.html',
+		template: getTemplateByLang(language, 'my-profile.html'),
 		view: null
 	},
 	'/settings' : {
-		template: '/pages/settings.html',
+		template: getTemplateByLang(language, 'settings.html'),
 		view: null
 	},
 	'/login': {
-		template: '/pages/login.html',
+		template: getTemplateByLang(language, 'login.html'),
 		view: null
 	},
 	'/1v1match-lose-page': {
-		template: '/pages/1v1match-lose-page.html',
+		template: getTemplateByLang(language, '1v1match-lose-page.html'),
 		view: null
 	},
 	'/1v1match-winner-page': {
-		template: '/pages/1v1match-winner-page.html',
+		template: getTemplateByLang(language, '1v1match-winner-page.html'),
 		view: null
 	},
 	'/alone-tournament': {
-		template: '/pages/alone-tournament.html',
+		template: getTemplateByLang(language, 'alone-tournament.html'),
 		view: null
 	},
 	'/tournament-tables': {
-		template: '/pages/tournament-tables.html',
+		template: getTemplateByLang(language, 'tournament-tables.html'),
 		view: null
 	},
 	'/tournament': {
-		template: '/pages/tournament.html',
+		template: getTemplateByLang(language, 'tournament.html'),
 		view: null
 	},
 	'/tournament-winner-page': {
-		template: '/pages/tournament-winner-page.html',
+		template: getTemplateByLang(language, 'tournament-winner-page.html'),
 		view: null
 	},
 	'/tournament-waiting-page': {
-		template: '/pages/tournament-waiting-page.html',
+		template: getTemplateByLang(language, 'tournament-waiting-page.html'),
 		view: null
 	},
 	'/tournament-lost-page': {
-		template: '/pages/tournament-lost-page.html',
+		template: getTemplateByLang(language, 'tournament-lost-page.html'),
 		view: null
 	},
-	'/head-tail': {
-		template: '/pages/head_tail.html',
+	'/head-and-tail': {
+		template: getTemplateByLang(language, 'head-and-tail.html'),
 		view: null
 	},
 	'/pong-time': {
-		template: '/pages/pong-time.html',
+		template: getTemplateByLang(language, 'pong-time.html'),
 		view: null
 	},
 	'/tournament': {
-		template: '/pages/tournament.html',
+		template: getTemplateByLang(language, 'tournament.html'),
 		view: null
 	},
 	'/create-tournament': {
-		template: '/pages/create-tournament.html',
+		template: getTemplateByLang(language, 'create-tournament.html'),
 		view: null
 	},
 	'/join-random-tournament': {
-		template: '/pages/join-random-tournament.html',
+		template: getTemplateByLang(language, 'join-random-tournament.html'),
 		view: null
 	},
 	'/alone-tournament': {
-		template: '/pages/alone-tournament.html',
+		template: getTemplateByLang(language, 'alone-tournament.html'),
+		view: null
+	},
+	'/your-profile': {
+		template: getTemplateByLang(language, 'your-profile.html'),
 		view: null
 	},
 	'/their-profile': {
@@ -107,7 +112,7 @@ const routes = {
 
 
 function getTemplateByLang(language, page) {
-    const folderName = (language === 'fr') ? 'pages-fr' : (language === 'en') ? 'pages' : 'pages-tr';
+    const folderName = (language === 'fr') ? 'pages-fr' : (language === 'tr') ? 'pages-tr' : 'pages';
     return `/${folderName}/${page}`;
 }
 
@@ -146,25 +151,32 @@ function frienduser() {
 	}
 }
 
+function checkGetMyProfile(path) {
+
+	var windowPath = window.location.pathname;
+	console.log('windowPath: ' + windowPath);
+
+	if (path == '/settings')
+		getmyprofile();
+	else if (path == '/my-profile')
+		getProfile();
+	else if (path == '/your-profile')
+		getProfile();
+}
 
 
 async function router() {
 	const route = window.location.pathname;
 	const page = routes[route];
-	console.log('route', route);
 	if (page) {
 		if (page.view){
 			render(page.view);
 		}
 		else{
-			console.log('fetching', page.template);
-			if (page.template != '/pages/login.html' && page.template != '/pages/register.html')
-				checktoken();
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
 			render(div);
-			friendscontrol();
 		}
 	}
 	else{
@@ -173,7 +185,12 @@ async function router() {
 }
 
 function render(view) {
-  app.innerHTML = view.innerHTML;
+	app.innerHTML = view.innerHTML;
+	friendscontrol();
+	if (window.location.pathname != '/login' && window.location.pathname != '/register')
+		checktoken();
+	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/your-profile'	)
+		checkGetMyProfile(window.location.pathname);
 }
 
 
@@ -225,25 +242,24 @@ function friendscontrol() {
 
     const userContainer = document.getElementById('user-list-container');
 
+
     if (userContainer) {
         // userContainer bulundu, gerekli işlemleri yapabilirsiniz
         if (userContainer.children.length === 0) {
             fetchFriendsList();
         } else {
-            console.log('userContainer boş değil.');
+            return;
         }
     } else {
-        console.error('user-list-container bulunamadı!');
+        return;
     }
 }
-
 
 function init() {
 
 	const links = document.querySelectorAll('[data-link]');
 	for (let link of links) {
 		link.addEventListener('click', function(event) {
-			console.log('link clicked');
 			event.preventDefault();
 			navigateTo(link.href);
 		});
@@ -258,15 +274,12 @@ function sleep(ms) {
 
 
 async function selectOption(optionNumber) {
-    console.log('Seçilen seçenek:', optionNumber);
 
     const option = document.getElementById('head-and-tail-board');
 
-	console.log(option);
 	option.innerHTML = '';
 	for (let i = 0; i < 5; i++)
 	{
-		console.log(i);
 		if (i % 2 == 0)
 		{
 		 	await sleep(1000);
