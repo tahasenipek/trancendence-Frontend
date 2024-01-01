@@ -142,17 +142,19 @@ function getProfile(username) {
             const tournamentCount = document.getElementById('tournamentCount');
             const friendsCount = document.getElementById('friendsCount');
 
-            console.log('profile', profileImageContainer);
 
-            // Verileri yerleştirme
-            profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
-            onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
-            usernameContainer.innerHTML = data.username;
-            addFriendsLink.href = ''; // Eğer bir link belirlemeniz gerekiyorsa data.username gibi bir değeri buraya ekleyebilirsiniz.
-            settingsLink.href = 'settings';
-            matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
-            tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
-            friendsCount.innerHTML = 'friends: ' + data.friends_count;
+            if (profileImageContainer)
+            {
+                // Verileri yerleştirme
+                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+                usernameContainer.innerHTML = data.username;
+                addFriendsLink.href = ''; // Eğer bir link belirlemeniz gerekiyorsa data.username gibi bir değeri buraya ekleyebilirsiniz.
+                settingsLink.href = 'settings';
+                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
+                tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
+                friendsCount.innerHTML = 'friends: ' + data.friends_count;
+            }
 
         }
     })

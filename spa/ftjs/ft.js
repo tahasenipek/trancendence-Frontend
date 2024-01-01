@@ -131,6 +131,8 @@ function checkGetMyProfile(path) {
 		getmyprofile();
 	else if (path == '/my-profile')
 		getProfile();
+	else if (path == '/your-profile')
+		getProfile();
 }
 
 
@@ -158,7 +160,7 @@ function render(view) {
 	friendscontrol();
 	if (window.location.pathname != '/login' && window.location.pathname != '/register')
 		checktoken();
-	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile')
+	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/your-profile'	)
 		checkGetMyProfile(window.location.pathname);
 }
 
