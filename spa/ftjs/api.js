@@ -229,15 +229,13 @@ function fetchFriendsList(){
 
 
 //"
-function putTheNick() {
+function putTheNick(event) {
+
+    event.preventDefault();
+
     var token = localStorage.getItem('token');
-    var nickname = document.querySelector('.nickname').value;
-    
-    if (!nickname) {
-        alert('Lütfen tüm alanları doldurun.');
-        return;
-    }
-    
+    var nickname = document.getElementById('nicknameInput').value;
+
     fetch('http://localhost:2700/api/putTheNick', {
         method: 'POST',
         headers: {
@@ -255,7 +253,13 @@ function putTheNick() {
         return response.json();
     })
     .then(data => {
-        console.log('putthenickapi', data);
+        if (data.success) {
+            console.log('int', data.int);
+            if (data.int != 4)
+                window.location.pathname = '/tournament-friends-waiting';
+            else if (data.int == 4)
+                window.location.pathname = '/tournament';
+        }
         
     })
     .catch(error => {
@@ -311,8 +315,47 @@ function beingMatch() {
     }
 }
 
+function startTournament() {
+
+    var token = localStorage.getItem('token');
+    fetch('http://localhost:2700/api/startTournament', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: token,
+        }),
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            if (data.tournament)
+            {
+                console.log(data);
+                console.log('hey', data.token);
+                if(data.token = token)
+                {   
+                    window.location.pathname = '/tournament';
+                }
+            }    
+        }
+        else if (data.success == false) {
+            return ;
+        }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
+    }
+    );
+}
+
 setInterval(beingMatch, 5000);
 setInterval(refreshUserList, 3000);
+setInterval(startTournament, 3000);
 
 
 
