@@ -236,11 +236,11 @@ function checkGetMyProfile(path) {
 	console.log('windowPath: ' + windowPath);
 
 	if (path == '/settings')
-		getmyprofile();
+		getmyprofile();   // ayarlar sayfasındaki profil fotoğrafını alır ve gösterir
 	else if (path == '/my-profile')
-		getProfile();
+		myProfile();  //kişinin kendi profilini alır ve gösterir
 	else if (path == '/their-profile')
-		getProfile();
+		getProfile();  // arkadaşı olan veya olmayan kişilerin profilini gösterir
 }
 
 
@@ -274,7 +274,7 @@ function render(view) {
 	friendscontrol();
 	if (window.location.pathname != '/login' && window.location.pathname != '/register')
 		checktoken();
-	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/their-profile'	)
+	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/their-profile')
 		checkGetMyProfile(window.location.pathname);
 }
 
