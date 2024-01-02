@@ -108,6 +108,14 @@ const routes = {
 		template: getTemplateByLang(language, 'their-profile.html'),
 		view: null
 	},
+	'/request-1v1-match': {
+		template: getTemplateByLang(language, 'request-1v1-match.html'),
+		view: null
+	},
+	'/request-tournament': {
+		template: getTemplateByLang(language, 'request-tournament.html'),
+		view: null
+	},
 }
 
 
