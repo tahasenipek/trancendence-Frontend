@@ -119,10 +119,88 @@ function searchUsers() {
 }
 
 
-function getProfile(username) {
 
-    console.log(username);
-    fetch('http://localhost:2700/api/get-profile', {
+function logoutUser() {
+
+    var token = localStorage.getItem('token');
+
+    fetch('http://localhost:2700/api/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: token,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.removeItem('token');
+
+
+            if (language === 'en')
+                alert('You have successfully logged out.');
+            else if (language === 'fr')
+                alert('Vous vous êtes déconnecté avec succès.');
+            else
+                alert('Başarıyla çıkış yaptınız.');
+            window.location.href = '/login';
+        }
+    }
+    )
+    .catch(error => {
+        console.error('Error logging out:', error);
+    }
+    );
+}
+
+function myProfile() {
+
+    fetch('http://localhost:2700/api/my-profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+            
+            if (data.success) {
+                
+                const profileImageContainer = document.getElementById('profileImageContainer');
+                const onlineStatusContainer = document.getElementById('onlineStatusContainer');
+                const usernameContainer = document.getElementById('usernameContainer');
+                const matchesCount = document.getElementById('matchesCount');
+                const tournamentCount = document.getElementById('tournamentCount');
+                const friendsCount = document.getElementById('friendsCount');
+                const profileButtonsContainer = document.querySelector('.profile-buttons');
+    
+                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+                usernameContainer.innerHTML = data.username;
+                profileButtonsContainer.innerHTML = `
+                    <button onclick="logoutUser()" type="button" class="btn btn-danger" id="logoutLink">Logout</button>
+                    <a href="settings" class="btn btn-warning" id="settingsLink">Settings</a>
+                    `;
+                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
+                tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
+                friendsCount.innerHTML = 'friends: ' + data.friends_count;
+            }
+        }
+    )
+    .catch(error => {
+        console.error('Error getting profile:', error);
+    });
+}
+
+
+function removefriend(username) {
+
+    fetch('http://localhost:2700/api/removefriend', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -136,52 +214,117 @@ function getProfile(username) {
     .then(data => {
         if (data.success) {
 
+            if (language === 'en')
+                alert('You have removed ' + username + ' from your friends list.');
+            else if (language === 'fr')
+                alert('Vous avez supprimé ' + username + ' de votre liste d\'amis.');
+            else
+                alert(username + ' arkadaş listenden çıkarıldı.');
+            window.location.pathname = '/games';
+        }
+    }
+    )
+    .catch(error => {
+        console.error('Error getting profile:', error);
+    });
+}
+
+
+function addfriend(username) {
+    
+    fetch('http://localhost:2700/api/addfriend', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+            username: username,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (language === 'en')
+                alert('You have added ' + username + ' to your friends list.');
+            else if (language === 'fr')
+                alert('Vous avez ajouté ' + username + ' à votre liste d\'amis.');
+            else
+                alert(username + ' arkadaş listene eklendi.');
+            window.location.pathname = '/games';
+        }
+    }
+    )
+}
+
+
+
+function getProfile(username) {
+
+    fetch('http://localhost:2700/api/get-profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+            username: username,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        console.log('data', data);
+
+        if (data.success) {
+            
             const profileImageContainer = document.getElementById('profileImageContainer');
             const onlineStatusContainer = document.getElementById('onlineStatusContainer');
             const usernameContainer = document.getElementById('usernameContainer');
             const matchesCount = document.getElementById('matchesCount');
             const tournamentCount = document.getElementById('tournamentCount');
             const friendsCount = document.getElementById('friendsCount');
-            const profileButtonsContainer = document.querySelector('.profile-buttons'); 
+            const profileButtonsContainer = document.querySelector('.profile-buttons');
+            
 
-            console.log(data.friends);
-            if (profileImageContainer && data.friends)
+            if (data.friends == true)
             {
-                // Verileri yerleştirme
-                console.log(data.friends);
+                console.log('if');
                 profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
                 onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
-                    <button onclick="removefriend()" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
-                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
+                    <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
+                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
+                    `;
                 matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
                 tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
                 friendsCount.innerHTML = 'friends: ' + data.friends_count;
             }
-            else if (profileImageContainer && !data.friends)
+            else if (data.friends == false)
             {
-                // Verileri yerleştirme
+                console.log('else if');
                 profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
                 onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
-                    <button onclick="addfriend()" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
+                    <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
+                }
                 matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
                 tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
                 friendsCount.innerHTML = 'friends: ' + data.friends_count;
             }
-            else
-            {
-                window.location.pathname = '/their-profile';
-            }
+            
         }
-    })
+    )
     .catch(error => {
-        console.error('Error fetching profile:', error);
+        console.error('Error getting profile:', error);
     });
 }
+        
+
+        
 
 function fetchFriendsList(){
     fetch('http://localhost:2700/api/friendlist', {
@@ -228,7 +371,6 @@ function fetchFriendsList(){
 }
 
 
-//"
 function putTheNick(event) {
 
     event.preventDefault();
@@ -303,9 +445,15 @@ function beingMatch() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log(data);
-                if(data.matched){
-                    window.location.href = '/game';
+                
+
+                if(data.match == false){
+
+                    return ;
+                }
+                else if (data.match == true)
+                {
+                    window.location.pathname = '/games-match';
                 }
             }
         })
@@ -337,8 +485,10 @@ function startTournament() {
             {
                 console.log(data);
                 console.log('hey', data.token);
-                if(data.token == token && data.int == 4)
+                if(data.token == token && data.int == 4){
+                    localStorage.setItem('tournament_id', data.tournament_id);
                     window.location.pathname = '/request-tournament';
+                }
             }
         }
         else if (data.success == false) {
@@ -352,9 +502,9 @@ function startTournament() {
     );
 }
 
-setInterval(beingMatch, 5000);
-setInterval(refreshUserList, 3000);
-setInterval(startTournament, 5000);
+//setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+//setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
+//setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
 
 
@@ -487,17 +637,21 @@ function getmyprofile() {
     )
     .then(data => {
         if (data.success) {
-        const document = window.document;
-        const photo = document.getElementById('profile-photo');
-        console.log(data.photo);
-        photo.src = data.photo;
-    }
+
+            const document = window.document;
+            const photo = document.getElementById('profile-photo');
+            console.log(data.photo);
+            photo.src = data.photo;
+        }   
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
         // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
     });
-	/* .then(response => {
+}
+	/* 
+    backendden resim gelidğinde kullanılacak şekil
+    .then(response => {
 		if (!response.ok) {
 			throw new Error('Network response was not ok');
 		}
@@ -510,4 +664,45 @@ function getmyprofile() {
 
 		window.location.pathname == '/settings';
 	}) */
-}
+
+
+
+
+/* function goToTournament() {
+
+    var tournament_id = localStorage.getItem('tournament_id');
+    var token = localStorage.getItem('token');
+
+    fetch('http://localhost:2700/api/goToTournament', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            tournament_id: tournament_id,
+            token: token,
+        }),
+    })
+    .then(response => {
+        return response.json();
+    }
+    )
+    .then(data => {
+        if (data.success) {
+            console.log(data);
+            if (data.token == token && data.int == 4)
+            {
+                window.location.pathname = '/tournament';
+            }
+        }
+        else if (data.success == false) {
+            return ;
+        }
+    }
+    )
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
+    }
+    );
+} */
