@@ -316,8 +316,12 @@ function beingMatch() {
 }
 
 function startTournament() {
+
     let newUrl = window.location.pathname;
     var token = localStorage.getItem('token');
+
+	
+	var token = localStorage.getItem('token');
     fetch('http://localhost:2700/api/startTournament', {
         method: 'POST',
         headers: {
