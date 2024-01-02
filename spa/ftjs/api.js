@@ -316,8 +316,9 @@ function beingMatch() {
 }
 
 function startTournament() {
-    let newUrl = window.location.pathname;
-    var token = localStorage.getItem('token');
+	
+	var token = localStorage.getItem('token');
+	console.log('startTournament, token: ', token);
     fetch('http://localhost:2700/api/startTournament', {
         method: 'POST',
         headers: {
@@ -336,11 +337,9 @@ function startTournament() {
             {
                 console.log(data);
                 console.log('hey', data.token);
-                if(data.token = token)
-                {   
-                    window.location.pathname = '/tournament';
-                }
-            }    
+                if(data.token == token && data.int == 4)
+                    window.location.pathname = '/request-tournament';
+            }
         }
         else if (data.success == false) {
             return ;
@@ -355,7 +354,7 @@ function startTournament() {
 
 setInterval(beingMatch, 5000);
 setInterval(refreshUserList, 3000);
-setInterval(startTournament, 3000);
+setInterval(startTournament, 5000);
 
 
 
