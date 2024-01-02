@@ -979,3 +979,29 @@ thead th {
 	align-items: center;
 	justify-content: center;
 }
+
+.tournament-waiting {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.rounded-image-container {
+	width: 200px;
+	height: 200px;
+	overflow: hidden;
+	border-radius: 50%;
+	position: relative;
+	background-color: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1.5);
+	border: 2px solid white; /* Beyazlık kalınlığı */
+}
+
+.rounded-image-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+	clip-path: circle(50% at 50% 50%);
+}
