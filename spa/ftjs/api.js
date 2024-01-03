@@ -30,7 +30,7 @@ function loginUser() {
             const token = data.access_token;
             localStorage.setItem('token', token);
             if (data.language)
-                localStorage.setItem('language', 'en');
+                localStorage.setItem('language', data.language);
             window.location.href = '/games';
         } else {    
             alert('Giriş sırasında bir hata oluştu.');
@@ -397,8 +397,10 @@ function putTheNick(event) {
     .then(data => {
         if (data.success) {
             console.log('int', data.int);
-            if (data.int != 4)
+            if (data.int != 4){
                 window.location.pathname = '/tournament-friends-waiting';
+                
+            }
             else if (data.int == 4)
                 window.location.pathname = '/tournament';
         }
@@ -485,7 +487,7 @@ function startTournament() {
             {
                 console.log(data);
                 console.log('hey', data.token);
-                if(data.token == token && data.int == 4){
+                if(data.token == token && data.int <= 4){
                     localStorage.setItem('tournament_id', data.tournament_id);
                     window.location.pathname = '/request-tournament';
                 }
@@ -502,9 +504,9 @@ function startTournament() {
     );
 }
 
-//setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
-//setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
-//setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
+setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
+setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
 
 
@@ -668,7 +670,7 @@ function getmyprofile() {
 
 
 
-/* function goToTournament() {
+function goToTournament() {
 
     var tournament_id = localStorage.getItem('tournament_id');
     var token = localStorage.getItem('token');
@@ -689,14 +691,14 @@ function getmyprofile() {
     )
     .then(data => {
         if (data.success) {
-            console.log(data);
-            if (data.token == token && data.int == 4)
+            
+            if (data.token == token && data.int <= 4)
             {
-                window.location.pathname = '/tournament';
+                window.location.pathname = '/enterNicknameTournament';
             }
         }
         else if (data.success == false) {
-            return ;
+            window.location.pathname = '/games';
         }
     }
     )
@@ -705,4 +707,4 @@ function getmyprofile() {
         // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
     }
     );
-} */
+}

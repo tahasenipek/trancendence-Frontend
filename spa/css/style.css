@@ -805,16 +805,6 @@ thead th {
 	height: 100%;
 }
 
-.rounded-profile {
-	display: block; /* inline yerine block kullanılmalı */
-	border-radius: 50%;
-	border-width: 2px;
-	border-style: solid;
-	border-color: white;
-	border-image: initial;
-	overflow: hidden; /* Çerçeve dışındaki kısmı kesmek için overflow kullanılmalı */
-}
-
 .scrollable-table-container {
 	max-height: 220px;
 	width: 100%;
@@ -1005,3 +995,25 @@ thead th {
 	border-radius: 50%;
 	clip-path: circle(50% at 50% 50%);
 }
+
+.rounded-profile {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+    border-image: initial;
+    overflow: hidden; /* Çerçeve dışındaki kısmı kesmek için overflow kullanılmalı */
+    border: 2px solid white; /* Beyazlık kalınlığı */
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1.5);
+    }
+    
+    .rounded-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    clip-path: circle(50% at 50% 50%);
+    }
