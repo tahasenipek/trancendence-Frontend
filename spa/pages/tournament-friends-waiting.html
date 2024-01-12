@@ -29,11 +29,11 @@
                 </div>
             </div>
             <div class="nick-create">
-                <form method="POST" onsubmit="putTheNick(event)">
-                    <input type="text" id="nicknameInput" placeholder=" Friend Nickname" required>
+                <form method="POST" onsubmit="putTheNick()">
+                    <input type="text" id="usernameInput" placeholder=" Friend Nickname" required>
                     <button type="submit">invite</button>
+                    <button type="button" onclick="joinButtonClicked()">Create</button>
                 </form>
-
             </div>
         </div>
     </div>

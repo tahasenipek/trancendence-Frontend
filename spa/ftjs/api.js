@@ -51,7 +51,7 @@ function registerUser() {
         return;
     }
     
-    fetch('http://ftpong.duckdns.org:8100/register/', {
+    fetch('http://localhost:2700/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -370,13 +370,41 @@ function fetchFriendsList(){
 	});
 }
 
+function createTournament() {
 
-function putTheNick(event) {
+    fetch('http://localhost:2700/api/createTournament', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(data => {
+        if (data.success) {
+            localStorage.setItem('tournament_id', data.tournament_id);
+            window.location.pathname = '/tournament-friends-waiting';
+        }
+    }
+    )
+    .catch(error => {
+        console.error('Error creating tournament:', error);
+    }
+    );
+}
 
-    event.preventDefault();
 
+function putTheNick() {
+
+    var username = document.getElementById('usernameInput').value;
     var token = localStorage.getItem('token');
-    var nickname = document.getElementById('nicknameInput').value;
+    var tournament_id = localStorage.getItem('tournament_id');
 
     fetch('http://localhost:2700/api/putTheNick', {
         method: 'POST',
@@ -385,7 +413,8 @@ function putTheNick(event) {
         },
         body: JSON.stringify({
             token: token,
-            nickname: nickname,
+            tournament_id: tournament_id,
+            username: username,
         }),
     })
     .then(response => {
@@ -396,11 +425,10 @@ function putTheNick(event) {
     })
     .then(data => {
         if (data.success) {
-            console.log('int', data.int);
-            if (data.int != 4)
-                window.location.pathname = '/tournament-friends-waiting';
-            else if (data.int == 4)
-                window.location.pathname = '/tournament';
+
+            if (localStorage.getItem('tournament_id') == null)
+                localStorage.setItem('tournament_id', data.tournament_id);
+            window.location.pathname = '/tournament-friends-waiting';
         }
         
     })
@@ -466,7 +494,6 @@ function beingMatch() {
 function startTournament() {
 	
 	var token = localStorage.getItem('token');
-	console.log('startTournament, token: ', token);
     fetch('http://localhost:2700/api/startTournament', {
         method: 'POST',
         headers: {
@@ -483,12 +510,8 @@ function startTournament() {
         if (data.success) {
             if (data.tournament)
             {
-                console.log(data);
-                console.log('hey', data.token);
-                if(data.token == token && data.int == 4){
-                    localStorage.setItem('tournament_id', data.tournament_id);
-                    window.location.pathname = '/request-tournament';
-                }
+                localStorage.setItem('tournament_id', data.tournament_id);
+                window.location.pathname = '/request-tournament';
             }
         }
         else if (data.success == false) {
@@ -646,7 +669,6 @@ function getmyprofile() {
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
-        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
     });
 }
 	/* 
@@ -668,7 +690,7 @@ function getmyprofile() {
 
 
 
-/* function goToTournament() {
+function goToTournament() {
 
     var tournament_id = localStorage.getItem('tournament_id');
     var token = localStorage.getItem('token');
@@ -689,11 +711,7 @@ function getmyprofile() {
     )
     .then(data => {
         if (data.success) {
-            console.log(data);
-            if (data.token == token && data.int == 4)
-            {
-                window.location.pathname = '/tournament';
-            }
+            window.location.pathname = '/tournament-friends-waiting';
         }
         else if (data.success == false) {
             return ;
@@ -705,4 +723,48 @@ function getmyprofile() {
         // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
     }
     );
-} */
+}
+
+
+function joinButtonClicked() {
+    
+        var tournament_id = localStorage.getItem('tournament_id');
+        var token = localStorage.getItem('token');
+    
+        fetch('http://localhost:2700/api/joinTournament', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tournament_id: tournament_id,
+                token: token,
+            }),
+        })
+        .then(response => {
+            return response.json();
+        }
+        )
+        .then(data => {
+            if (data.success) {
+                window.location.pathname = '/tournament-tables';
+
+            }
+            else if (data.success == false) {
+                return ;
+            }
+        }
+        )
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
+        }
+        );
+    
+}
+
+function deny(){
+
+    localStorage.removeItem('tournament_id');
+    window.location.pathname = '/games';
+}
