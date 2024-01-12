@@ -395,7 +395,6 @@ function tournamentTables() {
 
 	
 
-
 function render(view) {
 	app.innerHTML = view.innerHTML;
 	friendscontrol();
