@@ -300,113 +300,25 @@ async function router() {
 }
 
 
-function tournamentTables() {
-    var tournament_id = localStorage.getItem('tournament_id');
-    var token = localStorage.getItem('token');
-
-    fetch('http://localhost:2700/api/tournamentTables', {
-        body: JSON.stringify({
-            token: token,
-            tournament_id: tournament_id,
-        }),
-    }).then(response => {
-        if (response.ok)
-            return response.json();
-        else
-            return Promise.reject(response);
-    })
-    .then(data => {
-        console.log(data);
-        if (data.success) {
-            // Verileri HTML tabloya eklemek için DOM manipülasyonu yapalım
-			if (document.querySelector('.table__body')){
-
-            var tableBody = document.querySelector('.table__body');
-
-            // Tabloyu temizle
-            tableBody.innerHTML = '';
-
-            // Yeni bir tablo oluştur
-            var newTable = document.createElement('table');
-
-            // Başlık satırı
-            var headerRow = document.createElement('thead');
-            headerRow.innerHTML = '<tr><th>match order</th><th>1. Player</th><th><img src="img/vs-sign.png" alt="vs-sign" width="48" height="48"></th><th>2. Player</th><th>Score</th><th>Winner</th></tr>';
-            newTable.appendChild(headerRow);
-
-            // Veri satırları
-            var tbody = document.createElement('tbody');
-            data.users.forEach((user, index) => {
-                var newRow = document.createElement('tr');
-
-                // Sıra numarası
-                var orderCell = document.createElement('th');
-                orderCell.textContent = (index + 1) + '.';
-                newRow.appendChild(orderCell);
-
-                // 1. Oyuncu
-                var player1Cell = document.createElement('th');
-                player1Cell.textContent = user.username; // Örneğin, kullanıcı adını alabilirsiniz
-                newRow.appendChild(player1Cell);
-
-                // vs işareti
-                var vsCell = document.createElement('th');
-                var vsImage = document.createElement('img');
-                vsImage.src = 'img/vs-sign.png';
-                vsImage.alt = 'vs-sign';
-                vsImage.width = 48;
-                vsImage.height = 48;
-                vsCell.appendChild(vsImage);
-                newRow.appendChild(vsCell);
-
-                // 2. Oyuncu
-                var player2Cell = document.createElement('th');
-                player2Cell.textContent = user.username; // Örneğin, kullanıcı adını alabilirsiniz
-                newRow.appendChild(player2Cell);
-
-                // Skor ve Kazanan hücreleri, bu verileri burada nasıl alacağınıza bağlı olarak güncelleyebilirsiniz.
-                var scoreCell = document.createElement('th');
-                scoreCell.textContent = '??';
-                newRow.appendChild(scoreCell);
-
-                var winnerCell = document.createElement('th');
-                winnerCell.textContent = '??';
-                newRow.appendChild(winnerCell);
-
-                // Yeni satırı tabloya ekle
-                tbody.appendChild(newRow);
-            });
-
-            newTable.appendChild(tbody);
-
-            // Yeni tabloyu ekleyin
-            tableBody.appendChild(newTable);
-		}
-		else 
-		 console.log('error');
-        }
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-    });
-}
-
-	
-
 	
 
 function render(view) {
 	app.innerHTML = view.innerHTML;
 	friendscontrol();
 	if (window.location.pathname != '/login' && window.location.pathname != '/register')
-		checktoken();
-	if (window.location.pathname == '/tournament-tables')
-		tournamentTables();
+		checktoken();		
 	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/their-profile')
 		checkGetMyProfile(window.location.pathname);
+	if (window.location.pathname == '/tournament-tables')
+	{
+		tournament_table();
+
+    // Her 5 saniyede bir çalıştırma
+		setInterval(function() {
+			tournament_table();
+		}, 5000);
+	}
 }
-
-
 
 
 function renderError(error) {
