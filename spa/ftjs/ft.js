@@ -130,7 +130,6 @@ function checktoken() {
 	if (!accessToken) {
 		navigateTo('/login');
 		router();
-
 	}
 }
 
@@ -230,6 +229,33 @@ function frienduser() {
 	}
 }
 
+/* function tournamentstatus() {
+
+	fetch ('http://localhost:2700/api/tournamentstatus', {
+
+	body: JSON.stringify({
+		token: localStorage.getItem('token'),
+		tournament_id : localStorage.getItem('tournament_id'),
+	}),
+	}).then(response => {
+		if (response.ok)
+			return response.json();
+		else
+			return Promise.reject(response);
+	})
+	.then(data => {
+		console.log(data);
+		if (data.status)
+		{
+			
+		}
+		else
+		{
+			console.log('error');
+		}
+	})
+} */
+
 function checkGetMyProfile(path) {
 
 	var windowPath = window.location.pathname;
@@ -241,6 +267,10 @@ function checkGetMyProfile(path) {
 		myProfile();  //kişinin kendi profilini alır ve gösterir
 	else if (path == '/their-profile')
 		getProfile();  // arkadaşı olan veya olmayan kişilerin profilini gösterir
+	else if (path == '/tournament-friends-waiting')
+	{
+		//tournamentstatus();  // arkadaşlarının turnuva durumunu gösterir
+	}
 }
 
 
@@ -269,16 +299,26 @@ async function router() {
 	}
 }
 
+
+	
+
 function render(view) {
 	app.innerHTML = view.innerHTML;
 	friendscontrol();
 	if (window.location.pathname != '/login' && window.location.pathname != '/register')
-		checktoken();
+		checktoken();		
 	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/their-profile')
 		checkGetMyProfile(window.location.pathname);
+	if (window.location.pathname == '/tournament-tables')
+	{
+		tournament_table();
+
+    // Her 5 saniyede bir çalıştırma
+		setInterval(function() {
+			tournament_table();
+		}, 5000);
+	}
 }
-
-
 
 
 function renderError(error) {
