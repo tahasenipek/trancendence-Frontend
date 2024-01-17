@@ -116,6 +116,10 @@ const routes = {
 		template: getTemplateByLang(language, 'request-tournament.html'),
 		view: null
 	},
+	'/match': {
+		template: getTemplateByLang(language, 'games_iframe.html'),
+		view: null
+	},
 }
 
 
