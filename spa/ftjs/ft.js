@@ -12,10 +12,6 @@ const routes = {
 		template: getTemplateByLang(language, 'being-match.html'),
 		view: null
 	},
-	'/create-tournament': {
-		template: getTemplateByLang(language, 'create-tournament.html'),
-		view: null
-	},
 	'/register': {
 		template: getTemplateByLang(language, 'register.html'),
 		view: null
@@ -271,10 +267,6 @@ function checkGetMyProfile(path) {
 		myProfile();  //kişinin kendi profilini alır ve gösterir
 	else if (path == '/their-profile')
 		getProfile();  // arkadaşı olan veya olmayan kişilerin profilini gösterir
-	else if (path == '/tournament-friends-waiting')
-	{
-		//tournamentstatus();  // arkadaşlarının turnuva durumunu gösterir
-	}
 }
 
 

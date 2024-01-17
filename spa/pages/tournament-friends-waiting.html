@@ -29,9 +29,9 @@
                 </div>
             </div>
             <div class="nick-create">
-                <form method="POST" onsubmit="putTheNick()">
+                <form id="createTournament" method="POST">
                     <input type="text" id="usernameInput" placeholder=" Friend Nickname" required>
-                    <button type="submit">invite</button>
+                    <button type="button" onclick="putTheNick()">invite</button>
                     <button type="button" onclick="joinButtonClicked()">Create</button>
                 </form>
             </div>
