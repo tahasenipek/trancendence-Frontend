@@ -69,6 +69,7 @@ function registerUser() {
     })
     .then(data => {
         if (data.success) {
+            console.log('Success:', data);
             alert('Kullanıcı başarıyla kaydedildi.');
             window.location.href = '/login';
         } else {    
