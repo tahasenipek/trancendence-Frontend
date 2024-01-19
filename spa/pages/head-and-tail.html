@@ -20,26 +20,20 @@
 <div class="games-page">
     <div class="game-template">
         <div class="board-template">
-            <h2 style="color: #5D1D88; font-size: 40px;"> Head and Tail Game !</h2>
+            <h2 style="color: #5D1D88; font-size: 40px;">Head and Tail Game !</h2>
             <div class="board" id="head-and-tail-board">
                 <div class="board-member-head">
-                    <a href="" ><img src="img/ataturk.png" alt="Mustafa Kemal Atatürk" style="cursor: default;" width="314" height="278"> </a>
-					<button onclick="selectOption(1)" type="button" class="btn btn-warning">Head</button>
+                    <a href=""><img src="img/ataturk.png" alt="Mustafa Kemal Atatürk" style="cursor: default;" width="314" height="278"></a>
+                    <button onclick="selectOption(1)" type="button" class="btn btn-warning">Head</button>
+                    <span id="headCount" style="color: #DD9D18;">0</span>
                 </div>
                 <img src="img/hand-puh.png" alt="Hand-puh" style="width: 104px; height: 106px; margin-right: 5%;">
                 <div class="board-member-head">
-					<a href=""><img src="img/cash-1.png" style="cursor: default;" alt="cash-1"></a>
-					<button onclick="selectOption(1)" type="button" class="btn btn-warning">Tail</button>
+                    <a href=""><img src="img/cash-1.png" style="cursor: default;" alt="cash-1"></a>
+                    <button onclick="selectOption(2)" type="button" class="btn btn-warning">Tail</button>
+                    <span id="tailCount" style="color: #DD9D18;">0</span>
                 </div>
             </div>
          </div>
-    </div>
-    <div class="users-board">
-        <h3> Coin List  </h3>
-        <div class="scrollbox">
-            <div class="scrollbox-inner" id="user-list-container">
-                <a href="" class="pong-logo-link"><img style = "width: 50px;" src="img/tail.png" alt="Pong Logo"></a>
-            </div>
-        </div>
     </div>
 </div>

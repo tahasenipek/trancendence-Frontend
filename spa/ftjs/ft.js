@@ -116,6 +116,14 @@ const routes = {
 		template: getTemplateByLang(language, 'games_iframe.html'),
 		view: null
 	},
+	'/head-tail-time': {
+		template: getTemplateByLang(language, 'head-tail-time.html'),
+		view: null
+	},
+	'/head-and-tail-load': {
+		template: getTemplateByLang(language, 'head-and-tail-load.html'),
+		view: null
+	},
 }
 
 
@@ -274,16 +282,14 @@ async function router() {
 	const route = window.location.pathname;
 	const page = routes[route];
 	if (page) {
-		if (page.view){
-			render(page.view);
-		}
 		if (page.template == 'pages/their-profile.html')
 		{
 			addfriend();
 			removefriend();
 			matchRequestFromProfile();
 		}
-		else{
+		else
+		{
 			const htmls = await fetch(page.template).then(response => response.text());
 			const div = document.createElement('div');
 			div.innerHTML = htmls;
@@ -296,7 +302,6 @@ async function router() {
 }
 
 
-	
 
 function render(view) {
 	app.innerHTML = view.innerHTML;
@@ -308,11 +313,22 @@ function render(view) {
 	if (window.location.pathname == '/tournament-tables')
 	{
 		tournament_table();
-
-    // Her 5 saniyede bir çalıştırma
 		setInterval(function() {
 			tournament_table();
-		}, 5000);
+		}, 5000);x
+	}
+	if (window.location.pathname == '/head-tail-time')
+	{
+		headTailTime();
+	}
+	if (window.location.pathname == '/head-and-tail')
+	{
+		setInterval(function() {
+			
+			race(headClickCount, tailClickCount, temp);
+			temp++;
+		}
+		, 5000);
 	}
 }
 
@@ -451,4 +467,3 @@ function fadeAnimation(element, duration) {
         element.style.opacity = 1; // Animasyon bittiğinde opaklığı geri al
     }, duration * 1000);
 }
-
