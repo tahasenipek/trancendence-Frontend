@@ -12,6 +12,37 @@ function selectOption(option) {
     }
 }
 
+/* 
+django endpoints
+1- http://ftpong.duckdns.org:8100/login/
+2- http://ftpong.duckdns.org:8100/register/
+3- http://ftpong.duckdns.org:8100/userlist/
+4- http://ftpong.duckdns.org:8100/addfriend/
+5- http://ftpong.duckdns.org:8100/getprofile/
+6- http://ftpong.duckdns.org:8100/friendslist/
+7- http://ftpong.duckdns.org:8100/createTournament/
+8- http://ftpong.duckdns.org:8100/inviteTournament/
+9- http://ftpong.duckdns.org:8100/updateavatar/
+10- http://ftpong.duckdns.org:8100/update-photo
+
+*/
+
+/*
+
+flusk endpoints
+
+1- http://localhost:2700/api/login
+2- http://localhost:2700/api/register
+3- http://localhost:2700/api/search
+4- http://localhost:2700/api/addfriend
+5- http://localhost:2700/api/get-profile
+6- http://localhost:2700/api/friendlist
+7- http://localhost:2700/api/createTournament
+8- http://localhost:2700/api/inviteTournament
+9- http://localhost:2700/api/updateavatar
+10- http://localhost:2700/api/update-photo
+*/
+
 function loginUser() {
 	
     const username = document.getElementById('username').value;
@@ -20,7 +51,7 @@ function loginUser() {
         alert('Lütfen tüm alanları doldurun.');
         return;
     }
-    fetch('http://127.0.0.1:2700/api/login', {
+    fetch('http://localhost:2700/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -66,12 +97,12 @@ function registerUser() {
         return;
     }
     
+
     const data = {
         username: username,
         password: password,
     };
-
-    fetch('http://ftpong.duckdns.org:8100/register/', {
+    fetch('http://localhost:2700/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -104,7 +135,7 @@ function registerUser() {
 function searchUsers() {
     var searchQuery = document.querySelector('.search').value;
 
-    fetch('http://ftpong.duckdns.org:8100/userlist/', {
+    fetch('http://localhost:2700/api/search', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -176,49 +207,77 @@ function logoutUser() {
 
 function myProfile() {
 
-    fetch('http://ftpong.duckdns.org:8100/getprofile/', {
-        method: 'GET',
+    fetch('http://localhost:2700/api/my-profile', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
 			'Authorization': 'Bearer ' + localStorage.getItem('token'),
         },
-    })
+		body: JSON.stringify({
+			token: localStorage.getItem('token'),
+		}),
+	})
     .then(response => response.json())
     .then(data => {
-            console.log('data', data);
-            if (data.success) {
-                
-                const profileImageContainer = document.getElementById('profileImageContainer');
-                const onlineStatusContainer = document.getElementById('onlineStatusContainer');
-                const usernameContainer = document.getElementById('usernameContainer');
-                const matchesCount = document.getElementById('matchesCount');
-                const tournamentCount = document.getElementById('tournamentCount');
-                const friendsCount = document.getElementById('friendsCount');
-                const profileButtonsContainer = document.querySelector('.profile-buttons');
-    
-                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
-                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
-                usernameContainer.innerHTML = data.username;
-                profileButtonsContainer.innerHTML = `
-                    <button onclick="logoutUser()" type="button" class="btn btn-danger" id="logoutLink">Logout</button>
-                    <a href="settings" class="btn btn-warning" id="settingsLink">Settings</a>
-                    `;
-                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
-                tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
-                friendsCount.innerHTML = 'friends: ' + data.friends_count;
 
+		if (data.success) {
 
-                const scroll_table = document.getElementById('scroll_table');
+			const scrollTable = document.getElementById('scroll_table');
 
-                //scroll_table.innerHTML = '';
-                
+			const table = document.createElement('table');
+			const thead = document.createElement('thead');
+			const tbody = document.createElement('tbody');
 
+			// Create header row
+			const headerRow = document.createElement('tr');
+			headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+			thead.appendChild(headerRow);
 
-            }
-        }
-    )
+			// Create rows for match data
+			for (let i = 0; i < data.match_length; i++) {
+				const match = data.matches[i];
+				
+				const row = document.createElement('tr');
+				row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+				
+				tbody.appendChild(row);
+			}
+
+			table.appendChild(thead);
+			table.appendChild(tbody);
+			scrollTable.appendChild(table);
+			
+			
+			const scrollTable_other = document.getElementById('scroll_table_other'); // BURAK
+			
+
+			const table_other = document.createElement('table');
+			const thead_other = document.createElement('thead');
+			const tbody_other = document.createElement('tbody');
+			
+			
+			const headerRow_other = document.createElement('tr');
+			headerRow_other.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
+			
+			thead_other.appendChild(headerRow_other);
+
+			for (let i = 0; i < data.other_game_len; i++) {
+				const match_other = data.other_game_matches[i];
+				
+				const row_other = document.createElement('tr');
+				row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+				
+				tbody_other.appendChild(row_other);
+			}
+
+			table_other.appendChild(thead_other);
+			table_other.appendChild(tbody_other);
+			scrollTable_other.appendChild(table_other); 
+		}
+
+	})
     .catch(error => {
-        console.error('Error getting profile:', error);
+        console.error('Error gettin my profile:', error);
     });
 }
 
@@ -335,7 +394,7 @@ function	headTailTime() {
 
 function addfriend(username) {
     
-    fetch('http://ftpong.duckdns.org:8100/addfriend/', {
+    fetch('http://localhost:2700/api/addfriend', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -364,10 +423,11 @@ function addfriend(username) {
 
 function getProfile(username) {
 
-    fetch('http://ftpong.duckdns.org:8100/getprofile/', {
+    fetch('http://localhost:2700/api/get-profile', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+			'Authorization': 'Bearer ' + localStorage.getItem('token'), //BURAK
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -429,13 +489,12 @@ function getProfile(username) {
 var token = localStorage.getItem('token');
 
 
-        
 
 function fetchFriendsList(){
 
 	var token = localStorage.getItem('token');
 
-    fetch('http://ftpong.duckdns.org:8100/friendslist/', {
+    fetch('http://localhost:2700/api/friendlist', {
         method: 'GET',
 		headers: {
 			'Authorization': 'Bearer ' + token,
@@ -483,7 +542,7 @@ function createTournament() {
 
 	console.log('createTournament');
 
-    fetch('http://ftpong.duckdns.org:8100/createTournament/', {
+    fetch('http://localhost:2700/api/createTournament', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -522,7 +581,7 @@ function putTheNick() {
 	console.log(token);
 	console.log(tournament_id);
 
-    fetch('http://ftpong.duckdns.org:8100/inviteTournament/', {
+    fetch('http://localhost:2700/api/putTheNick', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -658,7 +717,7 @@ function submitForm()
         return;
     }
 
-    fetch('http://ftpong.duckdns.org:8100/updateavatar/', {
+    fetch('http://localhost:2700/api/update-profile', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
@@ -699,7 +758,7 @@ function updatePhoto()
     formData.append('token', localStorage.getItem('token'));
     formData.append('photo', file);
 
-    fetch('http://ftpong.duckdns.org:8100/update-photo', {
+    fetch('http://localhost:2700/api/update-photo', {
         method: 'PUT',
         body: formData,
     })
