@@ -326,10 +326,6 @@ function navigateTo(path) {
   	router();
 }
 
-
-
-
-
 document.addEventListener('click', function(event) {
 	if (event.target.matches('[data-link]') || event.target.tagName === 'A')
 	{
@@ -337,8 +333,6 @@ document.addEventListener('click', function(event) {
 		navigateTo(event.target.href);
 	}
 });
-
-
 
 window.addEventListener('load', function(event) {
 	init();
