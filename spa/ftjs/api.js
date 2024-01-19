@@ -43,6 +43,50 @@ flusk endpoints
 10- http://localhost:2700/api/update-photo
 */
 
+function tokenMaker()
+{
+    const tokenData = localStorage.getItem('token');
+    // Assuming this is the string you have
+
+
+    let startIndex = tokenData.indexOf(' ') + 1; // Find the index after the first space
+    let endIndex = tokenData.lastIndexOf(','); // Find the index before the last comma
+    let tokenValue = tokenData.substring(startIndex, endIndex - 1);
+
+
+    return tokenValue;
+}
+
+
+function authTest()
+{
+    let tokenValue = tokenMaker();
+
+    
+    fetch('http://localhost:8000/authtest/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Kayıt sırasında bir hata oluştu.');
+        }
+        return response.json(); 
+    })
+    .then(data => {
+        if (data.success) {
+            alert("okeyy");
+        }
+    })
+    .catch(error => {
+        console.error('Hata:', error);
+        alert('Kayıt sırasında bir hata oluştu.');
+    });
+}
+
 function loginUser() {
 	
     const username = document.getElementById('username').value;
@@ -51,7 +95,7 @@ function loginUser() {
         alert('Lütfen tüm alanları doldurun.');
         return;
     }
-    fetch('http://localhost:2700/api/login', {
+    fetch('http://localhost:8000/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -102,7 +146,7 @@ function registerUser() {
         username: username,
         password: password,
     };
-    fetch('http://localhost:2700/api/register', {
+    fetch('http://localhost:8000/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -117,10 +161,11 @@ function registerUser() {
         return response.json(); 
     })
     .then(data => {
+        console.log(data)
         if (data.success) {
             console.log('Success:', data);
             alert('Kullanıcı başarıyla kaydedildi.');
-            window.location.href = '/login';
+            //window.location.href = '/login';
         } else {    
             alert('Kayıt sırasında bir hata oluştu.');
         }
@@ -135,7 +180,7 @@ function registerUser() {
 function searchUsers() {
     var searchQuery = document.querySelector('.search').value;
 
-    fetch('http://localhost:2700/api/search', {
+    fetch('http://localhost:8000/search/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -423,11 +468,12 @@ function addfriend(username) {
 
 function getProfile(username) {
 
-    fetch('http://localhost:2700/api/get-profile', {
+    let token = tokenMaker();
+    fetch('http://localhost:8000/getprofile/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-			'Authorization': 'Bearer ' + localStorage.getItem('token'), //BURAK
+			'Authorization': 'Token' + token,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -450,10 +496,10 @@ function getProfile(username) {
             const profileButtonsContainer = document.querySelector('.profile-buttons');
             
 
-            if (data.friends == true)
+            if (data.success == true)
             {
                 console.log('if');
-                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
+                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
                 onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
@@ -467,7 +513,7 @@ function getProfile(username) {
             else if (data.friends == false)
             {
                 console.log('else if');
-                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
+                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
                 onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
@@ -492,13 +538,13 @@ var token = localStorage.getItem('token');
 
 function fetchFriendsList(){
 
-	var token = localStorage.getItem('token');
+	var tokenValue   = tokenMaker();
 
-    fetch('http://localhost:2700/api/friendlist', {
+    fetch('http://localhost:8000/friendslist/', {
         method: 'GET',
 		headers: {
-			'Authorization': 'Bearer ' + token,
-			'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
+			'Authorization': 'Token ' + tokenValue,
 		},
     })
 	.then(response => response.json())
@@ -628,7 +674,7 @@ function refreshUserList() {
 
     if (userContainer) {
         if (userContainer.innerHTML != '') {
-            return;
+            searchUsers();
         }
         else{
             console.log('refreshing user list');
