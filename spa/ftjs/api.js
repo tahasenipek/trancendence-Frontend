@@ -1,4 +1,17 @@
 
+let headClickCount = 0;
+let tailClickCount = 0;
+
+function selectOption(option) {
+    if (option === 1) {
+        headClickCount++;
+        document.getElementById('headCount').innerText = headClickCount;
+    } else if (option === 2) {
+        tailClickCount++;
+        document.getElementById('tailCount').innerText = tailClickCount;
+    }
+}
+
 /* 
 django endpoints
 1- http://ftpong.duckdns.org:8100/login/
@@ -28,9 +41,7 @@ flusk endpoints
 8- http://localhost:2700/api/inviteTournament
 9- http://localhost:2700/api/updateavatar
 10- http://localhost:2700/api/update-photo
-
-
- */
+*/
 
 function loginUser() {
 	
@@ -80,22 +91,26 @@ function registerUser() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    if (!username|| !password || password !== confirmPassword) {
+    
+    if (!username || !password || password !== confirmPassword) {
         alert('Lütfen tüm alanları doldurun ve şifreleri doğrulayın.');
         return;
     }
     
+
+    const data = {
+        username: username,
+        password: password,
+    };
     fetch('http://localhost:2700/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            username: username,
-            password: password,
-        }),
+        body: JSON.stringify(data),
     })
     .then(response => {
+        console.log('response', response);
         if (!response.ok) {
             throw new Error('Kayıt sırasında bir hata oluştu.'); // 404 hata sayfası yapalım ona gitsin
         }
@@ -298,6 +313,84 @@ function removefriend(username) {
     });
 }
 
+
+function race(headClickCount, tailClickCount, temp) {
+
+	if (temp == 5)
+	{
+		fetch ('http://localhost:2700/api/headAndTailRace', {
+		method: 'POST',	 
+		headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				token: localStorage.getItem('token'),
+				headClickCount: headClickCount,
+				tailClickCount: tailClickCount,
+			}),
+		}).then(response => {
+			if (response.ok)
+				return response.json();
+			else
+				return Promise.reject(response);
+		}
+		).then(data => {
+			console.log(data);
+			if (data.success)
+			{
+				if (data.headwin)
+				{
+					window.location.pathname = '/1v1match-lose-page';
+				}
+				else
+				{
+					document.getElementById('tail-option-atıs').innerHTML = '<a href="" class="pong-logo-link"><img src="img/1v1-win-sign.png" alt="Pong Logo"></a>'
+				}
+			}
+			else
+			{
+				console.log('error');
+			}
+		}
+		)
+	}
+}
+var temp = 0;
+
+function	headTailTime() {
+
+	var token = localStorage.getItem('token');
+
+	fetch ('http://localhost:2700/api/head-tail-time', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			token: token,
+		}),
+	}).then(response => {
+		if (!response.ok)
+			return Promise.reject(response);
+		else
+			return response.json();
+	})
+	.then(data => {
+        if (data.token == token)
+        {
+            if (data.success)
+            {
+                window.location.href = '/head-and-tail';
+            }
+            else
+            {	
+                setInterval(function() {
+                    headTailTime();
+                }, 8000);
+            }
+        }
+	})
+}
 
 function addfriend(username) {
     
@@ -530,7 +623,7 @@ function putTheNick() {
 
 
 function refreshUserList() {
-
+    var URL = document.referrer;
     const userContainer = document.getElementById('user-list-container');
 
     if (userContainer) {
@@ -546,10 +639,10 @@ function refreshUserList() {
 
 function beingMatch() {
 
-    if (window.location.pathname == '/being-match')
-    {
+    if ( window.location.pathname === '/being-match') {
+
         var token = localStorage.getItem('token');
-        fetch('http://localhost:2700/api/beingMatch', {
+        fetch('http://ftpong.duckdns.org:8100/beingMatch', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -563,14 +656,8 @@ function beingMatch() {
             if (data.success) {
                 
 
-                if(data.match == false){
-
-                    return ;
-                }
-                else if (data.match == true)
-                {
+                if (data.match == true)
                     window.location.pathname = '/games-match';
-                }
             }
         })
         .catch(error => {
@@ -613,7 +700,7 @@ function startTournament() {
     );
 }
 
-//setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
 setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
 //setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
