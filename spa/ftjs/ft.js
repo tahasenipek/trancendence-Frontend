@@ -372,9 +372,9 @@ function friendscontrol() {
 
     const userContainer = document.getElementById('user-list-container');
 
-
     if (userContainer) {
         // userContainer bulundu, gerekli işlemleri yapabilirsiniz
+				
         if (userContainer.children.length === 0) {
             fetchFriendsList();
         } else {

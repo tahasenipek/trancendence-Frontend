@@ -88,7 +88,6 @@ function authTest()
 }
 
 function loginUser() {
-	
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     if (!username || !password) {
@@ -141,7 +140,6 @@ function registerUser() {
         return;
     }
     
-
     const data = {
         username: username,
         password: password,
@@ -165,7 +163,7 @@ function registerUser() {
         if (data.success) {
             console.log('Success:', data);
             alert('Kullanıcı başarıyla kaydedildi.');
-            //window.location.href = '/login';
+            window.location.href = '/login';
         } else {    
             alert('Kayıt sırasında bir hata oluştu.');
         }
@@ -175,15 +173,16 @@ function registerUser() {
     });
 }
 
-
-
 function searchUsers() {
+    let tokenValue = tokenMaker();
     var searchQuery = document.querySelector('.search').value;
 
+    console.log(searchQuery);
     fetch('http://localhost:8000/search/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
         },
         body: JSON.stringify({
             searchQuery: searchQuery
@@ -198,14 +197,14 @@ function searchUsers() {
             const match_users = data.users;
             match_users.forEach(function(user) {
                 const userHtml = '<ul>' +
-                '<span class="online-dot-' + (user.online_status ? 'online' : 'offline') + '"></span>' + 
+                '<span class="online-dot-' + (user.is_online ? 'online' : 'offline') + '"></span>' + 
                 '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + user.username + '\');">' +
                 user.username + '</a>';
                 + '</ul>';
                 userContainer.innerHTML += userHtml;
             });
         } else {
-            alert('Kullanıcı aranırken bir hata oluştu.');
+            return ;
         }
     })
     .catch(error => {
@@ -217,12 +216,12 @@ function searchUsers() {
 
 function logoutUser() {
 
-    var token = localStorage.getItem('token');
-
+    let token = tokenMaker();
     fetch('http://localhost:2700/api/logout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             token: token,
@@ -326,13 +325,13 @@ function myProfile() {
     });
 }
 
-
 function removefriend(username) {
-
-    fetch('http://localhost:2700/api/removefriend', {
+    let tokenValue = tokenMaker();
+    fetch('http://localhost:8000/removefriend/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -438,11 +437,12 @@ function	headTailTime() {
 }
 
 function addfriend(username) {
-    
-    fetch('http://localhost:2700/api/addfriend', {
+    var tokenValue = tokenMaker();
+    fetch('http://localhost:8000/addfriend/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -464,16 +464,16 @@ function addfriend(username) {
     )
 }
 
-
-
 function getProfile(username) {
 
     let token = tokenMaker();
+    console.log('token', token);
+
     fetch('http://localhost:8000/getprofile/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-			'Authorization': 'Token' + token,
+			'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -482,8 +482,6 @@ function getProfile(username) {
     })
     .then(response => response.json())
     .then(data => {
-
-        console.log('data', data);
 
         if (data.success) {
             
@@ -496,31 +494,31 @@ function getProfile(username) {
             const profileButtonsContainer = document.querySelector('.profile-buttons');
             
 
-            if (data.success == true)
+            if (data.is_friend == true)
             {
                 console.log('if');
                 profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
-                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
                     <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
                     `;
-                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
+                matchesCount.innerHTML = 'matches: ' + data.match_count + ' / Win ' + data.tournament;
                 tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
                 friendsCount.innerHTML = 'friends: ' + data.friends_count;
             }
-            else if (data.friends == false)
+            else if (data.is_friend == false)
             {
                 console.log('else if');
                 profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
-                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
                     <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
                 }
-                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
+                matchesCount.innerHTML = 'matches: ' + data.match_count + ' / Win ' + data.tournament;
                 tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
                 friendsCount.innerHTML = 'friends: ' + data.friends_count;
             }
@@ -537,7 +535,7 @@ var token = localStorage.getItem('token');
 
 
 function fetchFriendsList(){
-
+    console.log('fetching friends list');
 	var tokenValue   = tokenMaker();
 
     fetch('http://localhost:8000/friendslist/', {
@@ -550,13 +548,14 @@ function fetchFriendsList(){
 	.then(response => response.json())
 	.then(data => {
         if (data.success) {
+            console.log('Success:', data);
             const userContainer = document.getElementById('user-list-container');
             userContainer.innerHTML = '';
             const friends = data.friends;
-            if(friends.length != 0){
+            if(friends != null && friends.length != 0){
                 friends.forEach(function (friend) {
                     const userHtml = '<ul>' +
-                                        '<span class="online-dot-' + (friend.online_status ? 'online' : 'offline') + '"></span>' +
+                                        '<span class="online-dot-' + (friend.is_online ? 'online' : 'offline') + '"></span>' +
                                         '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
                                         '</ul>';
                     userContainer.innerHTML += userHtml;
@@ -565,7 +564,7 @@ function fetchFriendsList(){
         }
         else if (data.success == false) {
             const userContainer = document.getElementById('user-list-container');
-
+        
             var language = localStorage.getItem('language');
            
 
@@ -585,13 +584,14 @@ function fetchFriendsList(){
 }
 
 function createTournament() {
-
+    let token = tokenMaker();
 	console.log('createTournament');
 
-    fetch('http://localhost:2700/api/createTournament', {
+    fetch('http://localhost:8000/createTournament/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -674,20 +674,22 @@ function refreshUserList() {
 
     if (userContainer) {
         if (userContainer.innerHTML != '') {
-            searchUsers();
+            return ;
         }
         else{
+            userContainer.innerHTML = '';
             console.log('refreshing user list');
             fetchFriendsList()
+            ///searchUsers();
         }
     }
 }
 
 function beingMatch() {
-
+    let token = tokenMaker();
     if ( window.location.pathname === '/being-match') {
 
-        var token = localStorage.getItem('token');
+
         fetch('http://ftpong.duckdns.org:8100/beingMatch', {
             method: 'POST',
             headers: {
@@ -913,16 +915,16 @@ function getmyprofile() {
 function goToTournament() {
 
     var tournament_id = localStorage.getItem('tournament_id');
-    var token = localStorage.getItem('token');
+    let token = tokenMaker();
 
-    fetch('http://localhost:2700/api/goToTournament', {
+    fetch('http://localhost:8000/joinTournament/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             tournament_id: tournament_id,
-            token: token,
         }),
     })
     .then(response => {
