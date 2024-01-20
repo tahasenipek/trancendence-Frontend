@@ -1,4 +1,17 @@
 
+let headClickCount = 0;
+let tailClickCount = 0;
+
+function selectOption(option) {
+    if (option === 1) {
+        headClickCount++;
+        document.getElementById('headCount').innerText = headClickCount;
+    } else if (option === 2) {
+        tailClickCount++;
+        document.getElementById('tailCount').innerText = tailClickCount;
+    }
+}
+
 /* 
 django endpoints
 1- http://ftpong.duckdns.org:8100/login/
@@ -28,19 +41,60 @@ flusk endpoints
 8- http://localhost:2700/api/inviteTournament
 9- http://localhost:2700/api/updateavatar
 10- http://localhost:2700/api/update-photo
+*/
+
+function tokenMaker()
+{
+    const tokenData = localStorage.getItem('token');
+    // Assuming this is the string you have
 
 
- */
+    let startIndex = tokenData.indexOf(' ') + 1; // Find the index after the first space
+    let endIndex = tokenData.lastIndexOf(','); // Find the index before the last comma
+    let tokenValue = tokenData.substring(startIndex, endIndex - 1);
+
+
+    return tokenValue;
+}
+
+
+function authTest()
+{
+    let tokenValue = tokenMaker();
+
+    
+    fetch('http://localhost:8000/authtest/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Kayıt sırasında bir hata oluştu.');
+        }
+        return response.json(); 
+    })
+    .then(data => {
+        if (data.success) {
+            alert("okeyy");
+        }
+    })
+    .catch(error => {
+        console.error('Hata:', error);
+        alert('Kayıt sırasında bir hata oluştu.');
+    });
+}
 
 function loginUser() {
-	
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     if (!username || !password) {
         alert('Lütfen tüm alanları doldurun.');
         return;
     }
-    fetch('http://localhost:2700/api/login', {
+    fetch('http://localhost:8000/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -80,28 +134,32 @@ function registerUser() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    if (!username|| !password || password !== confirmPassword) {
+    
+    if (!username || !password || password !== confirmPassword) {
         alert('Lütfen tüm alanları doldurun ve şifreleri doğrulayın.');
         return;
     }
     
-    fetch('http://localhost:2700/api/register', {
+    const data = {
+        username: username,
+        password: password,
+    };
+    fetch('http://localhost:8000/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            username: username,
-            password: password,
-        }),
+        body: JSON.stringify(data),
     })
     .then(response => {
+        console.log('response', response);
         if (!response.ok) {
             throw new Error('Kayıt sırasında bir hata oluştu.'); // 404 hata sayfası yapalım ona gitsin
         }
         return response.json(); 
     })
     .then(data => {
+        console.log(data)
         if (data.success) {
             console.log('Success:', data);
             alert('Kullanıcı başarıyla kaydedildi.');
@@ -115,15 +173,16 @@ function registerUser() {
     });
 }
 
-
-
 function searchUsers() {
+    let tokenValue = tokenMaker();
     var searchQuery = document.querySelector('.search').value;
 
-    fetch('http://localhost:2700/api/search', {
+    console.log(searchQuery);
+    fetch('http://localhost:8000/search/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
         },
         body: JSON.stringify({
             searchQuery: searchQuery
@@ -138,14 +197,14 @@ function searchUsers() {
             const match_users = data.users;
             match_users.forEach(function(user) {
                 const userHtml = '<ul>' +
-                '<span class="online-dot-' + (user.online_status ? 'online' : 'offline') + '"></span>' + 
+                '<span class="online-dot-' + (user.is_online ? 'online' : 'offline') + '"></span>' + 
                 '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + user.username + '\');">' +
                 user.username + '</a>';
                 + '</ul>';
                 userContainer.innerHTML += userHtml;
             });
         } else {
-            alert('Kullanıcı aranırken bir hata oluştu.');
+            return ;
         }
     })
     .catch(error => {
@@ -157,12 +216,12 @@ function searchUsers() {
 
 function logoutUser() {
 
-    var token = localStorage.getItem('token');
-
+    let token = tokenMaker();
     fetch('http://localhost:2700/api/logout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             token: token,
@@ -289,15 +348,14 @@ function myProfile() {
     });
 }
 
-
 function removefriend(username) {
 
-	removefriendanimation();
-
-    fetch('http://localhost:2700/api/removefriend', {
+    let tokenValue = tokenMaker();
+    fetch('http://localhost:8000/removefriend/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -324,12 +382,91 @@ function removefriend(username) {
 }
 
 
+function race(headClickCount, tailClickCount, temp) {
+
+	if (temp == 5)
+	{
+		fetch ('http://localhost:2700/api/headAndTailRace', {
+		method: 'POST',	 
+		headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				token: localStorage.getItem('token'),
+				headClickCount: headClickCount,
+				tailClickCount: tailClickCount,
+			}),
+		}).then(response => {
+			if (response.ok)
+				return response.json();
+			else
+				return Promise.reject(response);
+		}
+		).then(data => {
+			console.log(data);
+			if (data.success)
+			{
+				if (data.headwin)
+				{
+					window.location.pathname = '/1v1match-lose-page';
+				}
+				else
+				{
+					document.getElementById('tail-option-atıs').innerHTML = '<a href="" class="pong-logo-link"><img src="img/1v1-win-sign.png" alt="Pong Logo"></a>'
+				}
+			}
+			else
+			{
+				console.log('error');
+			}
+		}
+		)
+	}
+}
+var temp = 0;
+
+function	headTailTime() {
+
+	var token = localStorage.getItem('token');
+
+	fetch ('http://localhost:2700/api/head-tail-time', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			token: token,
+		}),
+	}).then(response => {
+		if (!response.ok)
+			return Promise.reject(response);
+		else
+			return response.json();
+	})
+	.then(data => {
+        if (data.token == token)
+        {
+            if (data.success)
+            {
+                window.location.href = '/head-and-tail';
+            }
+            else
+            {	
+                setInterval(function() {
+                    headTailTime();
+                }, 8000);
+            }
+        }
+	})
+}
+
 function addfriend(username) {
-    
-    fetch('http://localhost:2700/api/addfriend', {
+    var tokenValue = tokenMaker();
+    fetch('http://localhost:8000/addfriend/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -351,16 +488,16 @@ function addfriend(username) {
     )
 }
 
-
-
 function getProfile(username) {
 
-	console.log('getProfile');
-    fetch('http://localhost:2700/api/get-profile', {
+    let token = tokenMaker();
+    console.log('token', token);
+
+    fetch('http://localhost:8000/getprofile/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-			'Authorization': 'Bearer ' + localStorage.getItem('token'), //BURAK
+			'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -369,8 +506,6 @@ function getProfile(username) {
     })
     .then(response => response.json())
     .then(data => {
-
-        console.log('data', data);
 
         if (data.success) {
             
@@ -384,11 +519,11 @@ function getProfile(username) {
             const profileButtonsContainer = document.querySelector('.profile-buttons');
             
 
-            if (data.friends == true)
+            if (data.is_friend == true)
             {
                 console.log('if');
-                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
-                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
                     <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
@@ -399,20 +534,22 @@ function getProfile(username) {
 				tournamentCount.innerHTML = '&nbsp;' + data.tournament;
 				friendsCount.innerHTML = '&nbsp;' + data.friends_count;
             }
-            else if (data.friends == false)
+            else if (data.is_friend == false)
             {
                 console.log('else if');
-                profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
-                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
                 usernameContainer.innerHTML = data.username;
                 profileButtonsContainer.innerHTML = `
                     <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
                 }
+
                 matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
 					'<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
 				tournamentCount.innerHTML = '&nbsp;' + data.tournament;
 				friendsCount.innerHTML = '&nbsp;' + data.friends_count;
+
             }
 
 			const scrollTable = document.getElementById('scroll_table');
@@ -478,26 +615,27 @@ var token = localStorage.getItem('token');
 
 
 function fetchFriendsList(){
+    console.log('fetching friends list');
+	var tokenValue   = tokenMaker();
 
-	var token = localStorage.getItem('token');
-
-    fetch('http://localhost:2700/api/friendlist', {
+    fetch('http://localhost:8000/friendslist/', {
         method: 'GET',
 		headers: {
-			'Authorization': 'Bearer ' + token,
-			'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
+			'Authorization': 'Token ' + tokenValue,
 		},
     })
 	.then(response => response.json())
 	.then(data => {
         if (data.success) {
+            console.log('Success:', data);
             const userContainer = document.getElementById('user-list-container');
             userContainer.innerHTML = '';
             const friends = data.friends;
-            if(friends.length != 0){
+            if(friends != null && friends.length != 0){
                 friends.forEach(function (friend) {
                     const userHtml = '<ul>' +
-                                        '<span class="online-dot-' + (friend.online_status ? 'online' : 'offline') + '"></span>' +
+                                        '<span class="online-dot-' + (friend.is_online ? 'online' : 'offline') + '"></span>' +
                                         '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
                                         '</ul>';
                     userContainer.innerHTML += userHtml;
@@ -506,7 +644,7 @@ function fetchFriendsList(){
         }
         else if (data.success == false) {
             const userContainer = document.getElementById('user-list-container');
-
+        
             var language = localStorage.getItem('language');
            
 
@@ -526,13 +664,14 @@ function fetchFriendsList(){
 }
 
 function createTournament() {
-
+    let token = tokenMaker();
 	console.log('createTournament');
 
-    fetch('http://localhost:2700/api/createTournament', {
+    fetch('http://localhost:8000/createTournament/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             token: localStorage.getItem('token'),
@@ -610,26 +749,28 @@ function putTheNick() {
 
 
 function refreshUserList() {
-
+    var URL = document.referrer;
     const userContainer = document.getElementById('user-list-container');
 
     if (userContainer) {
         if (userContainer.innerHTML != '') {
-            return;
+            return ;
         }
         else{
+            userContainer.innerHTML = '';
             console.log('refreshing user list');
             fetchFriendsList()
+            ///searchUsers();
         }
     }
 }
 
 function beingMatch() {
+    let token = tokenMaker();
+    if ( window.location.pathname === '/being-match') {
 
-    if (window.location.pathname == '/being-match')
-    {
-        var token = localStorage.getItem('token');
-        fetch('http://localhost:2700/api/beingMatch', {
+
+        fetch('http://ftpong.duckdns.org:8100/beingMatch', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -643,14 +784,8 @@ function beingMatch() {
             if (data.success) {
                 
 
-                if(data.match == false){
-
-                    return ;
-                }
-                else if (data.match == true)
-                {
+                if (data.match == true)
                     window.location.pathname = '/games-match';
-                }
             }
         })
         .catch(error => {
@@ -693,7 +828,7 @@ function startTournament() {
     );
 }
 
-//setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
 setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
 //setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
@@ -860,16 +995,16 @@ function getmyprofile() {
 function goToTournament() {
 
     var tournament_id = localStorage.getItem('tournament_id');
-    var token = localStorage.getItem('token');
+    let token = tokenMaker();
 
-    fetch('http://localhost:2700/api/goToTournament', {
+    fetch('http://localhost:8000/joinTournament/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             tournament_id: tournament_id,
-            token: token,
         }),
     })
     .then(response => {
