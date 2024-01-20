@@ -196,7 +196,6 @@ function myProfile() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-			'Authorization': 'Bearer ' + localStorage.getItem('token'),
         },
 		body: JSON.stringify({
 			token: localStorage.getItem('token'),
@@ -204,8 +203,32 @@ function myProfile() {
 	})
     .then(response => response.json())
     .then(data => {
-
+	
 		if (data.success) {
+
+			const profileImageContainer = document.getElementById('profileImageContainer');
+			const onlineStatusContainer = document.getElementById('onlineStatusContainer');
+			const usernameContainer = document.getElementById('usernameContainer');
+			const matchesCount = document.getElementById('matchesCount');
+			const tournamentCount = document.getElementById('tournamentCount');
+			const friendsCount = document.getElementById('friendsCount');
+			const profileButtonsContainer = document.querySelector('.profile-buttons');
+
+			profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
+			onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
+			usernameContainer.innerHTML = data.username;
+			
+			profileButtonsContainer.innerHTML = `
+                    <button onclick="logout();" type="button" class="btn btn-danger">Log Out</button>
+                    <button onclick="window.location.href='/settings'" type="button" class="btn btn-success">Settings</button>
+                    `;
+			matchesCount.innerHTML =  '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+                                '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
+			tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+			friendsCount.innerHTML = '&nbsp;' + data.friends_count;
+
+
+
 
 			const scrollTable = document.getElementById('scroll_table');
 
@@ -269,6 +292,8 @@ function myProfile() {
 
 function removefriend(username) {
 
+	removefriendanimation();
+
     fetch('http://localhost:2700/api/removefriend', {
         method: 'POST',
         headers: {
@@ -289,7 +314,7 @@ function removefriend(username) {
                 alert('Vous avez supprimé ' + username + ' de votre liste d\'amis.');
             else
                 alert(username + ' arkadaş listenden çıkarıldı.');
-            window.location.pathname = '/games';
+            /* window.location.pathname = '/games'; */
         }
     }
     )
@@ -330,6 +355,7 @@ function addfriend(username) {
 
 function getProfile(username) {
 
+	console.log('getProfile');
     fetch('http://localhost:2700/api/get-profile', {
         method: 'POST',
         headers: {
@@ -348,6 +374,7 @@ function getProfile(username) {
 
         if (data.success) {
             
+
             const profileImageContainer = document.getElementById('profileImageContainer');
             const onlineStatusContainer = document.getElementById('onlineStatusContainer');
             const usernameContainer = document.getElementById('usernameContainer');
@@ -367,9 +394,10 @@ function getProfile(username) {
                     <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
                     `;
-                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
-                tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
-                friendsCount.innerHTML = 'friends: ' + data.friends_count;
+                matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+					'<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
+				tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+				friendsCount.innerHTML = '&nbsp;' + data.friends_count;
             }
             else if (data.friends == false)
             {
@@ -381,12 +409,64 @@ function getProfile(username) {
                     <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
                 }
-                matchesCount.innerHTML = 'matches: ' + data.matches_count + ' / Win ' + data.tournament;
-                tournamentCount.innerHTML = 'tournaments: Win ' + data.tournament;
-                friendsCount.innerHTML = 'friends: ' + data.friends_count;
+                matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+					'<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
+				tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+				friendsCount.innerHTML = '&nbsp;' + data.friends_count;
             }
-            
-        }
+
+			const scrollTable = document.getElementById('scroll_table');
+
+			const table = document.createElement('table');
+			const thead = document.createElement('thead');
+			const tbody = document.createElement('tbody');
+
+			// Create header row
+			const headerRow = document.createElement('tr');
+			headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+			thead.appendChild(headerRow);
+
+			// Create rows for match data
+			for (let i = 0; i < data.match_length; i++) {
+				const match = data.matches[i];
+				
+				const row = document.createElement('tr');
+				row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+				
+				tbody.appendChild(row);
+			}
+
+			table.appendChild(thead);
+			table.appendChild(tbody);
+			scrollTable.appendChild(table);
+			
+			
+			const scrollTable_other = document.getElementById('scroll_table_other'); // BURAK
+			
+
+			const table_other = document.createElement('table');
+			const thead_other = document.createElement('thead');
+			const tbody_other = document.createElement('tbody');
+			
+			
+			const headerRow_other = document.createElement('tr');
+			headerRow_other.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
+			
+			thead_other.appendChild(headerRow_other);
+
+			for (let i = 0; i < data.other_game_len; i++) {
+				const match_other = data.other_game_matches[i];
+				
+				const row_other = document.createElement('tr');
+				row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+				
+				tbody_other.appendChild(row_other);
+			}
+
+			table_other.appendChild(thead_other);
+			table_other.appendChild(tbody_other);
+			scrollTable_other.appendChild(table_other); 
+		}
     )
     .catch(error => {
         console.error('Error getting profile:', error);

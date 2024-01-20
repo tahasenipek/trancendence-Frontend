@@ -942,6 +942,7 @@ thead th {
 	margin: 0 auto;
 	text-align: center;
 }
+
 .users-settings-photo h3 {
     text-align: center;
 }
@@ -1004,4 +1005,15 @@ thead th {
 	object-fit: cover;
 	border-radius: 50%;
 	clip-path: circle(50% at 50% 50%);
+}
+
+.hori-line {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	background-color: #f2f2f2; /* İstenirse arkaplan rengi ekleyebilirsiniz */
+	padding: 10px; /* İstenirse içeriğin etrafına boşluk ekleyebilirsiniz */
+	font-family: 'Arial', sans-serif;
+	
 }

@@ -164,11 +164,16 @@ function addfriend() {
 	addFriendRequest();
 }
 
-function removefriend() {
+function removefriendanimation() {
 	var cardyElement = document.querySelector('.cardy');
 
 	var bottomTextElement = document.createElement('div');
-    bottomTextElement.textContent = '-- Removed from your friends list --';
+	if (language == 'en')
+    	bottomTextElement.textContent = '-- Removed from your friends list --';
+	else if (language == 'tr')
+		bottomTextElement.textContent = '-- Arkadaş listenden çıkarıldı --';
+	else if (language == 'fr')
+		bottomTextElement.textContent = '-- Retiré de votre liste d\'amis --';
 	bottomTextElement.style.fontSize = '14px'; // Yazıyı küçültmek için
     bottomTextElement.style.fontFamily = 'Arial, sans-serif'; // Fontu değiştirmek için
     bottomTextElement.style.color = "#e20000"; // Rengi yeşil yapmak için
@@ -280,7 +285,7 @@ async function router() {
 		if (page.template == 'pages/their-profile.html')
 		{
 			addfriend();
-			removefriend();
+			removefriendanimation();
 			matchRequestFromProfile();
 		}
 		else{
@@ -445,4 +450,3 @@ function fadeAnimation(element, duration) {
         element.style.opacity = 1; // Animasyon bittiğinde opaklığı geri al
     }, duration * 1000);
 }
-
