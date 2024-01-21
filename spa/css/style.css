@@ -221,9 +221,9 @@ body {
 }
 
 .navbar-container img.profile-img {
-    max-width: 40px;
     height: auto;
     margin-right: 2%;
+    border-radius: 100%;
 }
 
 /* navbar css son */
