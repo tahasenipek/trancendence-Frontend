@@ -124,6 +124,10 @@ const routes = {
 		template: getTemplateByLang(language, 'head-and-tail-load.html'),
 		view: null
 	},
+	'/1v1match': {
+		template: getTemplateByLang(language, 'games_iframe.html'),
+		view: null
+	},
 }
 
 
@@ -271,15 +275,10 @@ function frienduser() {
 
 function checkGetMyProfile(path) {
 
-	var windowPath = window.location.pathname;
-	console.log('windowPath: ' + windowPath);
-
 	if (path == '/settings')
 		getmyprofile();   // ayarlar sayfasındaki profil fotoğrafını alır ve gösterir
 	else if (path == '/my-profile')
 		myProfile();  //kişinin kendi profilini alır ve gösterir
-	else if (path == '/their-profile')
-		getProfile();  // arkadaşı olan veya olmayan kişilerin profilini gösterir
 }
 
 
@@ -311,9 +310,13 @@ async function router() {
 function render(view) {
 	app.innerHTML = view.innerHTML;
 	friendscontrol();
+	if (window.location.pathname == '/1v1match')
+	{
+		myframe();
+	}
 	if (window.location.pathname != '/login' && window.location.pathname != '/register')
 		checktoken();		
-	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile' || window.location.pathname == '/their-profile')
+	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile')
 		checkGetMyProfile(window.location.pathname);
 	if (window.location.pathname == '/tournament-tables')
 	{
@@ -336,7 +339,6 @@ function render(view) {
 		, 5000);
 	}
 }
-
 
 function renderError(error) {
   render(`<div class="error">${error}</div>`);

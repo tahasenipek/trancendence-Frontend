@@ -173,6 +173,8 @@ function registerUser() {
     });
 }
 
+
+
 function searchUsers() {
     let tokenValue = tokenMaker();
     var searchQuery = document.querySelector('.search').value;
@@ -198,7 +200,7 @@ function searchUsers() {
             match_users.forEach(function(user) {
                 const userHtml = '<ul>' +
                 '<span class="online-dot-' + (user.is_online ? 'online' : 'offline') + '"></span>' + 
-                '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + user.username + '\');">' +
+                '<a href= "/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + user.username + '\');">' +
                 user.username + '</a>';
                 + '</ul>';
                 userContainer.innerHTML += userHtml;
@@ -214,25 +216,21 @@ function searchUsers() {
 
 
 
+
+
 function logoutUser() {
 
     let token = tokenMaker();
-    fetch('http://localhost:2700/api/logout', {
-        method: 'POST',
+    fetch('http://localhost:8000/logout/', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token,
         },
-        body: JSON.stringify({
-            token: token,
-        }),
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            localStorage.removeItem('token');
-
-
             if (language === 'en')
                 alert('You have successfully logged out.');
             else if (language === 'fr')
@@ -251,10 +249,13 @@ function logoutUser() {
 
 function myProfile() {
 
-    fetch('http://localhost:2700/api/my-profile', {
+    let token = tokenMaker();
+    console.log('myProfile');
+    fetch('http://localhost:8000/getmyprofile/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
 		body: JSON.stringify({
 			token: localStorage.getItem('token'),
@@ -278,7 +279,7 @@ function myProfile() {
 			usernameContainer.innerHTML = data.username;
 			
 			profileButtonsContainer.innerHTML = `
-                    <button onclick="logout();" type="button" class="btn btn-danger">Log Out</button>
+                    <button onclick="logoutUser();" type="button" class="btn btn-danger">Log Out</button>
                     <button onclick="window.location.href='/settings'" type="button" class="btn btn-success">Settings</button>
                     `;
 			matchesCount.innerHTML =  '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
@@ -289,7 +290,7 @@ function myProfile() {
 
 
 
-			const scrollTable = document.getElementById('scroll_table');
+			const scrollTable = document.getElementById('my_scroll_table');
 
 			const table = document.createElement('table');
 			const thead = document.createElement('thead');
@@ -315,7 +316,7 @@ function myProfile() {
 			scrollTable.appendChild(table);
 			
 			
-			const scrollTable_other = document.getElementById('scroll_table_other'); // BURAK
+			const scrollTable_other = document.getElementById('my_scroll_table_other'); // BURAK
 			
 
 			const table_other = document.createElement('table');
@@ -339,7 +340,7 @@ function myProfile() {
 
 			table_other.appendChild(thead_other);
 			table_other.appendChild(tbody_other);
-			scrollTable_other.appendChild(table_other); 
+			scrollTable_other.appendChild(table_other);
 		}
 
 	})
@@ -372,7 +373,6 @@ function removefriend(username) {
                 alert('Vous avez supprimé ' + username + ' de votre liste d\'amis.');
             else
                 alert(username + ' arkadaş listenden çıkarıldı.');
-            /* window.location.pathname = '/games'; */
         }
     }
     )
@@ -490,128 +490,130 @@ function addfriend(username) {
 
 function getProfile(username) {
 
-    let token = tokenMaker();
-    console.log('token', token);
+    if (username){
 
-    fetch('http://localhost:8000/getprofile/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-			'Authorization': 'Token ' + token,
-        },
-        body: JSON.stringify({
-            token: localStorage.getItem('token'),
-            username: username,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-
-        if (data.success) {
-            
-
-            const profileImageContainer = document.getElementById('profileImageContainer');
-            const onlineStatusContainer = document.getElementById('onlineStatusContainer');
-            const usernameContainer = document.getElementById('usernameContainer');
-            const matchesCount = document.getElementById('matchesCount');
-            const tournamentCount = document.getElementById('tournamentCount');
-            const friendsCount = document.getElementById('friendsCount');
-            const profileButtonsContainer = document.querySelector('.profile-buttons');
-            
-
-            if (data.is_friend == true)
-            {
-                console.log('if');
-                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
-                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
-                usernameContainer.innerHTML = data.username;
-                profileButtonsContainer.innerHTML = `
-                    <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
-                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
-                    `;
-                matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
-					'<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
-				tournamentCount.innerHTML = '&nbsp;' + data.tournament;
-				friendsCount.innerHTML = '&nbsp;' + data.friends_count;
-            }
-            else if (data.is_friend == false)
-            {
-                console.log('else if');
-                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
-                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
-                usernameContainer.innerHTML = data.username;
-                profileButtonsContainer.innerHTML = `
-                    <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
-                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
+        let token = tokenMaker();
+        console.log('token', token);
+    
+        fetch('http://localhost:8000/getprofile/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + token,
+            },
+            body: JSON.stringify({
+                token: localStorage.getItem('token'),
+                username: username,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                
+    
+                const profileImageContainer = document.getElementById('profileImageContainer');
+                const onlineStatusContainer = document.getElementById('onlineStatusContainer');
+                const usernameContainer = document.getElementById('usernameContainer');
+                const matchesCount = document.getElementById('matchesCount');
+                const tournamentCount = document.getElementById('tournamentCount');
+                const friendsCount = document.getElementById('friendsCount');
+                const profileButtonsContainer = document.querySelector('.profile-buttons');
+                
+    
+                if (data.is_friend == true)
+                {
+                    console.log('if');
+                    profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
+                    onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
+                    usernameContainer.innerHTML = data.username;
+                    profileButtonsContainer.innerHTML = `
+                        <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
+                        <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
+                        `;
+                    matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+                        '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
+                    tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+                    friendsCount.innerHTML = '&nbsp;' + data.friends_count;
                 }
-
-                matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
-					'<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
-				tournamentCount.innerHTML = '&nbsp;' + data.tournament;
-				friendsCount.innerHTML = '&nbsp;' + data.friends_count;
-
+                else if (data.is_friend == false)
+                {
+                    console.log('else if');
+                    profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
+                    onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
+                    usernameContainer.innerHTML = data.username;
+                    profileButtonsContainer.innerHTML = `
+                        <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
+                        <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
+                    }
+    
+                    matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+                        '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
+                    tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+                    friendsCount.innerHTML = '&nbsp;' + data.friends_count;
+    
+                }
+    
+                const scrollTable = document.getElementById('scroll_table');
+    
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const tbody = document.createElement('tbody');
+    
+                // Create header row
+                const headerRow = document.createElement('tr');
+                headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+                thead.appendChild(headerRow);
+    
+                // Create rows for match data
+                for (let i = 0; i < data.match_length; i++) {
+                    const match = data.matches[i];
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+                    
+                    tbody.appendChild(row);
+                }
+    
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                scrollTable.appendChild(table);
+                
+                
+                const scrollTable_other = document.getElementById('scroll_table_other'); // BURAK
+                
+    
+                const table_other = document.createElement('table');
+                const thead_other = document.createElement('thead');
+                const tbody_other = document.createElement('tbody');
+                
+                
+                const headerRow_other = document.createElement('tr');
+                headerRow_other.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
+                
+                thead_other.appendChild(headerRow_other);
+    
+                for (let i = 0; i < data.other_game_len; i++) {
+                    const match_other = data.other_game_matches[i];
+                    
+                    const row_other = document.createElement('tr');
+                    row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+                    
+                    tbody_other.appendChild(row_other);
+                }
+    
+                table_other.appendChild(thead_other);
+                table_other.appendChild(tbody_other);
+                scrollTable_other.appendChild(table_other); 
             }
-
-			const scrollTable = document.getElementById('scroll_table');
-
-			const table = document.createElement('table');
-			const thead = document.createElement('thead');
-			const tbody = document.createElement('tbody');
-
-			// Create header row
-			const headerRow = document.createElement('tr');
-			headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
-			thead.appendChild(headerRow);
-
-			// Create rows for match data
-			for (let i = 0; i < data.match_length; i++) {
-				const match = data.matches[i];
-				
-				const row = document.createElement('tr');
-				row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
-				
-				tbody.appendChild(row);
-			}
-
-			table.appendChild(thead);
-			table.appendChild(tbody);
-			scrollTable.appendChild(table);
-			
-			
-			const scrollTable_other = document.getElementById('scroll_table_other'); // BURAK
-			
-
-			const table_other = document.createElement('table');
-			const thead_other = document.createElement('thead');
-			const tbody_other = document.createElement('tbody');
-			
-			
-			const headerRow_other = document.createElement('tr');
-			headerRow_other.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
-			
-			thead_other.appendChild(headerRow_other);
-
-			for (let i = 0; i < data.other_game_len; i++) {
-				const match_other = data.other_game_matches[i];
-				
-				const row_other = document.createElement('tr');
-				row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
-				
-				tbody_other.appendChild(row_other);
-			}
-
-			table_other.appendChild(thead_other);
-			table_other.appendChild(tbody_other);
-			scrollTable_other.appendChild(table_other); 
-		}
-    )
-    .catch(error => {
-        console.error('Error getting profile:', error);
-    });
+        )
+        .catch(error => {
+            console.error('Error getting profile:', error);
+        });
+    }
+    else {
+        return ;
+    }
 }
-        
-var token = localStorage.getItem('token');
-
 
 
 function fetchFriendsList(){
@@ -636,7 +638,7 @@ function fetchFriendsList(){
                 friends.forEach(function (friend) {
                     const userHtml = '<ul>' +
                                         '<span class="online-dot-' + (friend.is_online ? 'online' : 'offline') + '"></span>' +
-                                        '<a href="/their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
+                                        '<a style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
                                         '</ul>';
                     userContainer.innerHTML += userHtml;
                 });
@@ -698,19 +700,20 @@ function createTournament() {
 
 function putTheNick() {
 
+    let token = tokenMaker();
 	console.log('putTheNick');
     var username = document.getElementById('usernameInput').value;
-    var token = localStorage.getItem('token');
     var tournament_id = localStorage.getItem('tournament_id');
 
 	console.log(username);
 	console.log(token);
 	console.log(tournament_id);
 
-    fetch('http://localhost:2700/api/putTheNick', {
+    fetch('http://localhost:8000/inviteTournament/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
         body: JSON.stringify({
             token: token,
@@ -725,8 +728,9 @@ function putTheNick() {
         return response.json();
     })
     .then(data => {
+        console.log('hey',data);
         if (data.success) {
-            console.log(data.user_count);
+            console.log('data: ',data.user_count);
 
             if (data.user_count === 3)
             {
@@ -737,7 +741,7 @@ function putTheNick() {
                 localStorage.setItem('tournament_id', data.tournament_id);
             else if (data.user_count != 3)
             {
-                window.location.pathname = '/tournament-friends-waiting';
+                //window.location.pathname = '/tournament-friends-waiting';
             }
         }
     })
@@ -770,22 +774,36 @@ function beingMatch() {
     if ( window.location.pathname === '/being-match') {
 
 
-        fetch('http://ftpong.duckdns.org:8100/beingMatch', {
-            method: 'POST',
+        fetch('http://localhost:8000/matching/', {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Token ' + token,
             },
-            body: JSON.stringify({
-                token: token,
-            }),
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 
+                console.log(data);
 
                 if (data.match == true)
-                    window.location.pathname = '/games-match';
+                {
+                    
+                    
+                    localStorage.setItem('game_id', data.game_id);
+                    localStorage.setItem('game_pass', data.game_pass);
+                    localStorage.setItem('player_pass', data.player_pass);
+                    localStorage.setItem('player', data.player);
+
+                    console.log('game_id', localStorage.getItem('game_id'));
+                    console.log('game_pass', localStorage.getItem('game_pass'));
+                    console.log('player_pass', localStorage.getItem('player_pass'));
+                    console.log('player', localStorage.getItem('player'));
+                    window.location.pathname = '/1v1match';
+                    
+                    
+                }
             }
         })
         .catch(error => {
@@ -794,24 +812,47 @@ function beingMatch() {
     }
 }
 
+function myframe(){
+
+    console.log('game_id1', localStorage.getItem('game_id'));
+    console.log('game_pass1', localStorage.getItem('game_pass'));
+    console.log('player_pass1', localStorage.getItem('player_pass'));
+    console.log('player1', localStorage.getItem('player'));
+    var game_id = localStorage.getItem('game_id');
+    var game_pass = localStorage.getItem('game_pass');
+    var player_pass = localStorage.getItem('player_pass');
+    var player = localStorage.getItem('player');
+
+   
+    var iframe = document.getElementById('myframe');
+    console.log('iframe', iframe);
+    iframe.src = 'http://ftpong.duckdns.org:2700/?gameid=' + game_id + '&gamepass=' + game_pass + '&player=' + player + '&playerpass=' + player_pass;
+
+    console.log('iframe.src', iframe.src);
+
+}
+
 function startTournament() {
 	
-	var token = localStorage.getItem('token');
-    fetch('http://localhost:2700/api/startTournament', {
-        method: 'POST',
+	var token = tokenMaker();
+    fetch('http://localhost:8000/startTournament/', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
         },
-        body: JSON.stringify({
-            token: token,
-        }),
     })
     .then(response => {
+        console.log(response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         return response.json();
     })
     .then(data => {
+        console.log('datamm' , data);
         if (data.success) {
-            if (data.tournament)
+            if (data.tournament_id)
             {
                 localStorage.setItem('tournament_id', data.tournament_id);
                 window.location.pathname = '/request-tournament';
@@ -828,9 +869,9 @@ function startTournament() {
     );
 }
 
-setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
-setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
-//setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
+//setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+//setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
+setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
 
 function submitForm()
@@ -971,10 +1012,7 @@ function getmyprofile() {
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
-    });
-}
-	/* 
-    backendden resim gelidğinde kullanılacak şekil
+    })
     .then(response => {
 		if (!response.ok) {
 			throw new Error('Network response was not ok');
@@ -987,8 +1025,8 @@ function getmyprofile() {
 		photo.src = data;
 
 		window.location.pathname == '/settings';
-	}) */
-
+	});
+}
 
 
 
@@ -1012,8 +1050,9 @@ function goToTournament() {
     }
     )
     .then(data => {
+        console.log('agam', data);
         if (data.success) {
-            window.location.pathname = '/tournament-friends-waiting';
+            window.location.pathname = '/tournament-tables';
         }
         else if (data.success == false) {
             return ;
@@ -1029,27 +1068,27 @@ function goToTournament() {
 
 function tournament_table() {
 
-    console.log('tournament_table');
     var tournament_id = localStorage.getItem('tournament_id');
-    var token = localStorage.getItem('token');
-
-    fetch('http://localhost:2700/api/tournament_table', {
+    let tokenValue = tokenMaker();
+    fetch('http://localhost:8000/tournament_table/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenValue,
         },
         body: JSON.stringify({
             tournament_id: tournament_id,
-            token: token,
         }),
     })
     .then(response => {
+        console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
+        console.log('datamm' , data);
         if (data.success) {
         var tableContainer = window.document.getElementById('table_body_id');
 
@@ -1062,7 +1101,7 @@ function tournament_table() {
         headerRow.innerHTML = '<th>match order</th><th>1. Player</th><th></th><th>2. Player</th><th>Score</th><th>Winner</th>';
         thead.appendChild(headerRow);
         table.appendChild(thead);
-
+        console.log('data.user_length', data.user_length);
         // Kullanıcı verilerini tabloya ekleyin
         for (var i = 0; i < data.users.length; i += 2) {
             var user1 = data.users[i];
