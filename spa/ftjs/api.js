@@ -173,8 +173,6 @@ function registerUser() {
     });
 }
 
-
-
 function searchUsers() {
     let tokenValue = tokenMaker();
     var searchQuery = document.querySelector('.search').value;
@@ -213,9 +211,6 @@ function searchUsers() {
         console.error('Error searching users:', error);
     });
 }
-
-
-
 
 
 function logoutUser() {
@@ -265,56 +260,20 @@ function myProfile() {
     .then(data => {
 	
 		if (data.success) {
-
-			const profileImageContainer = document.getElementById('profileImageContainer');
-			const onlineStatusContainer = document.getElementById('onlineStatusContainer');
+            const profileImageContainer = document.getElementById('profileImageContainer');
+            console.log(profileImageContainer);
 			const usernameContainer = document.getElementById('usernameContainer');
 			const matchesCount = document.getElementById('matchesCount');
-			const tournamentCount = document.getElementById('tournamentCount');
 			const friendsCount = document.getElementById('friendsCount');
 			const profileButtonsContainer = document.querySelector('.profile-buttons');
-
-			profileImageContainer.innerHTML = '<img class="" src="' + data.photo + '" alt="Card image cap" width="203" height="240">';
-			onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.online_status ? 'online' : 'offline') + '"></span>' + (data.online_status ? 'online' : 'offline');
-			usernameContainer.innerHTML = data.username;
 			
+            usernameContainer.innerHTML = data.username;
 			profileButtonsContainer.innerHTML = `
                     <button onclick="logoutUser();" type="button" class="btn btn-danger">Log Out</button>
                     <button onclick="window.location.href='/settings'" type="button" class="btn btn-success">Settings</button>
                     `;
-			matchesCount.innerHTML =  '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
-                                '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
-			tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+			matchesCount.innerHTML =  '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.match_count + '</div>'
 			friendsCount.innerHTML = '&nbsp;' + data.friends_count;
-
-
-
-
-			const scrollTable = document.getElementById('my_scroll_table');
-
-			const table = document.createElement('table');
-			const thead = document.createElement('thead');
-			const tbody = document.createElement('tbody');
-
-			// Create header row
-			const headerRow = document.createElement('tr');
-			headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
-			thead.appendChild(headerRow);
-
-			// Create rows for match data
-			for (let i = 0; i < data.match_length; i++) {
-				const match = data.matches[i];
-				
-				const row = document.createElement('tr');
-				row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
-				
-				tbody.appendChild(row);
-			}
-
-			table.appendChild(thead);
-			table.appendChild(tbody);
-			scrollTable.appendChild(table);
-			
 			
 			const scrollTable_other = document.getElementById('my_scroll_table_other'); // BURAK
 			
@@ -341,6 +300,7 @@ function myProfile() {
 			table_other.appendChild(thead_other);
 			table_other.appendChild(tbody_other);
 			scrollTable_other.appendChild(table_other);
+        
 		}
 
 	})
@@ -921,14 +881,16 @@ function submitForm()
 function updatePhoto()
 {
     var fileInput = document.getElementById('file');
-    var file = fileInput.files[0]; 
+    var file = fileInput.files[0];
     var formData = new FormData();
 
-    formData.append('token', localStorage.getItem('token'));
     formData.append('photo', file);
-
-    fetch('http://localhost:2700/api/update-photo', {
-        method: 'PUT',
+    
+    fetch('http://localhost:8000/updateavatar/', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Token ' + tokenMaker(),
+        },
         body: formData,
     })
     .then(response => {
@@ -984,15 +946,13 @@ function gamerequest()
 }
 
 function getmyprofile() {
-
-	fetch('http://localhost:2700/api/my-photo', {
+    let token = tokenMaker();
+	fetch('http://localhost:8000/getavatar/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
 		},
-        body: JSON.stringify({
-            token: localStorage.getItem('token'),
-        }),
 	})
     .then(response => {
         if (!response.ok) {
@@ -1005,27 +965,20 @@ function getmyprofile() {
         if (data.success) {
 
             const document = window.document;
-            const photo = document.getElementById('profile-photo');
-            console.log(data.photo);
-            photo.src = data.photo;
+            const photo = document.getElementById('avatar-image');
+            const photo_main = document.getElementById('avatar-image-main');
+            console.log('photo', photo);
+            if (photo)
+                photo.src = `http://localhost:8000${data.avatar_path}`;
+            if (photo_main)
+                photo_main.src = `http://localhost:8000${data.avatar_path}`;
+            else
+                photo.src = 'img/default-avatar.png';
         }   
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
     })
-    .then(response => {
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
-		}
-		return response.blob();
-	})
-	.then(blob => {
-        const data = URL.createObjectURL(blob);
-		const photo = document.getElementById('profile-photo');
-		photo.src = data;
-
-		window.location.pathname == '/settings';
-	});
 }
 
 
@@ -1141,8 +1094,6 @@ function tournament_table() {
     }
     );
 }
-
-
 
 function joinButtonClicked() {
     

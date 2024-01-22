@@ -12,7 +12,7 @@
         </a>
         <a href="my-profile">
             <div style="margin-right: 20px;">
-                <img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
+                <img id = "avatar-image" src="" alt="Profil" class="profile-img" width="46" height="46">
             </div>
         </a>
     </div>
@@ -39,9 +39,9 @@
         </div>
     </div>
     <form id="updateForm" enctype="multipart/form-data">
-        <div class="users-settings-photo">
+        <div class="users-settings-photo" id="profileImageContainer">
             <h3>Profile Image</h3>
-                <img id="profile-photo" src="img/small-user-photo.png" class="profile-img">
+            <img id="avatar-image-main" src="" alt="Avatar">
 			</div>
 			<div class="users-settings-photo-upload">
 				<input type="file" id="file" name="file" required>
