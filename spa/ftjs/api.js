@@ -1,7 +1,7 @@
 
-let headClickCount = 0;
-let tailClickCount = 0;
-
+var headClickCount = 0;
+var tailClickCount = 0;
+var temp = 0;
 function selectOption(option) {
     if (option === 1) {
         headClickCount++;
@@ -244,6 +244,7 @@ function logoutUser() {
 
 function myProfile() {
 
+    console.log("window.location.origin", window.location.origin)
     let token = tokenMaker();
     console.log('myProfile');
     fetch('http://localhost:8000/getmyprofile/', {
@@ -256,25 +257,62 @@ function myProfile() {
 			token: localStorage.getItem('token'),
 		}),
 	})
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
-	
+        console.log('my profile data', data);
 		if (data.success) {
+
             const profileImageContainer = document.getElementById('profileImageContainer');
-            console.log(profileImageContainer);
 			const usernameContainer = document.getElementById('usernameContainer');
 			const matchesCount = document.getElementById('matchesCount');
 			const friendsCount = document.getElementById('friendsCount');
+            const tournamentCount = document.getElementById('tournamentCount');
 			const profileButtonsContainer = document.querySelector('.profile-buttons');
 			
+            profileImageContainer.innerHTML = '<img class="" src="' + data.avatar +  '" alt="Card image cap" width="203" height="240">';
+
             usernameContainer.innerHTML = data.username;
 			profileButtonsContainer.innerHTML = `
                     <button onclick="logoutUser();" type="button" class="btn btn-danger">Log Out</button>
                     <button onclick="window.location.href='/settings'" type="button" class="btn btn-success">Settings</button>
                     `;
-			matchesCount.innerHTML =  '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.match_count + '</div>'
+                    matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_win + '</div>' +
+                    '<div style="color: #333333; display: inline;"> ' + ' / ' + data.match_count + '</div>';
+            tournamentCount.innerHTML = '&nbsp;' + data.match_count;
 			friendsCount.innerHTML = '&nbsp;' + data.friends_count;
 			
+            
+
+            const scrollTable = document.getElementById('my_scroll_table');
+
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+            thead.appendChild(headerRow);
+
+            // Create rows for match data
+            for (let i = 0; i < data.match_length; i++) {
+                const match = data.matches[i];
+                
+                const row = document.createElement('tr');
+                row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+                
+                tbody.appendChild(row);
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            scrollTable.appendChild(table);
+
 			const scrollTable_other = document.getElementById('my_scroll_table_other'); // BURAK
 			
 
@@ -342,19 +380,78 @@ function removefriend(username) {
 }
 
 
+function checkracescore() {
+
+    let token = tokenMaker();
+    let game_id = localStorage.getItem('game_id');
+
+    fetch('http://localhost:8000/check-head-tail/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+        },
+        body: JSON.stringify({
+            game_id: game_id,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }
+    )
+    .then(data => {
+        if (data.success)
+        {
+            if (data.again)
+            {
+                checkracescore()
+            }
+            else if (data.winner)
+            {
+                localStorage.removeItem('game_id');
+                window.location.pathname = '/1v1match-winner-page';
+            }
+            else if (data.lose)
+            {
+                localStorage.removeItem('game_id');
+                window.location.pathname = '/1v1match-lose-page';
+            }
+        }
+    }
+    )
+    .catch(error => {
+        console.error('Error:', error);
+    }
+    );
+}
+
+
+
+
+
 function race(headClickCount, tailClickCount, temp) {
 
-	if (temp == 5)
-	{
-		fetch ('http://localhost:2700/api/headAndTailRace', {
+    
+    if (temp == 5)
+	{   
+        console.log('headClickCount', headClickCount);
+        let tokenValue = tokenMaker();
+        console.log('tailClickCount', tailClickCount);
+        let game_id = localStorage.getItem('game_id');
+
+		fetch ('http://localhost:8000/head-and-tail-race/', {
 		method: 'POST',	 
 		headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+                'Authorization': 'Token ' + tokenValue,
 			},
 			body: JSON.stringify({
-				token: localStorage.getItem('token'),
 				headClickCount: headClickCount,
 				tailClickCount: tailClickCount,
+                game_id: game_id,
 			}),
 		}).then(response => {
 			if (response.ok)
@@ -363,16 +460,20 @@ function race(headClickCount, tailClickCount, temp) {
 				return Promise.reject(response);
 		}
 		).then(data => {
-			console.log(data);
 			if (data.success)
 			{
-				if (data.headwin)
+				if (data.win)
+				{
+                    window.location.pathname = '/1v1match-win-page';
+					
+				}
+                else if (data.notset == 2)
+                {
+                    checkracescore();
+                }
+				else if (data.lose)
 				{
 					window.location.pathname = '/1v1match-lose-page';
-				}
-				else
-				{
-					document.getElementById('tail-option-atıs').innerHTML = '<a href="" class="pong-logo-link"><img src="img/1v1-win-sign.png" alt="Pong Logo"></a>'
 				}
 			}
 			else
@@ -383,20 +484,17 @@ function race(headClickCount, tailClickCount, temp) {
 		)
 	}
 }
-var temp = 0;
+
 
 function	headTailTime() {
 
-	var token = localStorage.getItem('token');
-
-	fetch ('http://localhost:2700/api/head-tail-time', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			token: token,
-		}),
+    let token = tokenMaker();
+	fetch('http://localhost:8000/head-tail/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+        },
 	}).then(response => {
 		if (!response.ok)
 			return Promise.reject(response);
@@ -404,18 +502,16 @@ function	headTailTime() {
 			return response.json();
 	})
 	.then(data => {
-        if (data.token == token)
+        if (data.success)
         {
-            if (data.success)
-            {
-                window.location.href = '/head-and-tail';
-            }
-            else
-            {	
-                setInterval(function() {
-                    headTailTime();
-                }, 8000);
-            }
+            localStorage.setItem('game_id', data.game_id);
+            window.location.href = '/head-and-tail';
+        }
+        else
+        {	
+            setInterval(function() {
+                headTailTime();
+            }, 8000);
         }
 	})
 }
@@ -450,134 +546,134 @@ function addfriend(username) {
 
 function getProfile(username) {
 
-    if (username){
+    let token = tokenMaker();
+    localStorage.removeItem('friend');
+    fetch('http://localhost:8000/getprofile/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+        },
+        body: JSON.stringify({
+            username: username,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('profile data', data);
+        if (data.success == false) {
+            return ;
+        }
+        if (data.success) {
 
-        let token = tokenMaker();
-        console.log('token', token);
-    
-        fetch('http://localhost:8000/getprofile/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + token,
-            },
-            body: JSON.stringify({
-                token: localStorage.getItem('token'),
-                username: username,
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                
-    
-                const profileImageContainer = document.getElementById('profileImageContainer');
-                const onlineStatusContainer = document.getElementById('onlineStatusContainer');
-                const usernameContainer = document.getElementById('usernameContainer');
-                const matchesCount = document.getElementById('matchesCount');
-                const tournamentCount = document.getElementById('tournamentCount');
-                const friendsCount = document.getElementById('friendsCount');
-                const profileButtonsContainer = document.querySelector('.profile-buttons');
-                
-    
-                if (data.is_friend == true)
-                {
-                    console.log('if');
-                    profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
-                    onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
-                    usernameContainer.innerHTML = data.username;
-                    profileButtonsContainer.innerHTML = `
-                        <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
-                        <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
-                        `;
-                    matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
-                        '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
-                    tournamentCount.innerHTML = '&nbsp;' + data.tournament;
-                    friendsCount.innerHTML = '&nbsp;' + data.friends_count;
-                }
-                else if (data.is_friend == false)
-                {
-                    console.log('else if');
-                    profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
-                    onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
-                    usernameContainer.innerHTML = data.username;
-                    profileButtonsContainer.innerHTML = `
-                        <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
-                        <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
-                    }
-    
-                    matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
-                        '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
-                    tournamentCount.innerHTML = '&nbsp;' + data.tournament;
-                    friendsCount.innerHTML = '&nbsp;' + data.friends_count;
-    
-                }
-    
-                const scrollTable = document.getElementById('scroll_table');
-    
-                const table = document.createElement('table');
-                const thead = document.createElement('thead');
-                const tbody = document.createElement('tbody');
-    
-                // Create header row
-                const headerRow = document.createElement('tr');
-                headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
-                thead.appendChild(headerRow);
-    
-                // Create rows for match data
-                for (let i = 0; i < data.match_length; i++) {
-                    const match = data.matches[i];
-                    
-                    const row = document.createElement('tr');
-                    row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
-                    
-                    tbody.appendChild(row);
-                }
-    
-                table.appendChild(thead);
-                table.appendChild(tbody);
-                scrollTable.appendChild(table);
-                
-                
-                const scrollTable_other = document.getElementById('scroll_table_other'); // BURAK
-                
-    
-                const table_other = document.createElement('table');
-                const thead_other = document.createElement('thead');
-                const tbody_other = document.createElement('tbody');
-                
-                
-                const headerRow_other = document.createElement('tr');
-                headerRow_other.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
-                
-                thead_other.appendChild(headerRow_other);
-    
-                for (let i = 0; i < data.other_game_len; i++) {
-                    const match_other = data.other_game_matches[i];
-                    
-                    const row_other = document.createElement('tr');
-                    row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
-                    
-                    tbody_other.appendChild(row_other);
-                }
-    
-                table_other.appendChild(thead_other);
-                table_other.appendChild(tbody_other);
-                scrollTable_other.appendChild(table_other); 
+            localStorage.setItem('friend', data.username);
+            const profileImageContainer = document.getElementById('profileImageContainer');
+            const onlineStatusContainer = document.getElementById('onlineStatusContainer');
+            const usernameContainer = document.getElementById('usernameContainer');
+            const matchesCount = document.getElementById('matchesCount');
+            const tournamentCount = document.getElementById('tournamentCount');
+            const friendsCount = document.getElementById('friendsCount');
+            const profileButtonsContainer = document.querySelector('.profile-buttons');
+            
+
+            if (data.is_friend == true)
+            {
+                console.log('if');
+                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
+                usernameContainer.innerHTML = data.username;
+                profileButtonsContainer.innerHTML = `
+                    <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
+                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
+                    `;
+                matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+                    '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
+                tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+                friendsCount.innerHTML = '&nbsp;' + data.friends_count;
             }
-        )
-        .catch(error => {
-            console.error('Error getting profile:', error);
-        });
-    }
-    else {
-        return ;
-    }
+            else if (data.is_friend == false)
+            {
+                console.log('else if');
+                profileImageContainer.innerHTML = '<img class="" src="' + data.avatar + '" alt="Card image cap" width="203" height="240">';
+                onlineStatusContainer.innerHTML = '<span class="online-dot-' + (data.is_online ? 'online' : 'offline') + '"></span>' + (data.is_online ? 'online' : 'offline');
+                usernameContainer.innerHTML = data.username;
+                profileButtonsContainer.innerHTML = `
+                    <button onclick="addfriend('${data.username}')" type="button" class="btn btn-success" id="addFriendsLink">+add friend</button>
+                    <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>`;
+                }
+
+                matchesCount.innerHTML = '<div style="display: inline;"> ' + '<span style="color: #00a500;">&nbsp;' + data.matches_win + '</span> / ' + '<span style="color: black;">' + data.match_count + '</span></div>';
+
+                tournamentCount.innerHTML = '&nbsp;' + data.match_count;
+                friendsCount.innerHTML = '&nbsp;' + data.friends_count;
+
+            }
+
+            const scrollTable = document.getElementById('scroll_table');
+
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+            thead.appendChild(headerRow);
+
+            // Create rows for match data
+            for (let i = 0; i < data.match_length; i++) {
+                const match = data.matches[i];
+                
+                const row = document.createElement('tr');
+                row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+                
+                tbody.appendChild(row);
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            scrollTable.appendChild(table);
+            
+            
+            const scrollTable_other = document.getElementById('scroll_table_other'); // BURAK
+            
+
+            const table_other = document.createElement('table');
+            const thead_other = document.createElement('thead');
+            const tbody_other = document.createElement('tbody');
+            
+            
+            const headerRow_other = document.createElement('tr');
+            headerRow_other.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
+            
+            thead_other.appendChild(headerRow_other);
+
+            for (let i = 0; i < data.other_game_len; i++) {
+                const match_other = data.other_game_matches[i];
+                
+                const row_other = document.createElement('tr');
+                row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+                
+                tbody_other.appendChild(row_other);
+            }
+
+            table_other.appendChild(thead_other);
+            table_other.appendChild(tbody_other);
+            scrollTable_other.appendChild(table_other); 
+        }
+    )
+    .catch(error => {
+        console.error('Error getting profile:', error);
+    });
 }
 
 
 function fetchFriendsList(){
-    console.log('fetching friends list');
 	var tokenValue   = tokenMaker();
 
     fetch('http://localhost:8000/friendslist/', {
@@ -590,7 +686,6 @@ function fetchFriendsList(){
 	.then(response => response.json())
 	.then(data => {
         if (data.success) {
-            console.log('Success:', data);
             const userContainer = document.getElementById('user-list-container');
             userContainer.innerHTML = '';
             const friends = data.friends;
@@ -598,7 +693,7 @@ function fetchFriendsList(){
                 friends.forEach(function (friend) {
                     const userHtml = '<ul>' +
                                         '<span class="online-dot-' + (friend.is_online ? 'online' : 'offline') + '"></span>' +
-                                        '<a style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
+                                        '<a href="their-profile" style="color: #FDB827; text-decoration: none;" onclick="getProfile(\'' + friend.username + '\');">' + friend.username + '</a>' +
                                         '</ul>';
                     userContainer.innerHTML += userHtml;
                 });
@@ -713,18 +808,15 @@ function putTheNick() {
 
 
 function refreshUserList() {
-    var URL = document.referrer;
     const userContainer = document.getElementById('user-list-container');
-
     if (userContainer) {
         if (userContainer.innerHTML != '') {
-            return ;
+            fetchFriendsList()
         }
         else{
+            
             userContainer.innerHTML = '';
-            console.log('refreshing user list');
             fetchFriendsList()
-            ///searchUsers();
         }
     }
 }
@@ -803,14 +895,12 @@ function startTournament() {
         },
     })
     .then(response => {
-        console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
-        console.log('datamm' , data);
         if (data.success) {
             if (data.tournament_id)
             {
@@ -829,9 +919,9 @@ function startTournament() {
     );
 }
 
-//setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
-//setInterval(refreshUserList, 3000); // 3 saniyede bir kullanıcı listesini yeniler
-setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
+setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+setInterval(refreshUserList, 7000); // 3 saniyede bir kullanıcı listesini yeniler
+//setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
 
 function submitForm()
@@ -846,13 +936,13 @@ function submitForm()
         return;
     }
 
-    fetch('http://localhost:2700/api/update-profile', {
+    fetch('http://localhost:8000/update_profile/', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Token ' + tokenMaker(),
     },
     body: JSON.stringify({ 
-        token: localStorage.getItem('token'),
         username: formusername,
         password: formpassword,
         language: language,
@@ -865,10 +955,14 @@ function submitForm()
         return response.json();
     })
     .then(data => {
+        console.log('data', data);
         if (data.success) {
             console.log('Success:', data);
             
             window.location.pathname = '/settings';
+        }
+        else if (data.success == false) {
+            alert (data.error);
         }
     })
     .catch(error => {
@@ -886,8 +980,8 @@ function updatePhoto()
 
     formData.append('photo', file);
     
-    fetch('http://localhost:8000/updateavatar/', {
-        method: 'POST',
+    fetch('http://localhost:8000/update_avatar/', {
+        method: 'PUT',
         headers: {
             'Authorization': 'Token ' + tokenMaker(),
         },
@@ -897,9 +991,11 @@ function updatePhoto()
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+        console.log('response', response);
         return response.json();
     })
     .then(data => {
+        console.log('data', data);
         if (data.success) {
             console.log('Success:', data);
             getmyprofile()
@@ -965,15 +1061,11 @@ function getmyprofile() {
         if (data.success) {
 
             const document = window.document;
-            const photo = document.getElementById('avatar-image');
             const photo_main = document.getElementById('avatar-image-main');
-            console.log('photo', photo);
-            if (photo)
-                photo.src = `http://localhost:8000${data.avatar_path}`;
             if (photo_main)
                 photo_main.src = `http://localhost:8000${data.avatar_path}`;
             else
-                photo.src = 'img/default-avatar.png';
+                photo.src = 'img/default_avatar.png';
         }   
     })
     .catch(error => {
@@ -1034,7 +1126,6 @@ function tournament_table() {
         }),
     })
     .then(response => {
-        console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

@@ -12,7 +12,7 @@
         </a>
         <a href="my-profile">
             <div style="margin-right: 20px;">
-                <img id = "avatar-image" src="" alt="Profil" class="profile-img" width="46" height="46">
+                <img src="img/small-user-photo.png" alt="Profil" class="profile-img" width="46" height="46">
             </div>
         </a>
     </div>
@@ -23,11 +23,11 @@
             <h1 style="color: #FDB827;">edit profile,</h1>
             <form id="user-settings-form" class="user-settings-form" method="PUT">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Enter username">            
+                <input type="text" id="username" name="username" placeholder="Enter username" required>            
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter password">
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
                 <label for="cpassword">Confirm Password:</label>
-                <input type="cpassword" id="confirmpassword" name="cpassword" placeholder="Enter confirm password">
+                <input type="cpassword" id="confirmpassword" name="cpassword" placeholder="Enter confirm password" required>
                 <label for="language">Language:</label>
                 <select id="language" name="language">
                 <option value="en">English</option>
