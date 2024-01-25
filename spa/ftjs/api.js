@@ -843,9 +843,9 @@ function beingMatch() {
                 {
                     
                     
-                    localStorage.setItem('game_id', data.game_id);
-                    localStorage.setItem('game_pass', data.game_pass);
-                    localStorage.setItem('player_pass', data.player_pass);
+                    localStorage.setItem('game_id', data.game_id);//
+                    localStorage.setItem('game_pass', data.game_pass);//
+                    localStorage.setItem('player_pass', data.player_pass);//
                     localStorage.setItem('player', data.player);
 
                     console.log('game_id', localStorage.getItem('game_id'));
@@ -866,10 +866,10 @@ function beingMatch() {
 
 function myframe(){
 
-    console.log('game_id1', localStorage.getItem('game_id'));
-    console.log('game_pass1', localStorage.getItem('game_pass'));
-    console.log('player_pass1', localStorage.getItem('player_pass'));
-    console.log('player1', localStorage.getItem('player'));
+    console.log('game_id', localStorage.getItem('game_id'));
+    console.log('game_pass', localStorage.getItem('game_pass'));
+    console.log('player_pass', localStorage.getItem('player_pass'));
+    console.log('player', localStorage.getItem('player'));
     var game_id = localStorage.getItem('game_id');
     var game_pass = localStorage.getItem('game_pass');
     var player_pass = localStorage.getItem('player_pass');
