@@ -143,6 +143,7 @@ function checktoken() {
 		navigateTo('/login');
 		router();
 	}
+	return;
 }
 
 function pageControl(page) {
@@ -279,6 +280,7 @@ function checkGetMyProfile(path) {
 		getmyprofile();   // ayarlar sayfasındaki profil fotoğrafını alır ve gösterir
 	else if (path == '/my-profile')
 		myProfile();  //kişinin kendi profilini alır ve gösterir
+	return;
 }
 
 
@@ -314,6 +316,10 @@ function render(view) {
 	{
 		myframe();
 	}
+	if (window.location.pathname == '/their-profile')
+	{
+		getProfile(localStorage.getItem('friend'));
+	}
 	if (window.location.pathname != '/login' && window.location.pathname != '/register')
 		checktoken();		
 	if (window.location.pathname == '/settings' || window.location.pathname == '/my-profile')
@@ -323,28 +329,41 @@ function render(view) {
 		tournament_table();
 		setInterval(function() {
 			tournament_table();
-		}, 5000);x
+		}, 5000);
 	}
 	if (window.location.pathname == '/head-tail-time')
 	{
-		headTailTime();
+		setInterval(function() {
+			headTailTime();
+		}, 
+		5000);
 	}
 	if (window.location.pathname == '/head-and-tail')
 	{
 		setInterval(function() {
-			
 			race(headClickCount, tailClickCount, temp);
 			temp++;
+			console.log('temp', temp);
 		}
 		, 5000);
 	}
+	if (window.location.pathname == '/games' || window.location.pathname == '/my-profile'  || window.location.pathname == '/settings')
+	{
+		console.log('games');
+		setInterval(startTournament, 5000);
+		
+	}
 }
+
+
+
 
 function renderError(error) {
   render(`<div class="error">${error}</div>`);
 }
 
 function navigateTo(path) {
+	console.log('path', path);
 	window.history.pushState(null, null, path);
   	router();
 }
@@ -398,6 +417,7 @@ function init() {
 	for (let link of links) {
 		link.addEventListener('click', function(event) {
 			event.preventDefault();
+			console.log('link.href', link.href);
 			navigateTo(link.href);
 		});
 	}
