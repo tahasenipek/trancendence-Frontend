@@ -315,6 +315,9 @@ function render(view) {
 	if (window.location.pathname == '/1v1match')
 	{
 		myframe();
+		setInterval(function() {
+			gameinfo();
+		}, 21000);
 	}
 	if (window.location.pathname == '/their-profile')
 	{
@@ -329,7 +332,7 @@ function render(view) {
 		tournament_table();
 		setInterval(function() {
 			tournament_table();
-		}, 5000);
+		}, 10000);
 	}
 	if (window.location.pathname == '/head-tail-time')
 	{

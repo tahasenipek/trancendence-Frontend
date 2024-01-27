@@ -464,7 +464,7 @@ function race(headClickCount, tailClickCount, temp) {
 			{
 				if (data.win)
 				{
-                    window.location.pathname = '/1v1match-win-page';
+                    window.location.pathname = '/1v1match-winner-page';
 					
 				}
                 else if (data.notset == 2)
@@ -785,19 +785,33 @@ function putTheNick() {
     .then(data => {
         console.log('hey',data);
         if (data.success) {
-            console.log('data: ',data.user_count);
-
-            if (data.user_count === 3)
-            {
-                console.log('3 kişi tamam');
-                window.location.pathname = '/tournament-tables';
-            }
-            else if (localStorage.getItem('tournament_id') == null)
+            if (localStorage.getItem('tournament_id') == null)
                 localStorage.setItem('tournament_id', data.tournament_id);
+            if (data.user_count === 3)
+                window.location.pathname = '/tournament-tables';
             else if (data.user_count != 3)
+                window.location.pathname = '/tournament-friends-waiting';
+        }
+        else if (data.success == false) {
+            if (data.message == "Kullanıcı mevcut değil. Lütfen başka bir kullanıcı adı girin.")
             {
-                //window.location.pathname = '/tournament-friends-waiting';
+                alert(data.message);
+                window.location.pathname = '/tournament-friends-waiting';
             }
+            else if (data.message == "Kullanıcı şu anda bir oyun oynuyor. Lütfen başka bir kullanıcı adı girin.")
+            {
+                alert(data.message);
+                window.location.pathname = '/tournament-friends-waiting';
+            }
+            else if (data.message == "Turnuva mevcut değil. Turnuva oluşturmanız gerekiyor.")
+            {
+                alert(data.message);
+                windown.location.pathname = '/create-tournament';
+            } 
+        }
+        else{
+            alert('İnvite Tournament Bir hata oluştu.');
+            window.location.pathname = '/games';
         }
     })
     .catch(error => {
@@ -821,10 +835,65 @@ function refreshUserList() {
     }
 }
 
+function beingTournamentMatch(users, tournament_id) {
+    
+    console.log('beingTournamentMatch');
+    let user1 = users[0].username;
+    let user2 = users[1].username;
+    console.log('user1', user1);
+    console.log('user2', user2);
+    if (user1 && user2 && tournament_id) {
+        fetch('http://localhost:8000/being-tournament-match/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + tokenMaker(),
+            },
+            body: JSON.stringify({
+                user1: user1,
+                user2: user2,
+                tournament_id: tournament_id,
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }
+        )
+        .then(data =>{
+            if (data.success) {
+                
+                console.log(data);
+                console.log(data.match);
+                if (data.match)
+                {
+                    localStorage.setItem('game_id', data.game_id);//
+                    localStorage.setItem('game_pass', data.game_pass);//
+                    localStorage.setItem('player_pass', data.player_pass);//
+                    localStorage.setItem('player', data.player);
+                    
+                    console.log('game_id', localStorage.getItem('game_id'));
+                    console.log('game_pass', localStorage.getItem('game_pass'));
+                    console.log('player_pass', localStorage.getItem('player_pass'));
+                    console.log('player', localStorage.getItem('player'));
+                    window.location.pathname = '/1v1match';
+                }
+            }
+            console.log('else');
+            console.log('data', data);
+        })   
+
+    }
+
+
+}
+
 function beingMatch() {
     let token = tokenMaker();
-    if ( window.location.pathname === '/being-match') {
-
+    if (window.location.pathname === '/being-match') {
+        console.log('beingMatch', token);
 
         fetch('http://localhost:8000/matching/', {
             method: 'GET',
@@ -838,8 +907,8 @@ function beingMatch() {
             if (data.success) {
                 
                 console.log(data);
-
-                if (data.match == true)
+                console.log(data.match);
+                if (data.match)
                 {
                     
                     
@@ -857,6 +926,8 @@ function beingMatch() {
                     
                 }
             }
+            console.log('else');
+            console.log('data', data);
         })
         .catch(error => {
             console.error('Error fetching friends list:', error);
@@ -864,12 +935,78 @@ function beingMatch() {
     }
 }
 
-function myframe(){
+function game_info_back(score1, score2) {
+    let token = tokenMaker();
+    tournament_id = localStorage.getItem('tournament_id');
+    fetch('http://localhost:8000/game-info-back/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+        },
+        body: JSON.stringify({
+            game_id: localStorage.getItem('game_id'),
+            player1_score: score1,
+            player2_score: score2,
+            tournament_id: tournament_id,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('data', data);
+        if (data.success) {
+            if (data.winner)
+            {
+                window.location.pathname = '/1v1match-winner-page';
+            }
+            else if (data.lose)
+            {
+                window.location.pathname = '/1v1match-lose-page';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
-    console.log('game_id', localStorage.getItem('game_id'));
-    console.log('game_pass', localStorage.getItem('game_pass'));
-    console.log('player_pass', localStorage.getItem('player_pass'));
-    console.log('player', localStorage.getItem('player'));
+function gameinfo() {
+
+    fetch('http://pongapi.ftpong.duckdns.org/api/info/' + localStorage.getItem('game_id'), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenMaker(),
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.state) {
+            if (data.state == 'gameover')
+            {
+                console.log('data', data);
+                game_info_back(data.score1, data.score2)
+            }
+        }
+    }
+    )
+    .catch(error => {
+        console.error('Error:', error);
+    }
+    );
+}
+
+function myframe(){
     var game_id = localStorage.getItem('game_id');
     var game_pass = localStorage.getItem('game_pass');
     var player_pass = localStorage.getItem('player_pass');
@@ -903,13 +1040,17 @@ function startTournament() {
     .then(data => {
         if (data.success) {
             if (data.tournament_id)
-            {
-                localStorage.setItem('tournament_id', data.tournament_id);
-                window.location.pathname = '/request-tournament';
+            {  
+                if (data.waitlist)
+                {
+                    localStorage.setItem('tournament_id', data.tournament_id);
+                    window.location.pathname = '/tournament-tables';
+                }
+                else if (data.invitelist){
+                    localStorage.setItem('tournament_id', data.tournament_id);
+                    window.location.pathname = '/request-tournament';
+                }
             }
-        }
-        else if (data.success == false) {
-            return ;
         }
     })
     .catch(error => {
@@ -919,7 +1060,7 @@ function startTournament() {
     );
 }
 
-setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+setInterval(beingMatch, 10000);  /// 10 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
 setInterval(refreshUserList, 7000); // 3 saniyede bir kullanıcı listesini yeniler
 //setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
@@ -1091,22 +1232,32 @@ function goToTournament() {
         }),
     })
     .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         return response.json();
     }
     )
     .then(data => {
-        console.log('agam', data);
         if (data.success) {
             window.location.pathname = '/tournament-tables';
         }
         else if (data.success == false) {
-            return ;
+            if (data.message == "Turnuva Bulunamadı. Geç kaldın :(")
+            {
+                alert(data.message);
+                window.location.pathname = '/games';
+            }
+            else{
+                alert(data.error_message);
+                window.location.pathname = '/games';
+            }
         }
     }
     )
     .catch(error => {
+        alert('Turnuvaya katılamadınız.');
         console.error('There has been a problem with your fetch operation:', error);
-        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
     }
     );
 }
@@ -1132,51 +1283,62 @@ function tournament_table() {
         return response.json();
     })
     .then(data => {
-        console.log('datamm' , data);
         if (data.success) {
-        var tableContainer = window.document.getElementById('table_body_id');
+            var tableContainer = window.document.getElementById('table_body_id');
 
-        // Tabloyu oluştur
-        var table = document.createElement('table');
-        var thead = document.createElement('thead');
-        var tbody = document.createElement('tbody');
+            var table = document.createElement('table');
+            var thead = document.createElement('thead');
+            var tbody = document.createElement('tbody');
 
-        var headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>match order</th><th>1. Player</th><th></th><th>2. Player</th><th>Score</th><th>Winner</th>';
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-        console.log('data.user_length', data.user_length);
-        // Kullanıcı verilerini tabloya ekleyin
-        for (var i = 0; i < data.users.length; i += 2) {
-            var user1 = data.users[i];
-            var user2 = (i + 1 < data.users.length) ? data.users[i + 1] : null;
+            var headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>match order</th><th>1. Player</th><th></th><th>2. Player</th><th>Score</th><th>Winner</th>';
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            console.log('data.user_length', data.users_length);
 
-            var row = document.createElement('tr');
+            for (var i = 0; i < data.users.length; i += 2) {
+                var user1 = data.users[i];
+                var user2 = (i + 1 < data.users.length) ? data.users[i + 1] : null;
 
-            var username1 = user1 ? user1.username : 'N/A';
-            var username2 = user2 ? user2.username : 'N/A';
+                var row = document.createElement('tr');
 
-            row.innerHTML = '<th>' + (i / 2 + 1) + '.</th><th>' + username1 + '</th><th><img src="img/vs-sign.png" alt="vs-sign" width="48" height="48"></th><th>' + username2 + '</th><th>??</th><th>??</th>';
+                var username1 = user1 ? user1.username : 'N/A';
+                var username2 = user2 ? user2.username : 'N/A';
 
-            tbody.appendChild(row);
-        }
+                row.innerHTML = '<th>' + (i / 2 + 1) + '.</th><th>' + username1 + '</th><th><img src="img/vs-sign.png" alt="vs-sign" width="48" height="48"></th><th>' + username2 + '</th><th>??</th><th>??</th>';
 
-        table.appendChild(tbody);
+                tbody.appendChild(row);
+            }
 
-        // Tabloyu container'a ekle
-        tableContainer.innerHTML = '';
-        tableContainer.appendChild(table);
+            table.appendChild(tbody);
 
-        if (data.user_length == 4)
-        {
-            setTimeout(function(){ 
-                
-            }, 5000);
-        }
-        
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(table);
+            if (data.users_length == 4)
+            {
+                console.log('data.users_length', data.users_length);
+
+                if (data.users[0].username == data.me || data.users[1].username == data.me)
+                {   
+                    firstMatch(data.tournament_id);
+                    console.log('data.users', data.users);
+                    console.log('data.users[0].username', data.users[0].username);
+                    console.log('data.users[1].username', data.users[1].username);
+                    setTimeout(function(){ 
+                        beingTournamentMatch(data.users.slice(0, 2), data.tournament_id);
+                    }, 5000);
+                }
+            }
         }
         else if (data.success == false) {
-            return ;
+            if (data.error){
+                alert(data.error);
+                window.location.pathname = '/games';
+            }
+        }
+        else{
+            alert('Turnuva tablosu yüklenemedi.');
+            window.location.pathname = '/games';
         }
     })
     .catch(error => {
@@ -1185,6 +1347,41 @@ function tournament_table() {
     }
     );
 }
+
+function firstMatch(tournament_id) {
+
+    fetch('http://localhost:8000/first-match/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            tournament_id: tournament_id,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            return ;
+        }
+        else if (data.success == false) {
+            if (data.error){
+                alert(data.error);
+                window.location.pathname = '/games';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+}
+
+
 
 function joinButtonClicked() {
     
