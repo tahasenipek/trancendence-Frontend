@@ -308,6 +308,7 @@ async function router() {
 }
 
 
+var check = 0;
 
 function render(view) {
 	app.innerHTML = view.innerHTML;
@@ -340,6 +341,13 @@ function render(view) {
 			headTailTime();
 		}, 
 		5000);
+	}
+	if (window.location.pathname == '/tournament-waiting-page')
+	{
+		setInterval(function() {
+			TournamentWinner();
+		}, 
+		10000);
 	}
 	if (window.location.pathname == '/head-and-tail')
 	{

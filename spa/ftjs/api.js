@@ -283,7 +283,7 @@ function myProfile() {
                     `;
                     matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_win + '</div>' +
                     '<div style="color: #333333; display: inline;"> ' + ' / ' + data.match_count + '</div>';
-            tournamentCount.innerHTML = '&nbsp;' + data.match_count;
+            tournamentCount.innerHTML = '&nbsp;' + data.tournament_cup_count;
 			friendsCount.innerHTML = '&nbsp;' + data.friends_count;
 			
             
@@ -296,15 +296,15 @@ function myProfile() {
 
             // Create header row
             const headerRow = document.createElement('tr');
-            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
             thead.appendChild(headerRow);
 
             // Create rows for match data
-            for (let i = 0; i < data.match_length; i++) {
-                const match = data.matches[i];
+            for (let i = 0; i < data.match_length_type_0; i++) {
+                const match = data.matches_type_0[i];
                 
                 const row = document.createElement('tr');
-                row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+                row.innerHTML = '<td>' + match.date + '</td><td>' + match.opponent + '</td><td>' + match.outcome + '</td>';
                 
                 tbody.appendChild(row);
             }
@@ -326,11 +326,11 @@ function myProfile() {
 			
 			thead_other.appendChild(headerRow_other);
 
-			for (let i = 0; i < data.other_game_len; i++) {
-				const match_other = data.other_game_matches[i];
+			for (let i = 0; i < data.match_length_type_1; i++) {
+				const match_other = data.matches_type_1[i];
 				
 				const row_other = document.createElement('tr');
-				row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+				row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.opponent + '</td><td>' + match_other.outcome+ '</td>';
 				
 				tbody_other.appendChild(row_other);
 			}
@@ -591,9 +591,9 @@ function getProfile(username) {
                     <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
                     `;
-                matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+                    matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
                     '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
-                tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+                tournamentCount.innerHTML = '&nbsp;' + data.tournament_cup_count;
                 friendsCount.innerHTML = '&nbsp;' + data.friends_count;
             }
             else if (data.is_friend == false)
@@ -609,7 +609,7 @@ function getProfile(username) {
 
                 matchesCount.innerHTML = '<div style="display: inline;"> ' + '<span style="color: #00a500;">&nbsp;' + data.matches_win + '</span> / ' + '<span style="color: black;">' + data.match_count + '</span></div>';
 
-                tournamentCount.innerHTML = '&nbsp;' + data.match_count;
+                tournamentCount.innerHTML = '&nbsp;' + data.tournament_cup_count;
                 friendsCount.innerHTML = '&nbsp;' + data.friends_count;
 
             }
@@ -622,15 +622,15 @@ function getProfile(username) {
 
             // Create header row
             const headerRow = document.createElement('tr');
-            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
             thead.appendChild(headerRow);
 
             // Create rows for match data
-            for (let i = 0; i < data.match_length; i++) {
-                const match = data.matches[i];
+            for (let i = 0; i < data.match_length_type_0; i++) {
+                const match = data.matches_type_0[i];
                 
                 const row = document.createElement('tr');
-                row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+                row.innerHTML = '<td>' + match.date + '</td><td>' + match.opponent + '</td><td>' + match.outcome + '</td>';
                 
                 tbody.appendChild(row);
             }
@@ -653,11 +653,11 @@ function getProfile(username) {
             
             thead_other.appendChild(headerRow_other);
 
-            for (let i = 0; i < data.other_game_len; i++) {
-                const match_other = data.other_game_matches[i];
+            for (let i = 0; i < data.match_length_type_1; i++) {
+                const match_other = data.matches_type_1[i];
                 
                 const row_other = document.createElement('tr');
-                row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+                row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.opponent + '</td><td>' + match_other.outcome+ '</td>';
                 
                 tbody_other.appendChild(row_other);
             }
@@ -837,7 +837,6 @@ function refreshUserList() {
 
 function beingTournamentMatch(users, tournament_id) {
     
-    console.log('beingTournamentMatch');
     let user1 = users[0].username;
     let user2 = users[1].username;
     console.log('user1', user1);
@@ -863,10 +862,8 @@ function beingTournamentMatch(users, tournament_id) {
         }
         )
         .then(data =>{
+            console.log('data, being tournament match', data);
             if (data.success) {
-                
-                console.log(data);
-                console.log(data.match);
                 if (data.match)
                 {
                     localStorage.setItem('game_id', data.game_id);//
@@ -880,9 +877,15 @@ function beingTournamentMatch(users, tournament_id) {
                     console.log('player', localStorage.getItem('player'));
                     window.location.pathname = '/1v1match';
                 }
+                else if (data.again)
+                {
+                    beingTournamentMatch(data.users, tournament_id);
+                }
             }
-            console.log('else');
-            console.log('data', data);
+            else if (data.member)
+            {
+                return ;
+            }
         })   
 
     }
@@ -910,8 +913,6 @@ function beingMatch() {
                 console.log(data.match);
                 if (data.match)
                 {
-                    
-                    
                     localStorage.setItem('game_id', data.game_id);//
                     localStorage.setItem('game_pass', data.game_pass);//
                     localStorage.setItem('player_pass', data.player_pass);//
@@ -921,9 +922,7 @@ function beingMatch() {
                     console.log('game_pass', localStorage.getItem('game_pass'));
                     console.log('player_pass', localStorage.getItem('player_pass'));
                     console.log('player', localStorage.getItem('player'));
-                    window.location.pathname = '/1v1match';
-                    
-                    
+                    window.location.pathname = '/1v1match';   
                 }
             }
             console.log('else');
@@ -934,6 +933,48 @@ function beingMatch() {
         });
     }
 }
+
+function TournamentWinner() {
+    let token = tokenMaker();
+    let tournament_id = localStorage.getItem('tournament_id');
+    fetch('http://localhost:8000/tournament-winner/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+        },
+        body: JSON.stringify({
+            tournament_id: tournament_id,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        console.log('response', response);
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+
+            if (data.match)
+            {
+                localStorage.setItem('game_id', data.game_id);//
+                localStorage.setItem('game_pass', data.game_pass);//
+                localStorage.setItem('player_pass', data.player_pass);//
+                localStorage.setItem('player', data.player);
+                window.location.pathname = '/1v1match';
+            }
+        }
+    }
+    )
+    .catch(error => {
+        console.log("here");
+        console.error('Error:', error);
+    }
+    );
+}
+
 
 function game_info_back(score1, score2) {
     let token = tokenMaker();
@@ -962,17 +1003,64 @@ function game_info_back(score1, score2) {
         if (data.success) {
             if (data.winner)
             {
-                window.location.pathname = '/1v1match-winner-page';
+                localStorage.removeItem('game_id');
+                localStorage.removeItem('game_pass');
+                localStorage.removeItem('player_pass');
+                localStorage.removeItem('player');
+                if (data.type == 4)
+                    window.location.pathname = '/tournament-waiting-page';
+                if (data.type == 7)
+                {
+                    localStorage.removeItem('tournament_id');
+                    window.location.pathname = '/tournament-winner-page';
+                }
+                else if (data.type == 0)
+                {
+                    localStorage.removeItem('game_id');
+                    window.location.pathname = '/1v1match-winner-page';
+                }
             }
             else if (data.lose)
             {
+                localStorage.removeItem('game_id');
+                localStorage.removeItem('game_pass');
+                localStorage.removeItem('player_pass');
+                localStorage.removeItem('player');
+                removeTournament();
+                localStorage.removeItem('tournament_id');
+                if (data.type == 7)
+                    window.location.pathname = '/tournament-lost-page';
                 window.location.pathname = '/1v1match-lose-page';
             }
+        
         }
     })
     .catch(error => {
         console.error('Error:', error);
     });
+}
+
+function removeTournament()
+{
+    fetch('http://localhost:8000/clean-tournament/', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenMaker(),
+        },
+        body: JSON.stringify({
+            tournament_id: localStorage.getItem('tournament_id'),
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            return ;
+        }
+        else if (data.success == false) {
+            return ;
+        }
+    })
 }
 
 function gameinfo() {
@@ -1320,13 +1408,19 @@ function tournament_table() {
 
                 if (data.users[0].username == data.me || data.users[1].username == data.me)
                 {   
-                    firstMatch(data.tournament_id);
+                    //firstMatch(data.tournament_id);
+                    console.log('AFTER firstMatch');
                     console.log('data.users', data.users);
                     console.log('data.users[0].username', data.users[0].username);
                     console.log('data.users[1].username', data.users[1].username);
-                    setTimeout(function(){ 
-                        beingTournamentMatch(data.users.slice(0, 2), data.tournament_id);
-                    }, 5000);
+                    beingTournamentMatch(data.users.slice(0, 2), data.tournament_id);
+                }
+                else if (data.users[2].username == data.me || data.users[3].username == data.me)
+                {
+                    console.log('data.users', data.users);
+                    console.log('data.users[2].username', data.users[2].username);
+                    console.log('data.users[3].username', data.users[3].username);
+                    beingTournamentMatch(data.users.slice(2, 4), data.tournament_id);
                 }
             }
         }
@@ -1354,6 +1448,7 @@ function firstMatch(tournament_id) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenMaker(),
         },
         body: JSON.stringify({
             tournament_id: tournament_id,
@@ -1366,6 +1461,7 @@ function firstMatch(tournament_id) {
         return response.json();
     })
     .then(data => {
+        console.log('data', data);
         if (data.success) {
             return ;
         }
