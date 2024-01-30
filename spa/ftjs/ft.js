@@ -308,6 +308,7 @@ async function router() {
 }
 
 
+var check = 0;
 
 function render(view) {
 	app.innerHTML = view.innerHTML;
@@ -315,6 +316,9 @@ function render(view) {
 	if (window.location.pathname == '/1v1match')
 	{
 		myframe();
+		setInterval(function() {
+			gameinfo();
+		}, 21000);
 	}
 	if (window.location.pathname == '/their-profile')
 	{
@@ -329,7 +333,7 @@ function render(view) {
 		tournament_table();
 		setInterval(function() {
 			tournament_table();
-		}, 5000);
+		}, 10000);
 	}
 	if (window.location.pathname == '/head-tail-time')
 	{
@@ -337,6 +341,13 @@ function render(view) {
 			headTailTime();
 		}, 
 		5000);
+	}
+	if (window.location.pathname == '/tournament-waiting-page')
+	{
+		setInterval(function() {
+			TournamentWinner();
+		}, 
+		10000);
 	}
 	if (window.location.pathname == '/head-and-tail')
 	{

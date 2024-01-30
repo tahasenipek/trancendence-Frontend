@@ -283,7 +283,7 @@ function myProfile() {
                     `;
                     matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_win + '</div>' +
                     '<div style="color: #333333; display: inline;"> ' + ' / ' + data.match_count + '</div>';
-            tournamentCount.innerHTML = '&nbsp;' + data.match_count;
+            tournamentCount.innerHTML = '&nbsp;' + data.tournament_cup_count;
 			friendsCount.innerHTML = '&nbsp;' + data.friends_count;
 			
             
@@ -296,15 +296,15 @@ function myProfile() {
 
             // Create header row
             const headerRow = document.createElement('tr');
-            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
             thead.appendChild(headerRow);
 
             // Create rows for match data
-            for (let i = 0; i < data.match_length; i++) {
-                const match = data.matches[i];
+            for (let i = 0; i < data.match_length_type_0; i++) {
+                const match = data.matches_type_0[i];
                 
                 const row = document.createElement('tr');
-                row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+                row.innerHTML = '<td>' + match.date + '</td><td>' + match.opponent + '</td><td>' + match.outcome + '</td>';
                 
                 tbody.appendChild(row);
             }
@@ -326,11 +326,11 @@ function myProfile() {
 			
 			thead_other.appendChild(headerRow_other);
 
-			for (let i = 0; i < data.other_game_len; i++) {
-				const match_other = data.other_game_matches[i];
+			for (let i = 0; i < data.match_length_type_1; i++) {
+				const match_other = data.matches_type_1[i];
 				
 				const row_other = document.createElement('tr');
-				row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+				row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.opponent + '</td><td>' + match_other.outcome+ '</td>';
 				
 				tbody_other.appendChild(row_other);
 			}
@@ -462,19 +462,10 @@ function race(headClickCount, tailClickCount, temp) {
 		).then(data => {
 			if (data.success)
 			{
-				if (data.win)
-				{
-                    window.location.pathname = '/1v1match-win-page';
-					
-				}
-                else if (data.notset == 2)
+                if (data.notset == 2)
                 {
                     checkracescore();
                 }
-				else if (data.lose)
-				{
-					window.location.pathname = '/1v1match-lose-page';
-				}
 			}
 			else
 			{
@@ -591,9 +582,9 @@ function getProfile(username) {
                     <button onclick="removefriend('${data.username}')" type="button" class="btn btn-danger" id="removefriend">remove friend</button>
                     <button onclick="matchRequestFromProfile()" id="matchRequestFromProfile" type="button" class="btn btn-light">1v1 match <img src="img/1v1-profile.png" width="16" height="13"></button>
                     `;
-                matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
+                    matchesCount.innerHTML = '<div style="color: #00a500; display: inline;"> ' + '&nbsp;' + data.matches_count + '</div>' +
                     '<div style="color: #333333; display: inline;"> ' + ' / ' + data.tournament + '</div>';
-                tournamentCount.innerHTML = '&nbsp;' + data.tournament;
+                tournamentCount.innerHTML = '&nbsp;' + data.tournament_cup_count;
                 friendsCount.innerHTML = '&nbsp;' + data.friends_count;
             }
             else if (data.is_friend == false)
@@ -609,7 +600,7 @@ function getProfile(username) {
 
                 matchesCount.innerHTML = '<div style="display: inline;"> ' + '<span style="color: #00a500;">&nbsp;' + data.matches_win + '</span> / ' + '<span style="color: black;">' + data.match_count + '</span></div>';
 
-                tournamentCount.innerHTML = '&nbsp;' + data.match_count;
+                tournamentCount.innerHTML = '&nbsp;' + data.tournament_cup_count;
                 friendsCount.innerHTML = '&nbsp;' + data.friends_count;
 
             }
@@ -622,15 +613,15 @@ function getProfile(username) {
 
             // Create header row
             const headerRow = document.createElement('tr');
-            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>Score</th><th>W/L</th>';
+            headerRow.innerHTML = '<th>Date</th><th>Username</th><th>W/L</th>';
             thead.appendChild(headerRow);
 
             // Create rows for match data
-            for (let i = 0; i < data.match_length; i++) {
-                const match = data.matches[i];
+            for (let i = 0; i < data.match_length_type_0; i++) {
+                const match = data.matches_type_0[i];
                 
                 const row = document.createElement('tr');
-                row.innerHTML = '<td>' + match.date + '</td><td>' + match.oponent + '</td><td>' + match.score1 + '</td><td>' + match.winlose + '</td>';
+                row.innerHTML = '<td>' + match.date + '</td><td>' + match.opponent + '</td><td>' + match.outcome + '</td>';
                 
                 tbody.appendChild(row);
             }
@@ -653,11 +644,11 @@ function getProfile(username) {
             
             thead_other.appendChild(headerRow_other);
 
-            for (let i = 0; i < data.other_game_len; i++) {
-                const match_other = data.other_game_matches[i];
+            for (let i = 0; i < data.match_length_type_1; i++) {
+                const match_other = data.matches_type_1[i];
                 
                 const row_other = document.createElement('tr');
-                row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.oponent + '</td><td>' + match_other.winlose+ '</td>';
+                row_other.innerHTML = '<td>' + match_other.date + '</td><td>' + match_other.opponent + '</td><td>' + match_other.outcome+ '</td>';
                 
                 tbody_other.appendChild(row_other);
             }
@@ -756,13 +747,9 @@ function createTournament() {
 function putTheNick() {
 
     let token = tokenMaker();
-	console.log('putTheNick');
+
     var username = document.getElementById('usernameInput').value;
     var tournament_id = localStorage.getItem('tournament_id');
-
-	console.log(username);
-	console.log(token);
-	console.log(tournament_id);
 
     fetch('http://localhost:8000/inviteTournament/', {
         method: 'POST',
@@ -785,19 +772,33 @@ function putTheNick() {
     .then(data => {
         console.log('hey',data);
         if (data.success) {
-            console.log('data: ',data.user_count);
-
-            if (data.user_count === 3)
-            {
-                console.log('3 kişi tamam');
-                window.location.pathname = '/tournament-tables';
-            }
-            else if (localStorage.getItem('tournament_id') == null)
+            if (localStorage.getItem('tournament_id') == null)
                 localStorage.setItem('tournament_id', data.tournament_id);
+            if (data.user_count === 3)
+                window.location.pathname = '/tournament-tables';
             else if (data.user_count != 3)
+                window.location.pathname = '/tournament-friends-waiting';
+        }
+        else if (data.success == false) {
+            if (data.message == "Kullanıcı mevcut değil. Lütfen başka bir kullanıcı adı girin.")
             {
-                //window.location.pathname = '/tournament-friends-waiting';
+                alert(data.message);
+                window.location.pathname = '/tournament-friends-waiting';
             }
+            else if (data.message == "Kullanıcı şu anda bir oyun oynuyor. Lütfen başka bir kullanıcı adı girin.")
+            {
+                alert(data.message);
+                window.location.pathname = '/tournament-friends-waiting';
+            }
+            else if (data.message == "Turnuva mevcut değil. Turnuva oluşturmanız gerekiyor.")
+            {
+                alert(data.message);
+                windown.location.pathname = '/create-tournament';
+            } 
+        }
+        else{
+            alert('İnvite Tournament Bir hata oluştu.');
+            window.location.pathname = '/games';
         }
     })
     .catch(error => {
@@ -821,10 +822,68 @@ function refreshUserList() {
     }
 }
 
+function beingTournamentMatch(users, tournament_id) {
+    
+    let user1 = users[0].username;
+    let user2 = users[1].username;
+    console.log('user1', user1);
+    console.log('user2', user2);
+    if (user1 && user2 && tournament_id) {
+        fetch('http://localhost:8000/being-tournament-match/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + tokenMaker(),
+            },
+            body: JSON.stringify({
+                user1: user1,
+                user2: user2,
+                tournament_id: tournament_id,
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }
+        )
+        .then(data =>{
+            console.log('data, being tournament match', data);
+            if (data.success) {
+                if (data.match)
+                {
+                    localStorage.setItem('game_id', data.game_id);//
+                    localStorage.setItem('game_pass', data.game_pass);//
+                    localStorage.setItem('player_pass', data.player_pass);//
+                    localStorage.setItem('player', data.player);
+                    
+                    console.log('game_id', localStorage.getItem('game_id'));
+                    console.log('game_pass', localStorage.getItem('game_pass'));
+                    console.log('player_pass', localStorage.getItem('player_pass'));
+                    console.log('player', localStorage.getItem('player'));
+                    window.location.pathname = '/1v1match';
+                }
+                else if (data.again)
+                {
+                    beingTournamentMatch(data.users, tournament_id);
+                }
+            }
+            else if (data.member)
+            {
+                return ;
+            }
+        })   
+
+    }
+
+
+}
+
 function beingMatch() {
     let token = tokenMaker();
-    if ( window.location.pathname === '/being-match') {
-
+    if (window.location.pathname === '/being-match') {
+        console.log('beingMatch', token);
 
         fetch('http://localhost:8000/matching/', {
             method: 'GET',
@@ -838,25 +897,23 @@ function beingMatch() {
             if (data.success) {
                 
                 console.log(data);
-
-                if (data.match == true)
+                console.log(data.match);
+                if (data.match)
                 {
-                    
-                    
-                    localStorage.setItem('game_id', data.game_id);
-                    localStorage.setItem('game_pass', data.game_pass);
-                    localStorage.setItem('player_pass', data.player_pass);
+                    localStorage.setItem('game_id', data.game_id);//
+                    localStorage.setItem('game_pass', data.game_pass);//
+                    localStorage.setItem('player_pass', data.player_pass);//
                     localStorage.setItem('player', data.player);
 
                     console.log('game_id', localStorage.getItem('game_id'));
                     console.log('game_pass', localStorage.getItem('game_pass'));
                     console.log('player_pass', localStorage.getItem('player_pass'));
                     console.log('player', localStorage.getItem('player'));
-                    window.location.pathname = '/1v1match';
-                    
-                    
+                    window.location.pathname = '/1v1match';   
                 }
             }
+            console.log('else');
+            console.log('data', data);
         })
         .catch(error => {
             console.error('Error fetching friends list:', error);
@@ -864,12 +921,166 @@ function beingMatch() {
     }
 }
 
-function myframe(){
+function TournamentWinner() {
+    let token = tokenMaker();
+    let tournament_id = localStorage.getItem('tournament_id');
+    fetch('http://localhost:8000/tournament-winner/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+        },
+        body: JSON.stringify({
+            tournament_id: tournament_id,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        console.log('response', response);
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
 
-    console.log('game_id1', localStorage.getItem('game_id'));
-    console.log('game_pass1', localStorage.getItem('game_pass'));
-    console.log('player_pass1', localStorage.getItem('player_pass'));
-    console.log('player1', localStorage.getItem('player'));
+            if (data.match)
+            {
+                localStorage.setItem('game_id', data.game_id);//
+                localStorage.setItem('game_pass', data.game_pass);//
+                localStorage.setItem('player_pass', data.player_pass);//
+                localStorage.setItem('player', data.player);
+                window.location.pathname = '/1v1match';
+            }
+        }
+    }
+    )
+    .catch(error => {
+        console.log("here");
+        console.error('Error:', error);
+    }
+    );
+}
+
+
+function game_info_back(score1, score2) {
+    let token = tokenMaker();
+    tournament_id = localStorage.getItem('tournament_id');
+    fetch('http://localhost:8000/game-info-back/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+        },
+        body: JSON.stringify({
+            game_id: localStorage.getItem('game_id'),
+            player1_score: score1,
+            player2_score: score2,
+            tournament_id: tournament_id,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('data', data);
+        if (data.success) {
+            if (data.winner)
+            {
+                localStorage.removeItem('game_id');
+                localStorage.removeItem('game_pass');
+                localStorage.removeItem('player_pass');
+                localStorage.removeItem('player');
+                if (data.type == 4)
+                    window.location.pathname = '/tournament-waiting-page';
+                if (data.type == 7)
+                {
+                    localStorage.removeItem('tournament_id');
+                    window.location.pathname = '/tournament-winner-page';
+                }
+                else if (data.type == 0)
+                {
+                    localStorage.removeItem('game_id');
+                    window.location.pathname = '/1v1match-winner-page';
+                }
+            }
+            else if (data.lose)
+            {
+                localStorage.removeItem('game_id');
+                localStorage.removeItem('game_pass');
+                localStorage.removeItem('player_pass');
+                localStorage.removeItem('player');
+                removeTournament();
+                localStorage.removeItem('tournament_id');
+                if (data.type == 7)
+                    window.location.pathname = '/tournament-lost-page';
+                window.location.pathname = '/1v1match-lose-page';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function removeTournament()
+{
+    fetch('http://localhost:8000/clean-tournament/', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenMaker(),
+        },
+        body: JSON.stringify({
+            tournament_id: localStorage.getItem('tournament_id'),
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            return ;
+        }
+        else if (data.success == false) {
+            return ;
+        }
+    })
+}
+
+function gameinfo() {
+
+    fetch('http://pongapi.ftpong.duckdns.org/api/info/' + localStorage.getItem('game_id'), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenMaker(),
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.state) {
+            if (data.state == 'gameover')
+            {
+                console.log('data', data);
+                game_info_back(data.score1, data.score2)
+            }
+        }
+    }
+    )
+    .catch(error => {
+        console.error('Error:', error);
+    }
+    );
+}
+
+function myframe(){
     var game_id = localStorage.getItem('game_id');
     var game_pass = localStorage.getItem('game_pass');
     var player_pass = localStorage.getItem('player_pass');
@@ -903,13 +1114,17 @@ function startTournament() {
     .then(data => {
         if (data.success) {
             if (data.tournament_id)
-            {
-                localStorage.setItem('tournament_id', data.tournament_id);
-                window.location.pathname = '/request-tournament';
+            {  
+                if (data.waitlist)
+                {
+                    localStorage.setItem('tournament_id', data.tournament_id);
+                    window.location.pathname = '/tournament-tables';
+                }
+                else if (data.invitelist){
+                    localStorage.setItem('tournament_id', data.tournament_id);
+                    window.location.pathname = '/request-tournament';
+                }
             }
-        }
-        else if (data.success == false) {
-            return ;
         }
     })
     .catch(error => {
@@ -919,7 +1134,7 @@ function startTournament() {
     );
 }
 
-setInterval(beingMatch, 5000);  /// 5 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
+setInterval(beingMatch, 10000);  /// 10 saniyede bir kullanıcı Eğer kuallanıcı 1v1 sayfasına girerse isteği backede iletir 
 setInterval(refreshUserList, 7000); // 3 saniyede bir kullanıcı listesini yeniler
 //setInterval(startTournament, 5000);   /// 5 saniyede bir kullanıcı turnava isteği almışmı diye kontrol eder
 
@@ -1091,22 +1306,32 @@ function goToTournament() {
         }),
     })
     .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         return response.json();
     }
     )
     .then(data => {
-        console.log('agam', data);
         if (data.success) {
             window.location.pathname = '/tournament-tables';
         }
         else if (data.success == false) {
-            return ;
+            if (data.message == "Turnuva Bulunamadı. Geç kaldın :(")
+            {
+                alert(data.message);
+                window.location.pathname = '/games';
+            }
+            else{
+                alert(data.error_message);
+                window.location.pathname = '/games';
+            }
         }
     }
     )
     .catch(error => {
+        alert('Turnuvaya katılamadınız.');
         console.error('There has been a problem with your fetch operation:', error);
-        // Hata durumunda kullanıcıya bilgi vermek için buraya uygun işlemleri ekleyebilirsiniz.
     }
     );
 }
@@ -1132,51 +1357,68 @@ function tournament_table() {
         return response.json();
     })
     .then(data => {
-        console.log('datamm' , data);
         if (data.success) {
-        var tableContainer = window.document.getElementById('table_body_id');
+            var tableContainer = window.document.getElementById('table_body_id');
 
-        // Tabloyu oluştur
-        var table = document.createElement('table');
-        var thead = document.createElement('thead');
-        var tbody = document.createElement('tbody');
+            var table = document.createElement('table');
+            var thead = document.createElement('thead');
+            var tbody = document.createElement('tbody');
 
-        var headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>match order</th><th>1. Player</th><th></th><th>2. Player</th><th>Score</th><th>Winner</th>';
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-        console.log('data.user_length', data.user_length);
-        // Kullanıcı verilerini tabloya ekleyin
-        for (var i = 0; i < data.users.length; i += 2) {
-            var user1 = data.users[i];
-            var user2 = (i + 1 < data.users.length) ? data.users[i + 1] : null;
+            var headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>match order</th><th>1. Player</th><th></th><th>2. Player</th><th>Score</th><th>Winner</th>';
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            console.log('data.user_length', data.users_length);
 
-            var row = document.createElement('tr');
+            for (var i = 0; i < data.users.length; i += 2) {
+                var user1 = data.users[i];
+                var user2 = (i + 1 < data.users.length) ? data.users[i + 1] : null;
 
-            var username1 = user1 ? user1.username : 'N/A';
-            var username2 = user2 ? user2.username : 'N/A';
+                var row = document.createElement('tr');
 
-            row.innerHTML = '<th>' + (i / 2 + 1) + '.</th><th>' + username1 + '</th><th><img src="img/vs-sign.png" alt="vs-sign" width="48" height="48"></th><th>' + username2 + '</th><th>??</th><th>??</th>';
+                var username1 = user1 ? user1.username : 'N/A';
+                var username2 = user2 ? user2.username : 'N/A';
 
-            tbody.appendChild(row);
-        }
+                row.innerHTML = '<th>' + (i / 2 + 1) + '.</th><th>' + username1 + '</th><th><img src="img/vs-sign.png" alt="vs-sign" width="48" height="48"></th><th>' + username2 + '</th><th>??</th><th>??</th>';
 
-        table.appendChild(tbody);
+                tbody.appendChild(row);
+            }
 
-        // Tabloyu container'a ekle
-        tableContainer.innerHTML = '';
-        tableContainer.appendChild(table);
+            table.appendChild(tbody);
 
-        if (data.user_length == 4)
-        {
-            setTimeout(function(){ 
-                
-            }, 5000);
-        }
-        
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(table);
+            if (data.users_length == 4)
+            {
+                console.log('data.users_length', data.users_length);
+
+                if (data.users[0].username == data.me || data.users[1].username == data.me)
+                {   
+                    //firstMatch(data.tournament_id);
+                    console.log('AFTER firstMatch');
+                    console.log('data.users', data.users);
+                    console.log('data.users[0].username', data.users[0].username);
+                    console.log('data.users[1].username', data.users[1].username);
+                    beingTournamentMatch(data.users.slice(0, 2), data.tournament_id);
+                }
+                else if (data.users[2].username == data.me || data.users[3].username == data.me)
+                {
+                    console.log('data.users', data.users);
+                    console.log('data.users[2].username', data.users[2].username);
+                    console.log('data.users[3].username', data.users[3].username);
+                    beingTournamentMatch(data.users.slice(2, 4), data.tournament_id);
+                }
+            }
         }
         else if (data.success == false) {
-            return ;
+            if (data.error){
+                alert(data.error);
+                window.location.pathname = '/games';
+            }
+        }
+        else{
+            alert('Turnuva tablosu yüklenemedi.');
+            window.location.pathname = '/games';
         }
     })
     .catch(error => {
@@ -1185,6 +1427,43 @@ function tournament_table() {
     }
     );
 }
+
+function firstMatch(tournament_id) {
+
+    fetch('http://localhost:8000/first-match/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + tokenMaker(),
+        },
+        body: JSON.stringify({
+            tournament_id: tournament_id,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('data', data);
+        if (data.success) {
+            return ;
+        }
+        else if (data.success == false) {
+            if (data.error){
+                alert(data.error);
+                window.location.pathname = '/games';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+}
+
+
 
 function joinButtonClicked() {
     
