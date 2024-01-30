@@ -462,19 +462,10 @@ function race(headClickCount, tailClickCount, temp) {
 		).then(data => {
 			if (data.success)
 			{
-				if (data.win)
-				{
-                    window.location.pathname = '/1v1match-winner-page';
-					
-				}
-                else if (data.notset == 2)
+                if (data.notset == 2)
                 {
                     checkracescore();
                 }
-				else if (data.lose)
-				{
-					window.location.pathname = '/1v1match-lose-page';
-				}
 			}
 			else
 			{
@@ -756,13 +747,9 @@ function createTournament() {
 function putTheNick() {
 
     let token = tokenMaker();
-	console.log('putTheNick');
+
     var username = document.getElementById('usernameInput').value;
     var tournament_id = localStorage.getItem('tournament_id');
-
-	console.log(username);
-	console.log(token);
-	console.log(tournament_id);
 
     fetch('http://localhost:8000/inviteTournament/', {
         method: 'POST',
@@ -1032,7 +1019,6 @@ function game_info_back(score1, score2) {
                     window.location.pathname = '/tournament-lost-page';
                 window.location.pathname = '/1v1match-lose-page';
             }
-        
         }
     })
     .catch(error => {
